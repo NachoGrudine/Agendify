@@ -1,0 +1,6 @@
+@Agendify.API_HostAddress = http://localhost:5117
+
+GET {{Agendify.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

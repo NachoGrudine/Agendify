@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "5HvH0KVepsw=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Ignacio Grudine\\OneDrive\\Escritorio\\Agendify\\Agendify\\Backend\\Agendify.API\\Agendify.API.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Ignacio Grudine\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.1\\microsoft.aspnetcore.openapi.10.0.1.nupkg.sha512",
+    "C:\\Users\\Ignacio Grudine\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512",
+    "C:\\Users\\Ignacio Grudine\\.nuget\\packages\\system.text.json\\8.0.5\\system.text.json.8.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}
