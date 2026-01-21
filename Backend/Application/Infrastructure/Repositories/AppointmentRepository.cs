@@ -1,0 +1,97 @@
+﻿using Agendify.API.Domain.Entities;
+using Agendify.API.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace Agendify.API.Infrastructure.Repositories;
+
+public class AppointmentRepository : Repository<Appointment>, IAppointmentRepository
+{
+    public AppointmentRepository(AgendifyDbContext context) : base(context)
+    {
+    }
+
+    public async Task<IEnumerable<Appointment>> GetByBusinessIdAsync(int businessId)
+    {
+        return await _dbSet
+            .Include(a => a.Provider)
+            .Include(a => a.Customer)
+            .Include(a => a.Service)
+            .Where(a => a.BusinessId == businessId)
+            .OrderBy(a => a.StartTime)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Appointment>> GetByProviderIdAsync(int providerId)
+    {
+        return await _dbSet
+            .Include(a => a.Customer)
+            .Include(a => a.Service)
+            .Where(a => a.ProviderId == providerId)
+            .OrderBy(a => a.StartTime)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Appointment>> GetByDateRangeAsync(int businessId, DateTime startDate, DateTime endDate)
+    {
+        return await _dbSet
+            .Include(a => a.Provider)
+            .Include(a => a.Customer)
+            .Include(a => a.Service)
+            .Where(a => a.BusinessId == businessId 
+                && a.StartTime >= startDate 
+                && a.StartTime < endDate)
+            .OrderBy(a => a.StartTime)
+            .ToListAsync();
+    }
+
+    public async Task<(IEnumerable<Appointment> Items, int TotalCount)> GetPagedByDateAsync(
+        int businessId, DateTime date, int page, int pageSize)
+    {
+        var startOfDay = date.Date;
+        var endOfDay = startOfDay.AddDays(1);
+
+        var query = _dbSet
+            .Include(a => a.Provider)
+            .Include(a => a.Customer)
+            .Include(a => a.Service)
+            .Where(a => a.BusinessId == businessId 
+                && a.StartTime >= startOfDay 
+                && a.StartTime < endOfDay)
+            .OrderBy(a => a.StartTime);
+
+        var totalCount = await query.CountAsync();
+        var items = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items, totalCount);
+    }
+
+    public async Task<bool> HasConflictAsync(int providerId, DateTime startTime, DateTime endTime, int? excludeAppointmentId = null)
+    {
+        var query = _dbSet.Where(a => 
+            a.ProviderId == providerId 
+            && a.Status != AppointmentStatus.Canceled
+            && (
+                (a.StartTime < endTime && a.EndTime > startTime) // Hay superposición
+            ));
+
+        if (excludeAppointmentId.HasValue)
+        {
+            query = query.Where(a => a.Id != excludeAppointmentId.Value);
+        }
+
+        return await query.AnyAsync();
+    }
+
+    public override async Task<Appointment?> GetByIdAsync(int id)
+    {
+        return await _dbSet
+            .Include(a => a.Provider)
+            .Include(a => a.Customer)
+            .Include(a => a.Service)
+            .FirstOrDefaultAsync(a => a.Id == id);
+    }
+}
+
