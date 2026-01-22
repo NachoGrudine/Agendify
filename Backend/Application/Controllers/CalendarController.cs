@@ -1,0 +1,39 @@
+﻿using Agendify.API.DTOs.Appointment;
+using Agendify.API.Services.Calendar;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Agendify.API.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class CalendarController : ControllerBase
+{
+    private readonly ICalendarService _calendarService;
+
+    public CalendarController(ICalendarService calendarService)
+    {
+        _calendarService = calendarService;
+    }
+
+    private int GetBusinessId()
+    {
+        return int.Parse(User.FindFirst("BusinessId")?.Value ?? "0");
+    }
+
+    /// <summary>
+    /// Obtiene un resumen del calendario para mostrar en vista mensual/semanal.
+    /// Retorna por cada día: cantidad de turnos, tiempo ocupado y tiempo disponible.
+    /// </summary>
+    [HttpGet("summary")]
+    public async Task<ActionResult<IEnumerable<CalendarDaySummaryDto>>> GetCalendarSummary(
+        [FromQuery] DateTime startDate,
+        [FromQuery] DateTime endDate)
+    {
+        var businessId = GetBusinessId();
+        var summary = await _calendarService.GetCalendarSummaryAsync(businessId, startDate, endDate);
+        return Ok(summary);
+    }
+}
+
