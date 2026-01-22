@@ -1,4 +1,4 @@
-﻿namespace Agendify.API.DTOs.Appointment;
+﻿namespace Agendify.API.DTOs.Calendar;
 
 public class CalendarDaySummaryDto
 {
@@ -8,4 +8,3 @@ public class CalendarDaySummaryDto
     public int TotalOccupiedMinutes { get; set; }   // Tiempo ocupado por appointments
     public int TotalAvailableMinutes { get; set; }  // TotalScheduled - TotalOccupied
 }
-

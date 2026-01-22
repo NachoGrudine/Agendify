@@ -1,4 +1,4 @@
-﻿using Agendify.API.DTOs.Appointment;
+﻿using Agendify.API.DTOs.Calendar;
 using Agendify.API.Services.Calendar;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +34,18 @@ public class CalendarController : ControllerBase
         var businessId = GetBusinessId();
         var summary = await _calendarService.GetCalendarSummaryAsync(businessId, startDate, endDate);
         return Ok(summary);
+    }
+
+    /// <summary>
+    /// Obtiene el detalle completo de un día específico con todos los turnos.
+    /// Retorna: información del día, lista de turnos con cliente, proveedor, horario y duración.
+    /// </summary>
+    [HttpGet("day/{date}")]
+    public async Task<ActionResult<DayDetailsDto>> GetDayDetails(DateTime date)
+    {
+        var businessId = GetBusinessId();
+        var details = await _calendarService.GetDayDetailsAsync(businessId, date);
+        return Ok(details);
     }
 }
 
