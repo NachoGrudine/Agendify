@@ -41,7 +41,13 @@ public class CalendarService : ICalendarService
         return GenerateDailySummaries(startDate, endDate, minutesByDayOfWeek, appointmentsByDate);
     }
 
-    public async Task<DayDetailsDto> GetDayDetailsAsync(int businessId, DateTime date)
+    public async Task<DayDetailsDto> GetDayDetailsAsync(
+        int businessId, 
+        DateTime date, 
+        string? status = null, 
+        string? startTime = null, 
+        string? customerName = null, 
+        string? providerName = null)
     {
         date = date.Date;
 
@@ -53,15 +59,46 @@ public class CalendarService : ICalendarService
             .OrderByDescending(a => a.StartTime)
             .ToList();
 
-        // 2. Calcular minutos programados para ese día de la semana
+        // 2. Aplicar filtros
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            appointmentsList = appointmentsList
+                .Where(a => a.Status.ToString().Equals(status, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        if (!string.IsNullOrWhiteSpace(startTime))
+        {
+            appointmentsList = appointmentsList
+                .Where(a => a.StartTime.ToString("HH:mm") == startTime)
+                .ToList();
+        }
+
+        if (!string.IsNullOrWhiteSpace(customerName))
+        {
+            appointmentsList = appointmentsList
+                .Where(a => a.Customer != null && 
+                           a.Customer.Name.Contains(customerName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        if (!string.IsNullOrWhiteSpace(providerName))
+        {
+            appointmentsList = appointmentsList
+                .Where(a => a.Provider != null && 
+                           a.Provider.Name.Contains(providerName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        // 3. Calcular minutos programados para ese día de la semana
         var providerIds = await GetProviderIdsAsync(businessId);
         var minutesByDayOfWeek = await CalculateScheduledMinutesByDayOfWeekAsync(providerIds);
         var totalScheduledMinutes = minutesByDayOfWeek.GetValueOrDefault(date.DayOfWeek, 0);
 
-        // 3. Calcular minutos ocupados
+        // 4. Calcular minutos ocupados (solo de los appointments filtrados)
         var totalOccupiedMinutes = appointmentsList.Sum(a => (int)(a.EndTime - a.StartTime).TotalMinutes);
 
-        // 4. Mapear appointments a DTOs
+        // 5. Mapear appointments a DTOs
         var appointmentDetails = appointmentsList.Select(MapToAppointmentDetailDto).ToList();
 
         return new DayDetailsDto
