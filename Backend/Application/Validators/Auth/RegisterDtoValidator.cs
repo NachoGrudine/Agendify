@@ -7,7 +7,7 @@ public class RegisterDtoValidator : AbstractValidator<RegisterDto>
 {
     public RegisterDtoValidator()
     {
-        RuleFor(x => x.Email)
+       /* RuleFor(x => x.Email)
             .NotEmpty().WithMessage("El email es requerido")
             .EmailAddress().WithMessage("El email debe tener un formato válido")
             .MaximumLength(200).WithMessage("El email no puede exceder 200 caracteres");
@@ -35,6 +35,7 @@ public class RegisterDtoValidator : AbstractValidator<RegisterDto>
         RuleFor(x => x.ProviderSpecialty)
             .NotEmpty().WithMessage("La especialidad del proveedor es requerida")
             .MaximumLength(200).WithMessage("La especialidad no puede exceder 200 caracteres");
+            */
     }
 }
 

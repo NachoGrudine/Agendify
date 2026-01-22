@@ -80,9 +80,7 @@ public class ServiceService : IServiceService
             BusinessId = service.BusinessId,
             Name = service.Name,
             DefaultDuration = service.DefaultDuration,
-            Price = service.Price,
-            CreatedAt = service.CreatedAt,
-            UpdatedAt = service.UpdatedAt
+            Price = service.Price
         };
     }
 }

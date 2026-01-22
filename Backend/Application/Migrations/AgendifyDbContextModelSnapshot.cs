@@ -128,7 +128,6 @@ namespace Agendify.API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
@@ -143,7 +142,6 @@ namespace Agendify.API.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 

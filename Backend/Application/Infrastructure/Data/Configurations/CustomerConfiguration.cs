@@ -1,4 +1,4 @@
-﻿using Agendify.API.Domain.Entities;
+﻿﻿using Agendify.API.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -17,11 +17,9 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .HasMaxLength(200);
         
         builder.Property(c => c.Phone)
-            .IsRequired()
             .HasMaxLength(20);
         
         builder.Property(c => c.Email)
-            .IsRequired()
             .HasMaxLength(255);
         
         builder.Property(c => c.CreatedAt)
@@ -33,7 +31,7 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .IsRequired()
             .HasDefaultValue(false);
         
-        // Índice para búsqueda por email dentro del negocio
+        // Índice para búsqueda por email dentro del negocio (solo si tiene email)
         builder.HasIndex(c => new { c.BusinessId, c.Email });
     }
 }

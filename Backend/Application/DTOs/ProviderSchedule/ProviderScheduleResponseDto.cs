@@ -1,4 +1,4 @@
-﻿namespace Agendify.API.DTOs.ProviderSchedule;
+﻿﻿namespace Agendify.API.DTOs.ProviderSchedule;
 
 public class ProviderScheduleResponseDto
 {
@@ -7,7 +7,5 @@ public class ProviderScheduleResponseDto
     public DayOfWeek DayOfWeek { get; set; }
     public TimeSpan StartTime { get; set; }
     public TimeSpan EndTime { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
 }
 

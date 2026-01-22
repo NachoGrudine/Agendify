@@ -80,9 +80,7 @@ public class CustomerService : ICustomerService
             BusinessId = customer.BusinessId,
             Name = customer.Name,
             Phone = customer.Phone,
-            Email = customer.Email,
-            CreatedAt = customer.CreatedAt,
-            UpdatedAt = customer.UpdatedAt
+            Email = customer.Email
         };
     }
 }

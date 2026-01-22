@@ -20,10 +20,6 @@ if (-not $sqlRunning) {
 }
 
 Write-Host ""
-Write-Host "🗑️  Eliminando base de datos anterior si existe..." -ForegroundColor Yellow
-dotnet ef database drop --force --verbose
-
-Write-Host ""
 Write-Host "🧹 Eliminando migraciones anteriores..." -ForegroundColor Yellow
 $migrationsPath = "Migrations"
 if (Test-Path $migrationsPath) {
@@ -34,8 +30,24 @@ if (Test-Path $migrationsPath) {
 }
 
 Write-Host ""
+Write-Host "🗑️  Eliminando base de datos anterior si existe..." -ForegroundColor Yellow
+try {
+    dotnet ef database drop --force --verbose 2>&1 | Out-Null
+    Write-Host "✅ Base de datos eliminada" -ForegroundColor Green
+} catch {
+    Write-Host "✅ No había base de datos existente" -ForegroundColor Green
+}
+
+Write-Host ""
 Write-Host "📝 Creando nueva migración..." -ForegroundColor Cyan
 dotnet ef migrations add InitialCreate --verbose
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host ""
+    Write-Host "❌ Error al crear la migración" -ForegroundColor Red
+    Read-Host "Presiona Enter para salir"
+    exit 1
+}
 
 Write-Host ""
 Write-Host "📦 Aplicando migraciones..." -ForegroundColor Cyan

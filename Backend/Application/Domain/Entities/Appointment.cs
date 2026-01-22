@@ -1,11 +1,10 @@
-﻿﻿﻿namespace Agendify.API.Domain.Entities;
+﻿namespace Agendify.API.Domain.Entities;
 
 public class Appointment : BaseEntity
 {
     public int BusinessId { get; set; }
     public int ProviderId { get; set; }
     public int? CustomerId { get; set; }
-    public string CustomerName { get; set; } = string.Empty;
     public int? ServiceId { get; set; }
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }

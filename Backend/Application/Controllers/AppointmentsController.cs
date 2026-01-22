@@ -58,6 +58,16 @@ public class AppointmentsController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("calendar/summary")]
+    public async Task<ActionResult<IEnumerable<CalendarDaySummaryDto>>> GetCalendarSummary(
+        [FromQuery] DateTime startDate,
+        [FromQuery] DateTime endDate)
+    {
+        var businessId = GetBusinessId();
+        var summary = await _appointmentService.GetCalendarSummaryAsync(businessId, startDate, endDate);
+        return Ok(summary);
+    }
+
     [HttpGet("range")]
     public async Task<ActionResult<IEnumerable<AppointmentResponseDto>>> GetByDateRange(
         [FromQuery] DateTime startDate, 

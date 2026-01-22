@@ -11,7 +11,8 @@ public interface IAppointmentService
     Task<IEnumerable<AppointmentResponseDto>> GetByBusinessAsync(int businessId);
     Task<IEnumerable<AppointmentResponseDto>> GetByDateRangeAsync(int businessId, DateTime startDate, DateTime endDate);
     Task<PagedResultDto<AppointmentResponseDto>> GetPagedByDateAsync(int businessId, DateTime date, int page, int pageSize);
+    Task<IEnumerable<CalendarDaySummaryDto>> GetCalendarSummaryAsync(int businessId, DateTime startDate, DateTime endDate);
     Task DeleteAsync(int businessId, int id);
- 
+
 }
 

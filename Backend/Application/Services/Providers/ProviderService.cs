@@ -80,9 +80,7 @@ public class ProviderService : IProviderService
             BusinessId = provider.BusinessId,
             Name = provider.Name,
             Specialty = provider.Specialty,
-            IsActive = provider.IsActive,
-            CreatedAt = provider.CreatedAt,
-            UpdatedAt = provider.UpdatedAt
+            IsActive = provider.IsActive
         };
     }
 }

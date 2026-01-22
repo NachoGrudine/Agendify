@@ -119,9 +119,7 @@ public class ProviderScheduleService : IProviderScheduleService
             ProviderId = schedule.ProviderId,
             DayOfWeek = schedule.DayOfWeek,
             StartTime = schedule.StartTime,
-            EndTime = schedule.EndTime,
-            CreatedAt = schedule.CreatedAt,
-            UpdatedAt = schedule.UpdatedAt
+            EndTime = schedule.EndTime
         };
     }
 }

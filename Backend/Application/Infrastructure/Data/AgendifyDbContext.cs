@@ -27,7 +27,7 @@ public class AgendifyDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         
         // Query Filters globales para Soft Delete
-        modelBuilder.Entity<Business>().HasQueryFilter(b => !b.IsDeleted);
+        // NO aplicamos query filter a Business porque User tiene relación requerida con Business
         modelBuilder.Entity<Provider>().HasQueryFilter(p => !p.IsDeleted);
         modelBuilder.Entity<ProviderSchedule>().HasQueryFilter(ps => !ps.IsDeleted);
         modelBuilder.Entity<Customer>().HasQueryFilter(c => !c.IsDeleted);

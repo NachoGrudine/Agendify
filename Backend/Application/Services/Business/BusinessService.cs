@@ -1,4 +1,4 @@
-﻿using BusinessEntity = Agendify.API.Domain.Entities.Business;
+﻿﻿using BusinessEntity = Agendify.API.Domain.Entities.Business;
 using Agendify.API.DTOs.Business;
 using Agendify.API.Infrastructure.Repositories;
 
@@ -40,9 +40,7 @@ public class BusinessService : IBusinessService
         {
             Id = business.Id,
             Name = business.Name,
-            Industry = business.Industry,
-            CreatedAt = business.CreatedAt,
-            UpdatedAt = business.UpdatedAt
+            Industry = business.Industry
         };
     }
 }
