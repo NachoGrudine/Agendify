@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{BE28BA1C-798A-4083-8564-63DE6500FAD3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agendify", "Agendify\Agendify.csproj", "{BE28BA1C-798A-4083-8564-63DE6500FAD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApplication", "TestApplication\TestApplication.csproj", "{1CD84DFB-CEAB-4122-9975-53496068782F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAgendify", "TestAgendify\TestAgendify.csproj", "{1CD84DFB-CEAB-4122-9975-53496068782F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

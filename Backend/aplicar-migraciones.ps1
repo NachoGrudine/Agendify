@@ -1,8 +1,8 @@
-﻿﻿Write-Host "🚀 Aplicando Migraciones de Entity Framework..." -ForegroundColor Cyan
+﻿Write-Host "🚀 Aplicando Migraciones de Entity Framework..." -ForegroundColor Cyan
 Write-Host ""
 
 # Cambiar al directorio de la aplicación
-Set-Location "C:\Users\Ignacio Grudine\OneDrive\Escritorio\Agendify\Agendify\Backend\Application"
+Set-Location "C:\Users\Ignacio Grudine\OneDrive\Escritorio\Agendify\Agendify\Backend\Agendify"
 
 # Verificar que SQL Server está corriendo
 Write-Host "📊 Verificando SQL Server..." -ForegroundColor Yellow
@@ -14,7 +14,7 @@ if (-not $sqlRunning) {
     docker-compose up -d sqlserver
     Write-Host "⏳ Esperando 60 segundos para que SQL Server inicie..." -ForegroundColor Yellow
     Start-Sleep -Seconds 60
-    Set-Location "Application"
+    Set-Location "Agendify"
 } else {
     Write-Host "✅ SQL Server está corriendo" -ForegroundColor Green
 }
