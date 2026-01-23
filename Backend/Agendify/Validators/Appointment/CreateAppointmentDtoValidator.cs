@@ -9,8 +9,7 @@ public class CreateAppointmentDtoValidator : AbstractValidator<CreateAppointment
     {
         RuleFor(x => x.ProviderId)
             .GreaterThan(0).WithMessage("El ID del proveedor es requerido");
-
-
+        
         RuleFor(x => x.StartTime)
             .NotEmpty().WithMessage("La fecha de inicio es requerida")
             .LessThan(x => x.EndTime).WithMessage("La fecha de inicio debe ser anterior a la fecha de fin");

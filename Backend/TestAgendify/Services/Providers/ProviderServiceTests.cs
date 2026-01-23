@@ -42,9 +42,9 @@ public class ProviderServiceTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Name.Should().Be(createDto.Name);
-        result.Specialty.Should().Be(createDto.Specialty);
-        result.IsActive.Should().BeTrue(); // Default should be true
+        result.Value.Name.Should().Be(createDto.Name);
+        result.Value.Specialty.Should().Be(createDto.Specialty);
+        result.Value.IsActive.Should().BeTrue(); // Default should be true
 
         capturedProvider.Should().NotBeNull();
         capturedProvider!.BusinessId.Should().Be(businessId);
@@ -74,7 +74,7 @@ public class ProviderServiceTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Specialty.Should().BeNull();
+        result.Value.Specialty.Should().BeNull();
     }
 
     #endregion
@@ -107,14 +107,15 @@ public class ProviderServiceTests
 
         // Assert
         result.Should().NotBeNull();
-        result!.Id.Should().Be(providerId);
-        result.Name.Should().Be(provider.Name);
-        result.Specialty.Should().Be(provider.Specialty);
-        result.IsActive.Should().BeTrue();
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Id.Should().Be(providerId);
+        result.Value.Name.Should().Be(provider.Name);
+        result.Value.Specialty.Should().Be(provider.Specialty);
+        result.Value.IsActive.Should().BeTrue();
     }
 
     [Fact]
-    public async Task GetByIdAsync_WithNonExistingProvider_ShouldReturnNull()
+    public async Task GetByIdAsync_WithNonExistingProvider_ShouldReturnFailure()
     {
         // Arrange
         var businessId = 1;
@@ -128,11 +129,11 @@ public class ProviderServiceTests
         var result = await _providerService.GetByIdAsync(businessId, providerId);
 
         // Assert
-        result.Should().BeNull();
+        result.IsFailed.Should().BeTrue();
     }
 
     [Fact]
-    public async Task GetByIdAsync_WithDifferentBusinessId_ShouldReturnNull()
+    public async Task GetByIdAsync_WithDifferentBusinessId_ShouldReturnFailure()
     {
         // Arrange
         var businessId = 1;
@@ -153,7 +154,7 @@ public class ProviderServiceTests
         var result = await _providerService.GetByIdAsync(businessId, providerId);
 
         // Assert
-        result.Should().BeNull();
+        result.IsFailed.Should().BeTrue();
     }
 
     #endregion
@@ -243,9 +244,10 @@ public class ProviderServiceTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Name.Should().Be(updateDto.Name);
-        result.Specialty.Should().Be(updateDto.Specialty);
-        result.IsActive.Should().Be(updateDto.IsActive);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Name.Should().Be(updateDto.Name);
+        result.Value.Specialty.Should().Be(updateDto.Specialty);
+        result.Value.IsActive.Should().Be(updateDto.IsActive);
 
         updatedProvider.Should().NotBeNull();
 
@@ -253,7 +255,7 @@ public class ProviderServiceTests
     }
 
     [Fact]
-    public async Task UpdateAsync_WithNonExistingProvider_ShouldThrowKeyNotFoundException()
+    public async Task UpdateAsync_WithNonExistingProvider_ShouldReturnFailure()
     {
         // Arrange
         var businessId = 1;
@@ -265,11 +267,12 @@ public class ProviderServiceTests
             .ReturnsAsync((Provider?)null);
 
         // Act
-        Func<Task> act = async () => await _providerService.UpdateAsync(businessId, providerId, updateDto);
+        var result = await _providerService.UpdateAsync(businessId, providerId, updateDto);
 
         // Assert
-        await act.Should().ThrowAsync<KeyNotFoundException>()
-            .WithMessage("Proveedor no encontrado");
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().ContainSingle()
+            .Which.Message.Should().Be("Proveedor no encontrado");
     }
 
     #endregion
@@ -302,9 +305,10 @@ public class ProviderServiceTests
             .ReturnsAsync((Provider p) => p);
 
         // Act
-        await _providerService.DeleteAsync(businessId, providerId);
+        var result = await _providerService.DeleteAsync(businessId, providerId);
 
         // Assert
+        result.IsSuccess.Should().BeTrue();
         deletedProvider.Should().NotBeNull();
         deletedProvider!.IsDeleted.Should().BeTrue();
 
@@ -312,7 +316,7 @@ public class ProviderServiceTests
     }
 
     [Fact]
-    public async Task DeleteAsync_WithNonExistingProvider_ShouldThrowKeyNotFoundException()
+    public async Task DeleteAsync_WithNonExistingProvider_ShouldReturnFailure()
     {
         // Arrange
         var businessId = 1;
@@ -323,11 +327,12 @@ public class ProviderServiceTests
             .ReturnsAsync((Provider?)null);
 
         // Act
-        Func<Task> act = async () => await _providerService.DeleteAsync(businessId, providerId);
+        var result = await _providerService.DeleteAsync(businessId, providerId);
 
         // Assert
-        await act.Should().ThrowAsync<KeyNotFoundException>()
-            .WithMessage("Proveedor no encontrado");
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().ContainSingle()
+            .Which.Message.Should().Be("Proveedor no encontrado");
     }
 
     #endregion

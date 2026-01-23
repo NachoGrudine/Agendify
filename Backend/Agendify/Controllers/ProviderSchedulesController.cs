@@ -1,5 +1,6 @@
-﻿﻿using Agendify.DTOs.ProviderSchedule;
+﻿using Agendify.DTOs.ProviderSchedule;
 using Agendify.Services.ProviderSchedules;
+using Agendify.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +9,7 @@ namespace Agendify.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class ProviderSchedulesController : ControllerBase
+public class ProviderSchedulesController : BaseController
 {
     private readonly IProviderScheduleService _scheduleService;
 
@@ -17,55 +18,45 @@ public class ProviderSchedulesController : ControllerBase
         _scheduleService = scheduleService;
     }
 
-    private int GetBusinessId()
-    {
-        return int.Parse(User.FindFirst("BusinessId")?.Value ?? "0");
-    }
 
     [HttpGet("provider/{providerId}")]
     public async Task<ActionResult<IEnumerable<ProviderScheduleResponseDto>>> GetByProvider(int providerId)
     {
         var businessId = GetBusinessId();
-        var schedules = await _scheduleService.GetByProviderAsync(businessId, providerId);
-        return Ok(schedules);
+        var result = await _scheduleService.GetByProviderAsync(businessId, providerId);
+        return result.ToActionResult();
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<ProviderScheduleResponseDto>> GetById(int id)
     {
         var businessId = GetBusinessId();
-        var schedule = await _scheduleService.GetByIdAsync(businessId, id);
-
-        if (schedule == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(schedule);
+        var result = await _scheduleService.GetByIdAsync(businessId, id);
+        return result.ToActionResult();
     }
 
     [HttpPost]
     public async Task<ActionResult<ProviderScheduleResponseDto>> Create([FromBody] CreateProviderScheduleDto dto)
     {
         var businessId = GetBusinessId();
-        var schedule = await _scheduleService.CreateAsync(businessId, dto);
-        return CreatedAtAction(nameof(GetById), new { id = schedule.Id }, schedule);
+        var result = await _scheduleService.CreateAsync(businessId, dto);
+        return result.ToCreatedResult(nameof(GetById), x => new { id = x.Id });
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult<ProviderScheduleResponseDto>> Update(int id, [FromBody] UpdateProviderScheduleDto dto)
     {
         var businessId = GetBusinessId();
-        var schedule = await _scheduleService.UpdateAsync(businessId, id, dto);
-        return Ok(schedule);
+        var result = await _scheduleService.UpdateAsync(businessId, id, dto);
+        return result.ToActionResult();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         var businessId = GetBusinessId();
-        await _scheduleService.DeleteAsync(businessId, id);
-        return NoContent();
+        var result = await _scheduleService.DeleteAsync(businessId, id);
+        return result.ToActionResult();
     }
 }
 

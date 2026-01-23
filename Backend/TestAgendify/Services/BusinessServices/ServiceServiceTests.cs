@@ -43,9 +43,9 @@ public class ServiceServiceTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Name.Should().Be(createDto.Name);
-        result.DefaultDuration.Should().Be(createDto.DefaultDuration);
-        result.Price.Should().Be(createDto.Price);
+        result.Value.Name.Should().Be(createDto.Name);
+        result.Value.DefaultDuration.Should().Be(createDto.DefaultDuration);
+        result.Value.Price.Should().Be(createDto.Price);
 
         capturedService.Should().NotBeNull();
         capturedService!.BusinessId.Should().Be(businessId);
@@ -75,7 +75,7 @@ public class ServiceServiceTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Price.Should().Be(0);
+        result.Value.Price.Should().Be(0);
     }
 
     #endregion
@@ -108,14 +108,15 @@ public class ServiceServiceTests
 
         // Assert
         result.Should().NotBeNull();
-        result!.Id.Should().Be(serviceId);
-        result.Name.Should().Be(service.Name);
-        result.DefaultDuration.Should().Be(service.DefaultDuration);
-        result.Price.Should().Be(service.Price);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Id.Should().Be(serviceId);
+        result.Value.Name.Should().Be(service.Name);
+        result.Value.DefaultDuration.Should().Be(service.DefaultDuration);
+        result.Value.Price.Should().Be(service.Price);
     }
 
     [Fact]
-    public async Task GetByIdAsync_WithNonExistingService_ShouldReturnNull()
+    public async Task GetByIdAsync_WithNonExistingService_ShouldReturnFailure()
     {
         // Arrange
         var businessId = 1;
@@ -129,11 +130,11 @@ public class ServiceServiceTests
         var result = await _serviceService.GetByIdAsync(businessId, serviceId);
 
         // Assert
-        result.Should().BeNull();
+        result.IsFailed.Should().BeTrue();
     }
 
     [Fact]
-    public async Task GetByIdAsync_WithDifferentBusinessId_ShouldReturnNull()
+    public async Task GetByIdAsync_WithDifferentBusinessId_ShouldReturnFailure()
     {
         // Arrange
         var businessId = 1;
@@ -156,7 +157,7 @@ public class ServiceServiceTests
         var result = await _serviceService.GetByIdAsync(businessId, serviceId);
 
         // Assert
-        result.Should().BeNull();
+        result.IsFailed.Should().BeTrue();
     }
 
     #endregion
@@ -246,9 +247,9 @@ public class ServiceServiceTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Name.Should().Be(updateDto.Name);
-        result.DefaultDuration.Should().Be(updateDto.DefaultDuration);
-        result.Price.Should().Be(updateDto.Price);
+        result.Value.Name.Should().Be(updateDto.Name);
+        result.Value.DefaultDuration.Should().Be(updateDto.DefaultDuration);
+        result.Value.Price.Should().Be(updateDto.Price);
 
         updatedService.Should().NotBeNull();
 
@@ -256,7 +257,7 @@ public class ServiceServiceTests
     }
 
     [Fact]
-    public async Task UpdateAsync_WithNonExistingService_ShouldThrowKeyNotFoundException()
+    public async Task UpdateAsync_WithNonExistingService_ShouldReturnFailure()
     {
         // Arrange
         var businessId = 1;
@@ -268,11 +269,12 @@ public class ServiceServiceTests
             .ReturnsAsync((Service?)null);
 
         // Act
-        Func<Task> act = async () => await _serviceService.UpdateAsync(businessId, serviceId, updateDto);
+        var result = await _serviceService.UpdateAsync(businessId, serviceId, updateDto);
 
         // Assert
-        await act.Should().ThrowAsync<KeyNotFoundException>()
-            .WithMessage("Servicio no encontrado");
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().ContainSingle()
+            .Which.Message.Should().Be("Servicio no encontrado");
     }
 
     #endregion
@@ -306,9 +308,10 @@ public class ServiceServiceTests
             .ReturnsAsync((Service s) => s);
 
         // Act
-        await _serviceService.DeleteAsync(businessId, serviceId);
+        var result = await _serviceService.DeleteAsync(businessId, serviceId);
 
         // Assert
+        result.IsSuccess.Should().BeTrue();
         deletedService.Should().NotBeNull();
         deletedService!.IsDeleted.Should().BeTrue();
 
@@ -316,7 +319,7 @@ public class ServiceServiceTests
     }
 
     [Fact]
-    public async Task DeleteAsync_WithNonExistingService_ShouldThrowKeyNotFoundException()
+    public async Task DeleteAsync_WithNonExistingService_ShouldReturnFailure()
     {
         // Arrange
         var businessId = 1;
@@ -327,11 +330,12 @@ public class ServiceServiceTests
             .ReturnsAsync((Service?)null);
 
         // Act
-        Func<Task> act = async () => await _serviceService.DeleteAsync(businessId, serviceId);
+        var result = await _serviceService.DeleteAsync(businessId, serviceId);
 
         // Assert
-        await act.Should().ThrowAsync<KeyNotFoundException>()
-            .WithMessage("Servicio no encontrado");
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().ContainSingle()
+            .Which.Message.Should().Be("Servicio no encontrado");
     }
 
     #endregion

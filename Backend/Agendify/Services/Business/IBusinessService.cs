@@ -1,10 +1,11 @@
-﻿using Agendify.DTOs.Business;
+﻿﻿using Agendify.DTOs.Business;
+using FluentResults;
 
 namespace Agendify.Services.Business;
 
 public interface IBusinessService
 {
-    Task<BusinessResponseDto?> GetByIdAsync(int id);
-    Task<BusinessResponseDto> UpdateAsync(int id, UpdateBusinessDto dto);
+    Task<Result<BusinessResponseDto>> GetByIdAsync(int id);
+    Task<Result<BusinessResponseDto>> UpdateAsync(int id, UpdateBusinessDto dto);
 }
 

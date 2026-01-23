@@ -1,12 +1,13 @@
-﻿using Agendify.DTOs.ProviderSchedule;
+﻿﻿using Agendify.DTOs.ProviderSchedule;
+using FluentResults;
 
 namespace Agendify.Services.ProviderSchedules;
 
 public interface IProviderScheduleService
 {
-    Task<ProviderScheduleResponseDto> CreateAsync(int businessId, CreateProviderScheduleDto dto);
-    Task<ProviderScheduleResponseDto> UpdateAsync(int businessId, int id, UpdateProviderScheduleDto dto);
-    Task<ProviderScheduleResponseDto?> GetByIdAsync(int businessId, int id);
-    Task<IEnumerable<ProviderScheduleResponseDto>> GetByProviderAsync(int businessId, int providerId);
-    Task DeleteAsync(int businessId, int id);
+    Task<Result<ProviderScheduleResponseDto>> CreateAsync(int businessId, CreateProviderScheduleDto dto);
+    Task<Result<ProviderScheduleResponseDto>> UpdateAsync(int businessId, int id, UpdateProviderScheduleDto dto);
+    Task<Result<ProviderScheduleResponseDto>> GetByIdAsync(int businessId, int id);
+    Task<Result<IEnumerable<ProviderScheduleResponseDto>>> GetByProviderAsync(int businessId, int providerId);
+    Task<Result> DeleteAsync(int businessId, int id);
 }

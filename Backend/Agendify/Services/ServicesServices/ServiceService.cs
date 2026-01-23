@@ -1,6 +1,8 @@
 ﻿using Agendify.Models.Entities;
 using Agendify.DTOs.Service;
 using Agendify.Repositories;
+using Agendify.Common.Errors;
+using FluentResults;
 
 namespace Agendify.Services.ServicesServices;
 
@@ -13,7 +15,7 @@ public class ServiceService : IServiceService
         _serviceRepository = serviceRepository;
     }
 
-    public async Task<ServiceResponseDto> CreateAsync(int businessId, CreateServiceDto dto)
+    public async Task<Result<ServiceResponseDto>> CreateAsync(int businessId, CreateServiceDto dto)
     {
         var service = new Service
         {
@@ -24,15 +26,15 @@ public class ServiceService : IServiceService
         };
 
         await _serviceRepository.AddAsync(service);
-        return MapToResponseDto(service);
+        return Result.Ok(MapToResponseDto(service));
     }
 
-    public async Task<ServiceResponseDto> UpdateAsync(int businessId, int id, UpdateServiceDto dto)
+    public async Task<Result<ServiceResponseDto>> UpdateAsync(int businessId, int id, UpdateServiceDto dto)
     {
         var service = await _serviceRepository.GetByIdAsync(id);
         if (service == null || service.BusinessId != businessId)
         {
-            throw new KeyNotFoundException("Servicio no encontrado");
+            return Result.Fail(new NotFoundError("Servicio no encontrado"));
         }
 
         service.Name = dto.Name;
@@ -40,18 +42,18 @@ public class ServiceService : IServiceService
         service.Price = dto.Price;
 
         var updated = await _serviceRepository.UpdateAsync(service);
-        return MapToResponseDto(updated);
+        return Result.Ok(MapToResponseDto(updated));
     }
 
-    public async Task<ServiceResponseDto?> GetByIdAsync(int businessId, int id)
+    public async Task<Result<ServiceResponseDto>> GetByIdAsync(int businessId, int id)
     {
         var service = await _serviceRepository.GetByIdAsync(id);
         if (service == null || service.BusinessId != businessId)
         {
-            return null;
+            return Result.Fail(new NotFoundError("Servicio no encontrado"));
         }
 
-        return MapToResponseDto(service);
+        return Result.Ok(MapToResponseDto(service));
     }
 
     public async Task<IEnumerable<ServiceResponseDto>> GetByBusinessAsync(int businessId)
@@ -60,16 +62,18 @@ public class ServiceService : IServiceService
         return services.Select(MapToResponseDto);
     }
 
-    public async Task DeleteAsync(int businessId, int id)
+    public async Task<Result> DeleteAsync(int businessId, int id)
     {
         var service = await _serviceRepository.GetByIdAsync(id);
         if (service == null || service.BusinessId != businessId)
         {
-            throw new KeyNotFoundException("Servicio no encontrado");
+            return Result.Fail(new NotFoundError("Servicio no encontrado"));
         }
 
         service.IsDeleted = true;
         await _serviceRepository.UpdateAsync(service);
+        
+        return Result.Ok();
     }
 
     private static ServiceResponseDto MapToResponseDto(Service service)

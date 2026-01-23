@@ -8,7 +8,7 @@ namespace Agendify.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class CalendarController : ControllerBase
+public class CalendarController : BaseController
 {
     private readonly ICalendarService _calendarService;
 
@@ -17,10 +17,6 @@ public class CalendarController : ControllerBase
         _calendarService = calendarService;
     }
 
-    private int GetBusinessId()
-    {
-        return int.Parse(User.FindFirst("BusinessId")?.Value ?? "0");
-    }
 
     /// <summary>
     /// Obtiene un resumen del calendario para mostrar en vista mensual/semanal.

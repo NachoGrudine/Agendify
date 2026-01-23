@@ -1,6 +1,8 @@
-﻿using BusinessEntity = Agendify.Models.Entities.Business;
+﻿﻿﻿using BusinessEntity = Agendify.Models.Entities.Business;
 using Agendify.DTOs.Business;
 using Agendify.Repositories;
+using Agendify.Common.Errors;
+using FluentResults;
 
 namespace Agendify.Services.Business;
 
@@ -13,25 +15,30 @@ public class BusinessService : IBusinessService
         _businessRepository = businessRepository;
     }
 
-    public async Task<BusinessResponseDto?> GetByIdAsync(int id)
-    {
-        var business = await _businessRepository.GetByIdAsync(id);
-        return business == null ? null : MapToResponseDto(business);
-    }
-
-    public async Task<BusinessResponseDto> UpdateAsync(int id, UpdateBusinessDto dto)
+    public async Task<Result<BusinessResponseDto>> GetByIdAsync(int id)
     {
         var business = await _businessRepository.GetByIdAsync(id);
         if (business == null)
         {
-            throw new KeyNotFoundException("Negocio no encontrado");
+            return Result.Fail(new NotFoundError("Negocio no encontrado"));
+        }
+        
+        return Result.Ok(MapToResponseDto(business));
+    }
+
+    public async Task<Result<BusinessResponseDto>> UpdateAsync(int id, UpdateBusinessDto dto)
+    {
+        var business = await _businessRepository.GetByIdAsync(id);
+        if (business == null)
+        {
+            return Result.Fail(new NotFoundError("Negocio no encontrado"));
         }
 
         business.Name = dto.Name;
         business.Industry = dto.Industry;
 
         var updated = await _businessRepository.UpdateAsync(business);
-        return MapToResponseDto(updated);
+        return Result.Ok(MapToResponseDto(updated));
     }
 
     private static BusinessResponseDto MapToResponseDto(BusinessEntity business)

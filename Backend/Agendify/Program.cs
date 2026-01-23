@@ -72,6 +72,22 @@ builder.Services.AddScoped<IProviderScheduleService, ProviderScheduleService>();
 // Configurar Controllers
 builder.Services.AddControllers();
 
+// Configurar ProblemDetails (RFC 7807)
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = context =>
+    {
+        // Agregar información adicional en desarrollo
+        if (builder.Environment.IsDevelopment())
+        {
+            context.ProblemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
+        }
+        
+        // Agregar timestamp
+        context.ProblemDetails.Extensions["timestamp"] = DateTime.UtcNow;
+    };
+});
+
 // Configurar Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

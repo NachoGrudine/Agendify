@@ -43,9 +43,10 @@ public class CustomerServiceTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Name.Should().Be(createDto.Name);
-        result.Phone.Should().Be(createDto.Phone);
-        result.Email.Should().Be(createDto.Email);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Name.Should().Be(createDto.Name);
+        result.Value.Phone.Should().Be(createDto.Phone);
+        result.Value.Email.Should().Be(createDto.Email);
         
         capturedCustomer.Should().NotBeNull();
         capturedCustomer!.BusinessId.Should().Be(businessId);
@@ -76,9 +77,9 @@ public class CustomerServiceTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Name.Should().Be(createDto.Name);
-        result.Phone.Should().BeNull();
-        result.Email.Should().BeNull();
+        result.Value.Name.Should().Be(createDto.Name);
+        result.Value.Phone.Should().BeNull();
+        result.Value.Email.Should().BeNull();
     }
 
     #endregion
@@ -108,10 +109,11 @@ public class CustomerServiceTests
 
         // Assert
         result.Should().NotBeNull();
-        result!.Id.Should().Be(customerId);
-        result.Name.Should().Be(customer.Name);
-        result.Phone.Should().Be(customer.Phone);
-        result.Email.Should().Be(customer.Email);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Id.Should().Be(customerId);
+        result.Value.Name.Should().Be(customer.Name);
+        result.Value.Phone.Should().Be(customer.Phone);
+        result.Value.Email.Should().Be(customer.Email);
     }
 
     [Fact]
@@ -129,11 +131,11 @@ public class CustomerServiceTests
         var result = await _customerService.GetByIdAsync(businessId, customerId);
 
         // Assert
-        result.Should().BeNull();
+        result.IsFailed.Should().BeTrue();
     }
 
     [Fact]
-    public async Task GetByIdAsync_WithDifferentBusinessId_ShouldReturnNull()
+    public async Task GetByIdAsync_WithDifferentBusinessId_ShouldReturnFailure()
     {
         // Arrange
         var businessId = 1;
@@ -154,7 +156,7 @@ public class CustomerServiceTests
         var result = await _customerService.GetByIdAsync(businessId, customerId);
 
         // Assert
-        result.Should().BeNull();
+        result.IsFailed.Should().BeTrue();
     }
     #region GetByBusinessAsync Tests
 
@@ -241,9 +243,10 @@ public class CustomerServiceTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Name.Should().Be(updateDto.Name);
-        result.Phone.Should().Be(updateDto.Phone);
-        result.Email.Should().Be(updateDto.Email);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Name.Should().Be(updateDto.Name);
+        result.Value.Phone.Should().Be(updateDto.Phone);
+        result.Value.Email.Should().Be(updateDto.Email);
 
         updatedCustomer.Should().NotBeNull();
         updatedCustomer!.Name.Should().Be(updateDto.Name);
@@ -252,7 +255,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public async Task UpdateAsync_WithNonExistingCustomer_ShouldThrowKeyNotFoundException()
+    public async Task UpdateAsync_WithNonExistingCustomer_ShouldReturnFailure()
     {
         // Arrange
         var businessId = 1;
@@ -264,11 +267,12 @@ public class CustomerServiceTests
             .ReturnsAsync((Customer?)null);
 
         // Act
-        Func<Task> act = async () => await _customerService.UpdateAsync(businessId, customerId, updateDto);
+        var result = await _customerService.UpdateAsync(businessId, customerId, updateDto);
 
         // Assert
-        await act.Should().ThrowAsync<KeyNotFoundException>()
-            .WithMessage("Cliente no encontrado");
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().ContainSingle()
+            .Which.Message.Should().Be("Cliente no encontrado");
     }
 
     [Fact]
@@ -290,10 +294,10 @@ public class CustomerServiceTests
             .ReturnsAsync(customer);
 
         // Act
-        Func<Task> act = async () => await _customerService.UpdateAsync(businessId, customerId, updateDto);
+        var result = await _customerService.UpdateAsync(businessId, customerId, updateDto);
 
         // Assert
-        await act.Should().ThrowAsync<KeyNotFoundException>();
+        result.IsFailed.Should().BeTrue();
     }
 
     #endregion
@@ -325,9 +329,10 @@ public class CustomerServiceTests
             .ReturnsAsync((Customer c) => c);
 
         // Act
-        await _customerService.DeleteAsync(businessId, customerId);
+        var result = await _customerService.DeleteAsync(businessId, customerId);
 
         // Assert
+        result.IsSuccess.Should().BeTrue();
         deletedCustomer.Should().NotBeNull();
         deletedCustomer!.IsDeleted.Should().BeTrue();
 
@@ -335,7 +340,7 @@ public class CustomerServiceTests
     }
 
     [Fact]
-    public async Task DeleteAsync_WithNonExistingCustomer_ShouldThrowKeyNotFoundException()
+    public async Task DeleteAsync_WithNonExistingCustomer_ShouldReturnFailure()
     {
         // Arrange
         var businessId = 1;
@@ -346,15 +351,16 @@ public class CustomerServiceTests
             .ReturnsAsync((Customer?)null);
 
         // Act
-        Func<Task> act = async () => await _customerService.DeleteAsync(businessId, customerId);
+        var result = await _customerService.DeleteAsync(businessId, customerId);
 
         // Assert
-        await act.Should().ThrowAsync<KeyNotFoundException>()
-            .WithMessage("Cliente no encontrado");
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().ContainSingle()
+            .Which.Message.Should().Be("Cliente no encontrado");
     }
 
     [Fact]
-    public async Task DeleteAsync_WithDifferentBusinessId_ShouldThrowKeyNotFoundException()
+    public async Task DeleteAsync_WithDifferentBusinessId_ShouldReturnFailure()
     {
         // Arrange
         var businessId = 1;
@@ -371,10 +377,10 @@ public class CustomerServiceTests
             .ReturnsAsync(customer);
 
         // Act
-        Func<Task> act = async () => await _customerService.DeleteAsync(businessId, customerId);
+        var result = await _customerService.DeleteAsync(businessId, customerId);
 
         // Assert
-        await act.Should().ThrowAsync<KeyNotFoundException>();
+        result.IsFailed.Should().BeTrue();
     }
 
     #endregion

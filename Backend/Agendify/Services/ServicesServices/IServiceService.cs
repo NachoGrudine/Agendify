@@ -1,12 +1,13 @@
 ﻿using Agendify.DTOs.Service;
+using FluentResults;
 
 namespace Agendify.Services.ServicesServices;
 
 public interface IServiceService
 {
-    Task<ServiceResponseDto> CreateAsync(int businessId, CreateServiceDto dto);
-    Task<ServiceResponseDto> UpdateAsync(int businessId, int id, UpdateServiceDto dto);
-    Task<ServiceResponseDto?> GetByIdAsync(int businessId, int id);
+    Task<Result<ServiceResponseDto>> CreateAsync(int businessId, CreateServiceDto dto);
+    Task<Result<ServiceResponseDto>> UpdateAsync(int businessId, int id, UpdateServiceDto dto);
+    Task<Result<ServiceResponseDto>> GetByIdAsync(int businessId, int id);
     Task<IEnumerable<ServiceResponseDto>> GetByBusinessAsync(int businessId);
-    Task DeleteAsync(int businessId, int id);
+    Task<Result> DeleteAsync(int businessId, int id);
 }

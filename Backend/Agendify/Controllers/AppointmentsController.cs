@@ -1,6 +1,7 @@
 ﻿using Agendify.DTOs.Appointment;
 using Agendify.DTOs.Common;
 using Agendify.Services.Appointments;
+using Agendify.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +10,7 @@ namespace Agendify.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class AppointmentsController : ControllerBase
+public class AppointmentsController : BaseController
 {
     private readonly IAppointmentService _appointmentService;
 
@@ -18,10 +19,6 @@ public class AppointmentsController : ControllerBase
         _appointmentService = appointmentService;
     }
 
-    private int GetBusinessId()
-    {
-        return int.Parse(User.FindFirst("BusinessId")?.Value ?? "0");
-    }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AppointmentResponseDto>>> GetAll()
@@ -35,14 +32,8 @@ public class AppointmentsController : ControllerBase
     public async Task<ActionResult<AppointmentResponseDto>> GetById(int id)
     {
         var businessId = GetBusinessId();
-        var appointment = await _appointmentService.GetByIdAsync(businessId, id);
-
-        if (appointment == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(appointment);
+        var result = await _appointmentService.GetByIdAsync(businessId, id);
+        return result.ToActionResult();
     }
 
     [HttpGet("date/{date}")]
@@ -55,7 +46,6 @@ public class AppointmentsController : ControllerBase
         var result = await _appointmentService.GetPagedByDateAsync(businessId, date, page, pageSize);
         return Ok(result);
     }
-
 
     [HttpGet("range")]
     public async Task<ActionResult<IEnumerable<AppointmentResponseDto>>> GetByDateRange(
@@ -71,25 +61,24 @@ public class AppointmentsController : ControllerBase
     public async Task<ActionResult<AppointmentResponseDto>> Create([FromBody] CreateAppointmentDto dto)
     {
         var businessId = GetBusinessId();
-        var appointment = await _appointmentService.CreateAsync(businessId, dto);
-        return CreatedAtAction(nameof(GetById), new { id = appointment.Id }, appointment);
+        var result = await _appointmentService.CreateAsync(businessId, dto);
+        return result.ToCreatedResult(nameof(GetById), x => new { id = x.Id });
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult<AppointmentResponseDto>> Update(int id, [FromBody] UpdateAppointmentDto dto)
     {
         var businessId = GetBusinessId();
-        var appointment = await _appointmentService.UpdateAsync(businessId, id, dto);
-        return Ok(appointment);
+        var result = await _appointmentService.UpdateAsync(businessId, id, dto);
+        return result.ToActionResult();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         var businessId = GetBusinessId();
-        await _appointmentService.DeleteAsync(businessId, id);
-        return NoContent();
+        var result = await _appointmentService.DeleteAsync(businessId, id);
+        return result.ToActionResult();
     }
-    
 }
 

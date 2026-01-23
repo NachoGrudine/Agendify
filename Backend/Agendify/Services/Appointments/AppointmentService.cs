@@ -1,8 +1,10 @@
-﻿using Agendify.Models.Entities;
+﻿using Agendify.Common.Errors;
+using Agendify.Models.Entities;
 using Agendify.Models.Enums;
 using Agendify.DTOs.Appointment;
 using Agendify.DTOs.Common;
 using Agendify.Repositories;
+using FluentResults;
 
 namespace Agendify.Services.Appointments;
 
@@ -15,7 +17,7 @@ public class AppointmentService : IAppointmentService
         _appointmentRepository = appointmentRepository;
     }
 
-    public async Task<AppointmentResponseDto> CreateAsync(int businessId, CreateAppointmentDto dto)
+    public async Task<Result<AppointmentResponseDto>> CreateAsync(int businessId, CreateAppointmentDto dto)
     {
         // Validar que no haya conflictos de horarios
         var hasConflict = await _appointmentRepository.HasConflictAsync(
@@ -23,7 +25,7 @@ public class AppointmentService : IAppointmentService
 
         if (hasConflict)
         {
-            throw new InvalidOperationException("El proveedor ya tiene un turno asignado en ese horario");
+            return Result.Fail(new ConflictError("El proveedor ya tiene un turno asignado en ese horario"));
         }
 
         var appointment = new Appointment
@@ -39,15 +41,15 @@ public class AppointmentService : IAppointmentService
 
         var created = await _appointmentRepository.AddAsync(appointment);
         
-        return MapToResponseDto(created!);
+        return Result.Ok(MapToResponseDto(created!));
     }
 
-    public async Task<AppointmentResponseDto> UpdateAsync(int businessId, int id, UpdateAppointmentDto dto)
+    public async Task<Result<AppointmentResponseDto>> UpdateAsync(int businessId, int id, UpdateAppointmentDto dto)
     {
         var appointment = await _appointmentRepository.GetByIdAsync(id);
         if (appointment == null || appointment.BusinessId != businessId)
         {
-            throw new KeyNotFoundException("Turno no encontrado");
+            return Result.Fail(new NotFoundError("Turno no encontrado"));
         }
 
         // Validar que no haya conflictos de horarios (excluyendo este turno)
@@ -56,7 +58,7 @@ public class AppointmentService : IAppointmentService
 
         if (hasConflict)
         {
-            throw new InvalidOperationException("El proveedor ya tiene un turno asignado en ese horario");
+            return Result.Fail(new ConflictError("El proveedor ya tiene un turno asignado en ese horario"));
         }
 
         appointment.ProviderId = dto.ProviderId;
@@ -67,18 +69,18 @@ public class AppointmentService : IAppointmentService
         appointment.Status = dto.Status;
 
         var updated = await _appointmentRepository.UpdateAsync(appointment);
-        return MapToResponseDto(updated);
+        return Result.Ok(MapToResponseDto(updated));
     }
 
-    public async Task<AppointmentResponseDto?> GetByIdAsync(int businessId, int id)
+    public async Task<Result<AppointmentResponseDto>> GetByIdAsync(int businessId, int id)
     {
         var appointment = await _appointmentRepository.GetByIdAsync(id);
         if (appointment == null || appointment.BusinessId != businessId)
         {
-            return null;
+            return Result.Fail(new NotFoundError("Turno no encontrado"));
         }
 
-        return MapToResponseDto(appointment);
+        return Result.Ok(MapToResponseDto(appointment));
     }
 
     public async Task<IEnumerable<AppointmentResponseDto>> GetByBusinessAsync(int businessId)
@@ -107,16 +109,18 @@ public class AppointmentService : IAppointmentService
         };
     }
 
-    public async Task DeleteAsync(int businessId, int id)
+    public async Task<Result> DeleteAsync(int businessId, int id)
     {
         var appointment = await _appointmentRepository.GetByIdAsync(id);
         if (appointment == null || appointment.BusinessId != businessId)
         {
-            throw new KeyNotFoundException("Turno no encontrado");
+            return Result.Fail(new NotFoundError("Turno no encontrado"));
         }
 
         appointment.IsDeleted = true;
         await _appointmentRepository.UpdateAsync(appointment);
+        
+        return Result.Ok();
     }
 
     private static AppointmentResponseDto MapToResponseDto(Appointment appointment)
