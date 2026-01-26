@@ -1,24 +1,26 @@
 ﻿using Agendify.Models.Entities;
 using Agendify.DTOs.Appointment;
 using Agendify.DTOs.Calendar;
-using Agendify.Repositories;
+using Agendify.Services.Appointments;
+using Agendify.Services.Providers;
+using Agendify.Services.ProviderSchedules;
 
 namespace Agendify.Services.Calendar;
 
 public class CalendarService : ICalendarService
 {
-    private readonly IAppointmentRepository _appointmentRepository;
-    private readonly IRepository<Provider> _providerRepository;
-    private readonly IRepository<ProviderSchedule> _scheduleRepository;
+    private readonly IAppointmentService _appointmentService;
+    private readonly IProviderService _providerService;
+    private readonly IProviderScheduleService _scheduleService;
 
     public CalendarService(
-        IAppointmentRepository appointmentRepository,
-        IRepository<Provider> providerRepository,
-        IRepository<ProviderSchedule> scheduleRepository)
+        IAppointmentService appointmentService,
+        IProviderService providerService,
+        IProviderScheduleService scheduleService)
     {
-        _appointmentRepository = appointmentRepository;
-        _providerRepository = providerRepository;
-        _scheduleRepository = scheduleRepository;
+        _appointmentService = appointmentService;
+        _providerService = providerService;
+        _scheduleService = scheduleService;
     }
 
     public async Task<IEnumerable<CalendarDaySummaryDto>> GetCalendarSummaryAsync(
@@ -51,7 +53,7 @@ public class CalendarService : ICalendarService
         date = date.Date;
 
         // 1. Obtener todos los appointments de ese día
-        var appointments = await _appointmentRepository.GetByDateRangeAsync(
+        var appointments = await _appointmentService.GetAppointmentsWithDetailsByDateRangeAsync(
             businessId, date, date.AddDays(1).AddSeconds(-1));
 
         var appointmentsList = appointments
@@ -131,34 +133,18 @@ public class CalendarService : ICalendarService
 
     private async Task<List<int>> GetProviderIdsAsync(int businessId)
     {
-        var allProviders = await _providerRepository.FindAsync(p => p.BusinessId == businessId);
-        return allProviders.Select(p => p.Id).ToList();
+        return await _providerService.GetProviderIdsByBusinessAsync(businessId);
     }
 
     private async Task<Dictionary<DayOfWeek, int>> CalculateScheduledMinutesByDayOfWeekAsync(List<int> providerIds)
     {
-        var allSchedules = await _scheduleRepository.FindAsync(s => providerIds.Contains(s.ProviderId));
-        var minutesByDayOfWeek = new Dictionary<DayOfWeek, int>();
-
-        foreach (var schedule in allSchedules)
-        {
-            var minutes = (int)(schedule.EndTime - schedule.StartTime).TotalMinutes;
-
-            if (!minutesByDayOfWeek.ContainsKey(schedule.DayOfWeek))
-            {
-                minutesByDayOfWeek[schedule.DayOfWeek] = 0;
-            }
-
-            minutesByDayOfWeek[schedule.DayOfWeek] += minutes;
-        }
-
-        return minutesByDayOfWeek;
+        return await _scheduleService.GetScheduledMinutesByProviderIdsAsync(providerIds);
     }
 
     private async Task<Dictionary<DateTime, (int Count, int Minutes)>> CalculateOccupiedMinutesByDateAsync(
         int businessId, DateTime startDate, DateTime endDate)
     {
-        var appointments = await _appointmentRepository.GetByDateRangeAsync(
+        var appointments = await _appointmentService.GetAppointmentsWithDetailsByDateRangeAsync(
             businessId, startDate, endDate.AddDays(1).AddSeconds(-1));
 
         return appointments

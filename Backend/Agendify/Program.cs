@@ -1,21 +1,22 @@
 using Agendify.Data;
 using Agendify.Repositories;
 using Agendify.Middleware;
-using Agendify.Services.Auth;
+using Agendify.Services.Auth.Authentication;
+using Agendify.Services.Auth.JWT;
+using Agendify.Services.Auth.Password;
 using Agendify.Services.Business;
 using Agendify.Services.Appointments;
 using Agendify.Services.Calendar;
 using Agendify.Services.Providers;
 using Agendify.Services.Customers;
 using Agendify.Services.ProviderSchedules;
+using Agendify.Services.ServicesServices;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Agendify.Services.Auth.Password;
-using Agendify.Services.ServicesServices;
 
 var builder = WebApplication.CreateBuilder(args);
 

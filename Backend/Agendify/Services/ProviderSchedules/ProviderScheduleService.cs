@@ -1,7 +1,8 @@
-﻿using Agendify.Models.Entities;
+﻿﻿using Agendify.Models.Entities;
 using Agendify.DTOs.ProviderSchedule;
 using Agendify.Repositories;
 using Agendify.Common.Errors;
+using Agendify.Services.Providers;
 using FluentResults;
 
 namespace Agendify.Services.ProviderSchedules;
@@ -9,23 +10,23 @@ namespace Agendify.Services.ProviderSchedules;
 public class ProviderScheduleService : IProviderScheduleService
 {
     private readonly IRepository<ProviderSchedule> _scheduleRepository;
-    private readonly IRepository<Provider> _providerRepository;
+    private readonly IProviderService _providerService;
 
     public ProviderScheduleService(
         IRepository<ProviderSchedule> scheduleRepository,
-        IRepository<Provider> providerRepository)
+        IProviderService providerService)
     {
         _scheduleRepository = scheduleRepository;
-        _providerRepository = providerRepository;
+        _providerService = providerService;
     }
 
     public async Task<Result<ProviderScheduleResponseDto>> CreateAsync(int businessId, CreateProviderScheduleDto dto)
     {
         // Verificar que el provider pertenece al business
-        var provider = await _providerRepository.GetByIdAsync(dto.ProviderId);
-        if (provider == null || provider.BusinessId != businessId)
+        var providerResult = await _providerService.GetByIdAsync(businessId, dto.ProviderId);
+        if (providerResult.IsFailed)
         {
-            return Result.Fail(new NotFoundError("Proveedor no encontrado o no pertenece al negocio"));
+            return Result.Fail(providerResult.Errors);
         }
 
         var schedule = new ProviderSchedule
@@ -49,10 +50,10 @@ public class ProviderScheduleService : IProviderScheduleService
         }
 
         // Verificar que el provider pertenece al business
-        var provider = await _providerRepository.GetByIdAsync(schedule.ProviderId);
-        if (provider == null || provider.BusinessId != businessId)
+        var providerResult = await _providerService.GetByIdAsync(businessId, schedule.ProviderId);
+        if (providerResult.IsFailed)
         {
-            return Result.Fail(new ForbiddenError("No autorizado"));
+            return Result.Fail(providerResult.Errors);
         }
 
         schedule.DayOfWeek = dto.DayOfWeek;
@@ -72,10 +73,10 @@ public class ProviderScheduleService : IProviderScheduleService
         }
 
         // Verificar que el provider pertenece al business
-        var provider = await _providerRepository.GetByIdAsync(schedule.ProviderId);
-        if (provider == null || provider.BusinessId != businessId)
+        var providerResult = await _providerService.GetByIdAsync(businessId, schedule.ProviderId);
+        if (providerResult.IsFailed)
         {
-            return Result.Fail(new ForbiddenError("No autorizado"));
+            return Result.Fail(providerResult.Errors);
         }
 
         return Result.Ok(MapToResponseDto(schedule));
@@ -84,14 +85,34 @@ public class ProviderScheduleService : IProviderScheduleService
     public async Task<Result<IEnumerable<ProviderScheduleResponseDto>>> GetByProviderAsync(int businessId, int providerId)
     {
         // Verificar que el provider pertenece al business
-        var provider = await _providerRepository.GetByIdAsync(providerId);
-        if (provider == null || provider.BusinessId != businessId)
+        var providerResult = await _providerService.GetByIdAsync(businessId, providerId);
+        if (providerResult.IsFailed)
         {
-            return Result.Fail(new NotFoundError("Proveedor no encontrado o no pertenece al negocio"));
+            return Result.Fail(providerResult.Errors);
         }
 
         var schedules = await _scheduleRepository.FindAsync(s => s.ProviderId == providerId);
         return Result.Ok(schedules.Select(MapToResponseDto));
+    }
+
+    public async Task<Dictionary<DayOfWeek, int>> GetScheduledMinutesByProviderIdsAsync(List<int> providerIds)
+    {
+        var allSchedules = await _scheduleRepository.FindAsync(s => providerIds.Contains(s.ProviderId));
+        var minutesByDayOfWeek = new Dictionary<DayOfWeek, int>();
+
+        foreach (var schedule in allSchedules)
+        {
+            var minutes = (int)(schedule.EndTime - schedule.StartTime).TotalMinutes;
+
+            if (!minutesByDayOfWeek.ContainsKey(schedule.DayOfWeek))
+            {
+                minutesByDayOfWeek[schedule.DayOfWeek] = 0;
+            }
+
+            minutesByDayOfWeek[schedule.DayOfWeek] += minutes;
+        }
+
+        return minutesByDayOfWeek;
     }
 
     public async Task<Result> DeleteAsync(int businessId, int id)
@@ -103,10 +124,10 @@ public class ProviderScheduleService : IProviderScheduleService
         }
 
         // Verificar que el provider pertenece al business
-        var provider = await _providerRepository.GetByIdAsync(schedule.ProviderId);
-        if (provider == null || provider.BusinessId != businessId)
+        var providerResult = await _providerService.GetByIdAsync(businessId, schedule.ProviderId);
+        if (providerResult.IsFailed)
         {
-            return Result.Fail(new ForbiddenError("No autorizado"));
+            return Result.Fail(providerResult.Errors);
         }
 
         schedule.IsDeleted = true;

@@ -1,4 +1,4 @@
-﻿﻿using Agendify.DTOs.Calendar;
+﻿using Agendify.DTOs.Calendar;
 using Agendify.Services.Calendar;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +16,8 @@ public class CalendarController : BaseController
     {
         _calendarService = calendarService;
     }
-
+    
+    
 
     /// <summary>
     /// Obtiene un resumen del calendario para mostrar en vista mensual/semanal.

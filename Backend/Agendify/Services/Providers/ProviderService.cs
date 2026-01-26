@@ -1,4 +1,4 @@
-﻿using Agendify.Models.Entities;
+﻿﻿using Agendify.Models.Entities;
 using Agendify.DTOs.Provider;
 using Agendify.Repositories;
 using Agendify.Common.Errors;
@@ -60,6 +60,12 @@ public class ProviderService : IProviderService
     {
         var providers = await _providerRepository.FindAsync(p => p.BusinessId == businessId);
         return providers.Select(MapToResponseDto);
+    }
+
+    public async Task<List<int>> GetProviderIdsByBusinessAsync(int businessId)
+    {
+        var providers = await _providerRepository.FindAsync(p => p.BusinessId == businessId);
+        return providers.Select(p => p.Id).ToList();
     }
 
     public async Task<Result> DeleteAsync(int businessId, int id)

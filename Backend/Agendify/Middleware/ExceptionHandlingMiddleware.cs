@@ -59,8 +59,8 @@ public class ExceptionHandlingMiddleware
                 break;
 
             // Errores de autenticación/autorización del sistema (no de negocio)
-            case UnauthorizedAccessException:
-                statusCode = HttpStatusCode.Unauthorized;
+              case UnauthorizedAccessException: 
+                  statusCode = HttpStatusCode.Unauthorized;
                 message = "Authentication required.";
                 break;
 

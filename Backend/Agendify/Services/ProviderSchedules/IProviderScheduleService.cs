@@ -9,5 +9,6 @@ public interface IProviderScheduleService
     Task<Result<ProviderScheduleResponseDto>> UpdateAsync(int businessId, int id, UpdateProviderScheduleDto dto);
     Task<Result<ProviderScheduleResponseDto>> GetByIdAsync(int businessId, int id);
     Task<Result<IEnumerable<ProviderScheduleResponseDto>>> GetByProviderAsync(int businessId, int providerId);
+    Task<Dictionary<DayOfWeek, int>> GetScheduledMinutesByProviderIdsAsync(List<int> providerIds);
     Task<Result> DeleteAsync(int businessId, int id);
 }

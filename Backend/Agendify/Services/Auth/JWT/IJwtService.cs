@@ -1,6 +1,6 @@
-﻿using Agendify.Models.Entities;
+﻿﻿using Agendify.Models.Entities;
 
-namespace Agendify.Services.Auth;
+namespace Agendify.Services.Auth.JWT;
 
 public interface IJwtService
 {

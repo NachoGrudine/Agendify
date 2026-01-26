@@ -1,5 +1,6 @@
 ﻿using Agendify.DTOs.Auth;
-using Agendify.Services.Auth;
+using Agendify.Services.Auth.Authentication;
+using Agendify.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Agendify.Controllers;
@@ -19,14 +20,16 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<AuthResponseDto>> Register([FromBody] RegisterDto registerDto)
     {
         var result = await _authService.RegisterAsync(registerDto);
-        return Ok(result);
+        return result.ToCreatedResult(nameof(Register), x => new { userId = x.UserId });
     }
 
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginDto loginDto)
     {
         var result = await _authService.LoginAsync(loginDto);
-        return Ok(result);
+        
+        // Login no crea recurso → 200 OK o 401 Unauthorized
+        return result.ToActionResult();
     }
 }
 

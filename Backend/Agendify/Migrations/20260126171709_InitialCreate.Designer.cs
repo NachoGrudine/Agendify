@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Agendify.Migrations
 {
     [DbContext(typeof(AgendifyDbContext))]
-    [Migration("20260123181953_InitialCreate")]
+    [Migration("20260126171709_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

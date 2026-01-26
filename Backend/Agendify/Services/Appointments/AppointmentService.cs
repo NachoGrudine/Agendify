@@ -1,4 +1,4 @@
-﻿using Agendify.Common.Errors;
+﻿﻿using Agendify.Common.Errors;
 using Agendify.Models.Entities;
 using Agendify.Models.Enums;
 using Agendify.DTOs.Appointment;
@@ -93,6 +93,11 @@ public class AppointmentService : IAppointmentService
     {
         var appointments = await _appointmentRepository.GetByDateRangeAsync(businessId, startDate, endDate);
         return appointments.Select(MapToResponseDto);
+    }
+
+    public async Task<IEnumerable<Appointment>> GetAppointmentsWithDetailsByDateRangeAsync(int businessId, DateTime startDate, DateTime endDate)
+    {
+        return await _appointmentRepository.GetByDateRangeAsync(businessId, startDate, endDate);
     }
 
     public async Task<PagedResultDto<AppointmentResponseDto>> GetPagedByDateAsync(

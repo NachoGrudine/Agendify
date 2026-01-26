@@ -1,10 +1,11 @@
-﻿using Agendify.DTOs.Auth;
+﻿﻿using Agendify.DTOs.Auth;
+using FluentResults;
 
-namespace Agendify.Services.Auth;
+namespace Agendify.Services.Auth.Authentication;
 
 public interface IAuthService
 {
-    Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto);
-    Task<AuthResponseDto> LoginAsync(LoginDto loginDto);
+    Task<Result<AuthResponseDto>> RegisterAsync(RegisterDto registerDto);
+    Task<Result<AuthResponseDto>> LoginAsync(LoginDto loginDto);
 }
 

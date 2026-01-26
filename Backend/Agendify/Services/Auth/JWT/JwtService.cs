@@ -1,10 +1,10 @@
-﻿using Agendify.Models.Entities;
+﻿﻿using Agendify.Models.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Agendify.Services.Auth;
+namespace Agendify.Services.Auth.JWT;
 
 public class JwtService : IJwtService
 {

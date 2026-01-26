@@ -1,4 +1,4 @@
-﻿namespace Agendify.Services.Auth;
+﻿﻿namespace Agendify.Services.Auth.Password;
 
 public interface IPasswordHasher
 {
