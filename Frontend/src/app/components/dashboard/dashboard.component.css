@@ -1,20 +1,99 @@
 ﻿.dashboard-layout {
   display: flex;
   min-height: 100vh;
-  background: #f5f5f5;
+  background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%); /* Fondo azul degradado */
+  position: relative;
 }
 
 .dashboard-content {
   flex: 1;
   margin-left: 240px;
   padding: 2rem;
+  padding-left: 5rem; /* Más padding a la izquierda para no superponerse con el botón */
   min-height: 100vh;
+  transition: margin-left 0.3s ease, padding-left 0.3s ease;
 }
 
-@media (max-width: 768px) {
-  .dashboard-content {
-    margin-left: 70px;
-    padding: 1rem;
+/* Cuando el sidebar está cerrado */
+.dashboard-layout.sidebar-closed .dashboard-content {
+  margin-left: 0;
+  padding-left: 5rem; /* Mantener espacio para el botón incluso cuando está cerrado */
+}
+
+/* Botón toggle sidebar - VISIBLE SIEMPRE */
+.sidebar-toggle-btn {
+  position: fixed;
+  top: 1.5rem;
+  left: 1rem;
+  z-index: 1001;
+  width: 44px;
+  height: 44px;
+  background: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  color: var(--primary-color);
+}
+
+.sidebar-toggle-btn:hover {
+  background: var(--primary-color);
+  color: white;
+  box-shadow: 0 4px 12px rgba(29, 67, 111, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Cuando sidebar está abierto, mover el botón */
+.sidebar-toggle-btn.sidebar-open {
+  left: 250px;
+}
+
+/* Overlay para cerrar sidebar en mobile */
+.sidebar-overlay {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
+/* Responsive para tablets y mobile */
+@media (max-width: 768px) {
+  .sidebar-toggle-btn.sidebar-open {
+    left: 1rem;
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .dashboard-content {
+    margin-left: 0;
+    padding: 1rem;
+    padding-top: 5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-content {
+    padding: 0.75rem;
+    padding-top: 5rem;
+  }
+}

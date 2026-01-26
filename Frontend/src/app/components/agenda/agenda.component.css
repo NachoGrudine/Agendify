@@ -3,32 +3,232 @@
   margin: 0 auto;
 }
 
-.agenda-header {
+/* ============================================
+   TOP HEADER - Usuario, Notificaciones y Selector de Mes
+   ============================================ */
+
+.top-header {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.5rem;
+}
+
+.header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 2rem;
+}
+
+.header-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.header-content h1 {
+  color: var(--text-primary);
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin: 0;
+  font-weight: 400;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Selector de Mes */
+.month-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f8f9fa;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.month-nav-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  color: var(--text-secondary);
+  transition: var(--transition-fast);
+  border-radius: 4px;
+}
+
+.month-nav-btn:hover {
+  background: rgba(29, 67, 111, 0.1);
+  color: var(--primary-color);
+}
+
+.current-month {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  min-width: 120px;
+  text-align: center;
+}
+
+/* Botón de Notificaciones */
+.notification-btn {
+  position: relative;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: var(--transition-fast);
+}
+
+.notification-btn:hover {
+  background: rgba(29, 67, 111, 0.05);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid var(--bg-white);
+}
+
+/* Usuario Logueado */
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.user-profile:hover {
+  background: rgba(29, 67, 111, 0.05);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.user-role {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.2;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.agenda-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 2rem;
+  gap: 2rem;
+}
+
+.header-left {
+  flex: 1;
 }
 
 .agenda-header h1 {
   color: var(--text-primary);
   font-size: 2rem;
   font-weight: 700;
-  margin: 0;
+  margin: 0 0 1rem 0;
+}
+
+.stats-quick {
+  display: flex;
+  gap: 2rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
 }
 
 .btn-primary {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.75rem;
   background: var(--primary-color);
   color: var(--text-white);
   border: none;
   border-radius: var(--radius-md);
   font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
   transition: var(--transition-normal);
+  white-space: nowrap;
 }
 
 .btn-primary:hover {
@@ -42,53 +242,635 @@
   border-radius: var(--radius-lg);
   padding: 2rem;
   box-shadow: var(--shadow-sm);
+  position: relative; /* Para que el loading-overlay se posicione correctamente */
 }
 
-.calendar-header {
+/* ============================================
+   LOADING OVERLAY - Indicador de carga
+   ============================================ */
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  justify-content: center;
+  z-index: 10;
+  border-radius: var(--radius-lg);
 }
 
-.calendar-header h2 {
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-spinner p {
   color: var(--primary-color);
-  font-size: 1.5rem;
   font-weight: 600;
+  font-size: 1rem;
   margin: 0;
-  min-width: 200px;
-  text-align: center;
 }
 
-.btn-nav {
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--text-secondary);
-  padding: 0.5rem;
+/* ============================================
+   ESTILOS PERSONALIZADOS DE FULLCALENDAR
+   ============================================ */
+
+/* Header del calendario */
+:host ::ng-deep .fc .fc-toolbar.fc-header-toolbar {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+:host ::ng-deep .fc .fc-toolbar-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+/* Botones de navegación */
+:host ::ng-deep .fc .fc-button {
+  background: var(--bg-white);
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  text-transform: capitalize;
   transition: var(--transition-normal);
 }
 
-.btn-nav:hover {
-  color: var(--primary-color);
-  transform: scale(1.2);
+:host ::ng-deep .fc .fc-button:hover {
+  background: var(--primary-color);
+  color: var(--text-white);
+  transform: translateY(-1px);
 }
 
-.calendar-placeholder {
-  text-align: center;
-  padding: 4rem 2rem;
-  color: var(--text-secondary);
+:host ::ng-deep .fc .fc-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.calendar-placeholder p {
-  font-size: 1.25rem;
-  margin: 0.5rem 0;
+:host ::ng-deep .fc .fc-button-primary:not(:disabled):active,
+:host ::ng-deep .fc .fc-button-primary:not(:disabled).fc-button-active {
+  background: var(--primary-color);
+  color: var(--text-white);
+  border-color: var(--primary-color);
 }
 
-.calendar-placeholder .subtitle {
-  font-size: 1rem;
+/* Días de la semana */
+:host ::ng-deep .fc .fc-col-header-cell {
+  padding: 0.75rem 0.5rem; /* Reducido de 1rem */
+  background: rgba(29, 67, 111, 0.05);
+  border-color: var(--border-color);
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  font-size: 0.7rem; /* Reducido de 0.75rem */
+  letter-spacing: 0.5px;
+}
+
+/* ============================================
+   FIX PRINCIPAL: ALTURA Y ESTRUCTURA DE CELDAS
+   ============================================ */
+
+/* Forzar altura fija en las filas del calendario */
+:host ::ng-deep .fc .fc-scrollgrid-sync-table {
+  height: auto !important;
+}
+
+:host ::ng-deep .fc .fc-daygrid-body {
+  height: auto !important;
+}
+
+/* Cada fila de semana debe tener altura fija */
+:host ::ng-deep .fc .fc-daygrid-body tr {
+  height: 95px !important; /* Reducido de 110px a 95px para evitar scroll */
+}
+
+/* Celdas de días - estructura base */
+:host ::ng-deep .fc .fc-daygrid-day {
+  border-color: var(--border-color);
+  transition: var(--transition-fast);
+  position: relative;
+  overflow: visible !important;
+  vertical-align: top !important;
+}
+
+:host ::ng-deep .fc .fc-daygrid-day:hover {
+  background: rgba(29, 67, 111, 0.02);
+  cursor: pointer;
+}
+
+/* Frame de la celda - contenedor principal */
+:host ::ng-deep .fc .fc-daygrid-day-frame {
+  height: 100% !important;
+  min-height: 95px !important; /* Reducido de 110px a 95px */
+  max-height: 95px !important; /* Reducido de 110px a 95px */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Top de la celda - aquí va TODO el contenido */
+:host ::ng-deep .fc .fc-daygrid-day-top {
+  position: relative !important;
+  flex: 1;
+  display: flex !important;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden !important;
+}
+
+/* OCULTAR sistema de eventos de FullCalendar */
+:host ::ng-deep .fc-daygrid-day-events {
+  display: none !important;
+}
+
+:host ::ng-deep .fc-daygrid-day-bottom {
+  display: none !important;
+}
+
+:host ::ng-deep .fc-daygrid-event-harness {
+  display: none !important;
+}
+
+/* ============================================
+   CONTENIDO PERSONALIZADO
+   ============================================ */
+
+.custom-day-cell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding: 8px;
+  gap: 6px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.day-number-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  min-height: 24px;
+}
+
+.day-number-wrapper .fc-daygrid-day-number {
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  padding: 4px 8px !important;
+  background: transparent !important;
+  border-radius: 4px;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  margin: 0 !important;
+}
+
+/* Contenedor de badges */
+.day-badges-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3px; /* Reducido de 4px a 3px */
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  flex: 1;
+  overflow: hidden;
+  max-height: calc(100px - 32px); /* Ajustado para la nueva altura */
+}
+
+.badge {
+  font-size: 0.65rem; /* Reducido de 0.7rem */
+  padding: 4px 6px; /* Reducido el padding */
+  border-radius: 6px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 3px; /* Reducido de 4px */
+  line-height: 1.2;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-height: 20px; /* Reducido de 24px */
+}
+
+.badge-icon {
+  font-size: 0.75rem; /* Reducido de 0.85rem */
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.badge-text {
+  font-size: 0.65rem; /* Reducido de 0.7rem */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  line-height: 1.2;
+  flex: 1;
+}
+
+.badge-turnos {
+  background: #dbeafe !important;
+  border: 1px solid #3b82f6;
+  color: #1e40af !important;
+}
+
+.badge-turnos .badge-icon,
+.badge-turnos .badge-text {
+  color: #1e40af !important;
+}
+
+.badge-disponible {
+  background: #d1fae5 !important;
+  border: 1px solid #10b981;
+  color: #065f46 !important;
+}
+
+.badge-disponible .badge-icon,
+.badge-disponible .badge-text {
+  color: #065f46 !important;
+}
+
+/* Día actual */
+:host ::ng-deep .fc-day-today {
+  background: rgba(29, 67, 111, 0.08) !important;
+}
+
+:host ::ng-deep .fc-day-today .day-number-wrapper .fc-daygrid-day-number {
+  background: var(--primary-color) !important;
+  color: var(--text-white) !important;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+}
+
+/* Días de otros meses */
+:host ::ng-deep .fc-day-other .fc-daygrid-day-number {
   color: var(--text-light);
+  opacity: 0.5;
 }
 
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  transition: var(--transition-fast);
+}
+
+.btn-close:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 2rem 1.5rem;
+  color: var(--text-primary);
+}
+
+.selected-date {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: rgba(29, 67, 111, 0.1);
+  border-radius: var(--radius-md);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.btn-secondary {
+  padding: 0.75rem 1.5rem;
+  background: var(--bg-white);
+  color: var(--text-secondary);
+  border: 2px var(--border-color) solid;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-normal);
+}
+
+.btn-secondary:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1200px) {
+  :host ::ng-deep .fc .fc-daygrid-body tr {
+    height: 120px !important;
+  }
+
+  :host ::ng-deep .fc .fc-daygrid-day-frame {
+    min-height: 120px !important;
+    max-height: 120px !important;
+  }
+
+  .day-badges-container {
+    max-height: calc(120px - 36px);
+    gap: 3px;
+  }
+
+  .badge {
+    font-size: 0.65rem;
+    padding: 4px 6px;
+    gap: 3px;
+    min-height: 22px;
+  }
+
+  .badge-text {
+    font-size: 0.65rem;
+  }
+
+  .badge-icon {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .top-header {
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .header-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .month-selector {
+    flex: 1;
+  }
+
+  .current-month {
+    font-size: 0.875rem;
+    min-width: auto;
+  }
+
+  .user-info {
+    display: none;
+  }
+
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 0.85rem;
+  }
+
+  .agenda-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .agenda-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .stats-quick {
+    gap: 1rem;
+  }
+
+  .stat-number {
+    font-size: 1.5rem;
+  }
+
+  .calendar-section {
+    padding: 1rem;
+    border-radius: var(--radius-md);
+  }
+
+  :host ::ng-deep .fc .fc-toolbar.fc-header-toolbar {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  :host ::ng-deep .fc .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+  }
+
+  :host ::ng-deep .fc .fc-toolbar-title {
+    font-size: 1.25rem;
+    text-align: center;
+  }
+
+  :host ::ng-deep .fc .fc-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.875rem;
+  }
+
+  :host ::ng-deep .fc .fc-daygrid-body tr {
+    height: 100px !important;
+  }
+
+  :host ::ng-deep .fc .fc-daygrid-day-frame {
+    min-height: 100px !important;
+    max-height: 100px !important;
+  }
+
+  .custom-day-cell {
+    padding: 4px;
+    gap: 4px;
+  }
+
+  .day-badges-container {
+    max-height: calc(100px - 32px);
+    gap: 2px;
+  }
+
+  .badge {
+    font-size: 0.6rem;
+    padding: 3px 5px;
+    gap: 2px;
+    min-height: 20px;
+  }
+
+  .badge-text {
+    font-size: 0.6rem;
+  }
+
+  .badge-icon {
+    font-size: 0.7rem;
+  }
+
+  .badge-icon svg {
+    width: 10px;
+    height: 10px;
+  }
+
+  .day-number-wrapper .fc-daygrid-day-number {
+    font-size: 0.8rem !important;
+    padding: 2px 6px !important;
+  }
+
+  /* Modal responsive */
+  .modal-content {
+    width: 95%;
+    max-width: none;
+    margin: 1rem;
+  }
+
+  .modal-header {
+    padding: 1rem;
+  }
+
+  .modal-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .modal-footer {
+    padding: 1rem;
+    flex-direction: column;
+  }
+
+  .modal-footer button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content h1 {
+    font-size: 1.25rem;
+  }
+
+  .month-selector {
+    padding: 0.4rem 0.6rem;
+  }
+
+  .current-month {
+    font-size: 0.8rem;
+    min-width: 90px;
+  }
+
+  .notification-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+}

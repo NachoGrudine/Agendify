@@ -1,8 +1,22 @@
-﻿<div class="dashboard-layout">
-  <app-sidebar></app-sidebar>
+﻿<div class="dashboard-layout" [class.sidebar-closed]="!isSidebarOpen()">
+  <!-- Botón toggle sidebar (visible siempre, tanto desktop como mobile) -->
+  <button
+    class="sidebar-toggle-btn"
+    (click)="toggleSidebar()"
+    [attr.aria-label]="isSidebarOpen() ? 'Cerrar menú' : 'Abrir menú'"
+    [class.sidebar-open]="isSidebarOpen()">
+    <i-lucide [img]="MenuIcon" [size]="24"></i-lucide>
+  </button>
 
-  <main class="dashboard-content">
+  <!-- Overlay para cerrar sidebar en mobile -->
+  @if (isSidebarOpen()) {
+    <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+  }
+
+  <!-- Sidebar con estado de abierto/cerrado -->
+  <app-sidebar [isOpen]="isSidebarOpen()" (closeRequest)="closeSidebar()"></app-sidebar>
+
+  <main class="dashboard-content" [class.sidebar-open]="isSidebarOpen()">
     <router-outlet></router-outlet>
   </main>
 </div>
-

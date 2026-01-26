@@ -1,23 +1,83 @@
 ﻿<div class="agenda-container">
-  <div class="agenda-header">
-    <h1>Dashboard</h1>
-    <button class="btn-primary">
-      <span>➕</span>
-      <span>Nuevo Turno</span>
-    </button>
+  <!-- Header superior con selector de mes, notificaciones y usuario -->
+  <div class="top-header">
+    <div class="header-content">
+      <div class="header-title-section">
+        <h1>{{ currentMonthYear }}</h1>
+        <p class="subtitle">Vista mensual de rendimiento</p>
+      </div>
+
+      <div class="header-actions">
+        <!-- Selector de mes -->
+        <div class="month-selector">
+          <button class="month-nav-btn" (click)="previousMonth()">
+            <i-lucide [img]="ChevronLeftIcon" [size]="20"></i-lucide>
+          </button>
+          <span class="current-month">{{ currentMonthYear }}</span>
+          <button class="month-nav-btn" (click)="nextMonth()">
+            <i-lucide [img]="ChevronRightIcon" [size]="20"></i-lucide>
+          </button>
+        </div>
+
+        <!-- Notificaciones -->
+        <button class="notification-btn" [class.has-notifications]="hasNotifications()">
+          <i-lucide [img]="BellIcon" [size]="20"></i-lucide>
+          @if (hasNotifications()) {
+            <span class="notification-badge">{{ notificationCount() }}</span>
+          }
+        </button>
+
+        <!-- Usuario logueado -->
+        <div class="user-profile">
+          <div class="user-info">
+            <span class="user-name">{{ userName }}</span>
+            <span class="user-role">{{ userRole }}</span>
+          </div>
+          <div class="user-avatar">
+            {{ userInitials }}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="calendar-section">
-    <div class="calendar-header">
-      <button class="btn-nav">❮</button>
-      <h2>{{ currentMonth }}</h2>
-      <button class="btn-nav">❯</button>
-    </div>
+    <!-- Indicador de carga -->
+    @if (isLoading()) {
+      <div class="loading-overlay">
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Cargando calendario...</p>
+        </div>
+      </div>
+    }
 
-    <div class="calendar-placeholder">
-      <p>📅 Vista de calendario en desarrollo</p>
-      <p class="subtitle">Aquí se mostrará el calendario mensual con los turnos</p>
+    <div class="calendar-wrapper">
+      <full-calendar #calendar [options]="calendarOptions()"></full-calendar>
     </div>
   </div>
-</div>
 
+  <!-- Modal para nuevo turno (placeholder) -->
+  @if (showNewAppointmentModal()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Nuevo Turno</h2>
+          <button class="btn-close" (click)="closeModal()">
+            <i-lucide [img]="XIcon" [size]="20"></i-lucide>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Formulario de nuevo turno en desarrollo...</p>
+          @if (selectedDate()) {
+            <p class="selected-date">Fecha seleccionada: {{ selectedDate() | date:'dd/MM/yyyy' }}</p>
+          }
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" (click)="closeModal()">Cancelar</button>
+          <button class="btn-primary">Crear Turno</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,7 +1,9 @@
-﻿<aside class="sidebar">
+﻿<aside class="sidebar" [class.open]="isOpen">
   <div class="sidebar-header">
     <div class="logo">
-      <div class="logo-icon">📅</div>
+      <div class="logo-icon">
+        <i-lucide [img]="CalendarIcon" [size]="28"></i-lucide>
+      </div>
       <h2>Agendify</h2>
     </div>
   </div>
@@ -12,21 +14,23 @@
       [routerLink]="item.route"
       routerLinkActive="active"
       class="nav-item"
+      (click)="onNavItemClick()"
     >
-      <span class="nav-icon">{{ item.icon }}</span>
+      <span class="nav-icon">
+        <i-lucide [img]="item.icon" [size]="20"></i-lucide>
+      </span>
       <span class="nav-label">{{ item.label }}</span>
     </a>
   </nav>
 
   <div class="sidebar-footer">
-    <button class="btn-config" routerLink="/dashboard/configuracion">
-      <span>⚙️</span>
+    <button class="btn-config" routerLink="/dashboard/configuracion" (click)="onNavItemClick()">
+      <i-lucide [img]="SettingsIcon" [size]="20"></i-lucide>
       <span>Configuración</span>
     </button>
     <button class="btn-logout" (click)="logout()">
-      <span>🚪</span>
+      <i-lucide [img]="LogOutIcon" [size]="20"></i-lucide>
       <span>Cerrar sesión</span>
     </button>
   </div>
 </aside>
-

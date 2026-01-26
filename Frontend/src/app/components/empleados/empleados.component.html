@@ -2,17 +2,18 @@
   <div class="page-header">
     <h1>Empleados</h1>
     <button class="btn-primary">
-      <span>➕</span>
+      <i-lucide [img]="UserPlusIcon" [size]="20"></i-lucide>
       <span>Nuevo Empleado</span>
     </button>
   </div>
 
   <div class="content-card">
     <div class="empty-state">
-      <span class="empty-icon">👔</span>
+      <span class="empty-icon">
+        <i-lucide [img]="BriefcaseIcon" [size]="64" [strokeWidth]="1.5"></i-lucide>
+      </span>
       <h3>Gestión de Empleados (Providers)</h3>
       <p>Aquí podrás ver y administrar tus empleados y sus horarios</p>
     </div>
   </div>
 </div>
-
