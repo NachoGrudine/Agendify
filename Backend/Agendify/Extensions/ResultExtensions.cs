@@ -1,4 +1,4 @@
-﻿using Agendify.Common.Errors;
+using Agendify.Common.Errors;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 
