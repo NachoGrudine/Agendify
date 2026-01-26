@@ -1,1 +1,75 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Variables globales de color */
+:root {
+  /* Color principal - Azul Agendify */
+  --primary-color: #1d436f;
+  --primary-hover: #152f4d;
+  --primary-light: rgba(29, 67, 111, 0.1);
+
+  /* Colores de fondo */
+  --bg-primary: #1d436f;
+  --bg-white: #ffffff;
+
+  /* Colores de texto */
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-light: #999999;
+  --text-white: #ffffff;
+
+  /* Colores de borde */
+  --border-color: #e5e7eb;
+  --border-focus: #1d436f;
+
+  /* Colores de estado */
+  --error-bg: #fee2e2;
+  --error-text: #991b1b;
+  --error-border: #fca5a5;
+
+  --success-bg: #d1fae5;
+  --success-text: #065f46;
+  --success-border: #6ee7b7;
+
+  /* Sombras */
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 10px 20px rgba(29, 67, 111, 0.3);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
+
+  /* Radios de borde */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+
+  /* Transiciones */
+  --transition-fast: all 0.2s ease;
+  --transition-normal: all 0.3s ease;
+  --transition-slow: all 0.5s ease;
+}
+
+/* Reset y estilos base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--text-primary);
+  background: var(--bg-white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Clases de utilidad globales */
+.text-primary { color: var(--primary-color); }
+.text-white { color: var(--text-white); }
+.text-secondary { color: var(--text-secondary); }
+
+.bg-primary { background-color: var(--bg-primary); }
+.bg-white { background-color: var(--bg-white); }
+
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }

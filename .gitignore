@@ -1,1 +1,82 @@
-﻿
+﻿# ============================================
+# ARCHIVOS SENSIBLES - NUNCA SUBIR A GIT
+# ============================================
+.env
+*.env
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
+
+# Secretos y configuraciones locales
+secrets/
+*.secret
+*.key
+*.pem
+
+# ============================================
+# ARCHIVOS DE DOCUMENTACIÓN - TODOS
+# ============================================
+*.md
+
+# ============================================
+# DOCKER
+# ============================================
+docker-compose.override.yml
+*.log
+
+# ============================================
+# BASE DE DATOS
+# ============================================
+*.mdf
+*.ldf
+*.bak
+*.db
+*.sqlite
+*.sqlite3
+
+# ============================================
+# NODE / ANGULAR (Frontend)
+# ============================================
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ============================================
+# .NET / C# (Backend)
+# ============================================
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.dll
+*.exe
+*.pdb
+.vs/
+.vscode/
+*.DotSettings.user
+
+# Migraciones compiladas (opcional, depende tu flujo)
+# Migrations/*.Designer.cs
+# Migrations/*.cs
+
+# ============================================
+# SISTEMA OPERATIVO
+# ============================================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ============================================
+# IDEs
+# ============================================
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/

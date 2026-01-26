@@ -1,1 +1,69 @@
-﻿
+﻿services:
+  # Backend API (.NET)
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: agendify-backend
+    env_file:
+      - .env
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - Jwt__Secret=${JWT_SECRET}
+      - Jwt__Issuer=Agendify
+      - Jwt__Audience=AgendifyUsers
+    networks:
+      - agendify-network
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Frontend (Angular + Nginx)
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: agendify-frontend
+    ports:
+      - "4200:80"
+    networks:
+      - agendify-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # Base de datos SQL Server
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: agendify-db
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${DB_PASSWORD}
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    networks:
+      - agendify-network
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 1 bash -c '</dev/tcp/localhost/1433' || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 60s
+    restart: unless-stopped
+
+networks:
+  agendify-network:
+    driver: bridge
+
+volumes:
+  mssql_data:
+    driver: local
+

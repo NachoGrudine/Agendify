@@ -1,1 +1,15 @@
-﻿
+﻿# Ignorar archivos de node_modules y build
+node_modules
+dist
+.angular
+
+# Archivos de desarrollo
+*.log
+.DS_Store
+.vscode
+.idea
+
+# Archivos de configuración local
+*.local
+.env
+

@@ -1,1 +1,32 @@
-﻿
+﻿<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <div class="logo-icon">📅</div>
+      <h2>Agendify</h2>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a
+      *ngFor="let item of menuItems"
+      [routerLink]="item.route"
+      routerLinkActive="active"
+      class="nav-item"
+    >
+      <span class="nav-icon">{{ item.icon }}</span>
+      <span class="nav-label">{{ item.label }}</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="btn-config" routerLink="/dashboard/configuracion">
+      <span>⚙️</span>
+      <span>Configuración</span>
+    </button>
+    <button class="btn-logout" (click)="logout()">
+      <span>🚪</span>
+      <span>Cerrar sesión</span>
+    </button>
+  </div>
+</aside>
+
