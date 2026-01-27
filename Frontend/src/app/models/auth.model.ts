@@ -10,6 +10,15 @@ export interface AuthResponseDto {
   businessId: number;
 }
 
+export interface RegisterDto {
+  email: string;
+  password: string;
+  businessName: string;
+  industry: string;
+  providerName: string;
+  providerSpecialty: string;
+}
+
 export interface DecodedToken {
   userId: number;
   businessId: number;

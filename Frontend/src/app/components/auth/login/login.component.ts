@@ -1,8 +1,8 @@
-﻿import { Component, inject } from '@angular/core';
+﻿import { Component, inject, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +14,8 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+
+  registerClick = output<void>();
 
   email = 'string';
   password = 'string';
@@ -32,5 +34,9 @@ export class LoginComponent {
         this.errorMessage = 'Error al iniciar sesión';
       }
     });
+  }
+
+  onRegisterClick(): void {
+    this.registerClick.emit();
   }
 }

@@ -2,7 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, catchError, throwError } from 'rxjs';
-import { LoginDto, AuthResponseDto, DecodedToken } from '../models/auth.model';
+import { LoginDto, AuthResponseDto, DecodedToken, RegisterDto } from '../models/auth.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -32,11 +32,25 @@ export class AuthService {
     );
   }
 
+  register(registerData: RegisterDto): Observable<AuthResponseDto> {
+    return this.http.post<AuthResponseDto>(`${this.API_URL}/register`, registerData).pipe(
+      tap(response => {
+        this.saveToken(response.token);
+        this.isAuthenticated.set(true);
+        this.currentUser.set(this.getDecodedToken());
+      }),
+      catchError(error => {
+        console.error('Error en registro:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     this.isAuthenticated.set(false);
     this.currentUser.set(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth']);
   }
 
   getToken(): string | null {
