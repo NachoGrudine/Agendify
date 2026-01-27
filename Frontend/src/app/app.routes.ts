@@ -33,6 +33,10 @@ export const routes: Routes = [
         loadComponent: () => import('./components/reportes/reportes.component').then(m => m.ReportesComponent)
       },
       {
+        path: 'horarios',
+        loadComponent: () => import('./components/weekly-schedule/weekly-schedule.component').then(m => m.WeeklyScheduleComponent)
+      },
+      {
         path: '',
         redirectTo: 'agenda',
         pathMatch: 'full'

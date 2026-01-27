@@ -192,9 +192,14 @@ namespace Agendify.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BusinessId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Providers", (string)null);
                 });
@@ -362,7 +367,13 @@ namespace Agendify.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Agendify.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Business");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Agendify.Models.Entities.ProviderSchedule", b =>

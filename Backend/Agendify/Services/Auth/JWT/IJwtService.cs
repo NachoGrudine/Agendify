@@ -1,4 +1,4 @@
-﻿﻿using Agendify.Models.Entities;
+﻿using Agendify.Models.Entities;
 
 namespace Agendify.Services.Auth.JWT;
 

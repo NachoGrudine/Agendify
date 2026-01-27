@@ -1,4 +1,4 @@
-﻿<div class="step-container">
+﻿﻿<div class="step-container">
   <!-- Título -->
   <div class="step-header">
     <div class="step-badge">Paso 3 de 3</div>
@@ -68,8 +68,12 @@
         name="providerSpecialty"
         placeholder="Ej. Estilista Senior"
         class="form-input"
+        [class.input-error]="errors().providerSpecialty"
         autocomplete="off"
       />
+      @if (errors().providerSpecialty) {
+        <span class="error-message">{{ errors().providerSpecialty }}</span>
+      }
     </div>
 
     <!-- Info Box -->

@@ -1,4 +1,4 @@
-﻿﻿namespace Agendify.DTOs.ProviderSchedule;
+﻿namespace Agendify.DTOs.ProviderSchedule;
 
 public class ProviderScheduleResponseDto
 {

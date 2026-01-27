@@ -19,6 +19,15 @@ public class ProviderSchedulesController : BaseController
     }
 
 
+    [HttpGet("me")]
+    public async Task<ActionResult<IEnumerable<ProviderScheduleResponseDto>>> GetMySchedules()
+    {
+        var userId = GetUserId();
+
+        var result = await _scheduleService.GetByUserIdAsync(userId);
+        return result.ToActionResult();
+    }
+
     [HttpGet("provider/{providerId}")]
     public async Task<ActionResult<IEnumerable<ProviderScheduleResponseDto>>> GetByProvider(int providerId)
     {
@@ -26,7 +35,6 @@ public class ProviderSchedulesController : BaseController
         var result = await _scheduleService.GetByProviderAsync(businessId, providerId);
         return result.ToActionResult();
     }
-
 
     [HttpGet("{id}")]
     public async Task<ActionResult<ProviderScheduleResponseDto>> GetById(int id)
@@ -44,11 +52,12 @@ public class ProviderSchedulesController : BaseController
         return result.ToCreatedResult(nameof(GetById), x => new { id = x.Id });
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult<ProviderScheduleResponseDto>> Update(int id, [FromBody] UpdateProviderScheduleDto dto)
+    [HttpPut("me/bulk-update")]
+    public async Task<ActionResult<IEnumerable<ProviderScheduleResponseDto>>> BulkUpdateMySchedules(
+        [FromBody] BulkUpdateProviderSchedulesDto dto)
     {
-        var businessId = GetBusinessId();
-        var result = await _scheduleService.UpdateAsync(businessId, id, dto);
+        var userId = GetUserId();
+        var result = await _scheduleService.BulkUpdateByUserIdAsync(userId, dto);
         return result.ToActionResult();
     }
 
@@ -59,6 +68,14 @@ public class ProviderSchedulesController : BaseController
     {
         var businessId = GetBusinessId();
         var result = await _scheduleService.BulkUpdateAsync(businessId, providerId, dto);
+        return result.ToActionResult();
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<ProviderScheduleResponseDto>> Update(int id, [FromBody] UpdateProviderScheduleDto dto)
+    {
+        var businessId = GetBusinessId();
+        var result = await _scheduleService.UpdateAsync(businessId, id, dto);
         return result.ToActionResult();
     }
 

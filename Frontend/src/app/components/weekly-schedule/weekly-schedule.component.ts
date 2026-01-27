@@ -1,0 +1,292 @@
+﻿import { Component, signal, inject, computed, OnInit, HostListener } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { DaySchedule, TimeRange, DayOfWeek } from '../../models/schedule.model';
+import { ScheduleService } from '../../services/schedule.service';
+import { AuthService } from '../../services/auth.service';
+
+@Component({
+  selector: 'app-weekly-schedule',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './weekly-schedule.component.html',
+  styleUrls: ['./weekly-schedule.component.css']
+})
+export class WeeklyScheduleComponent implements OnInit {
+  private readonly scheduleService = inject(ScheduleService);
+  private readonly authService = inject(AuthService);
+
+  private readonly STORAGE_KEY = 'agendify_temp_schedule';
+
+  // Signal para el estado de carga
+  isLoading = signal<boolean>(false);
+  isSaving = signal<boolean>(false);
+  successMessage = signal<string>('');
+  errorMessage = signal<string>('');
+
+  // Datos originales para comparación
+  private originalSchedule: string = '';
+
+  // Datos de la semana - inicializado vacío, se llena con datos del backend
+  weekSchedule = signal<DaySchedule[]>([
+    { dayName: 'Lunes', dayOfWeek: DayOfWeek.Monday, isOpen: false, slots: [] },
+    { dayName: 'Martes', dayOfWeek: DayOfWeek.Tuesday, isOpen: false, slots: [] },
+    { dayName: 'Miércoles', dayOfWeek: DayOfWeek.Wednesday, isOpen: false, slots: [] },
+    { dayName: 'Jueves', dayOfWeek: DayOfWeek.Thursday, isOpen: false, slots: [] },
+    { dayName: 'Viernes', dayOfWeek: DayOfWeek.Friday, isOpen: false, slots: [] },
+    { dayName: 'Sábado', dayOfWeek: DayOfWeek.Saturday, isOpen: false, slots: [] },
+    { dayName: 'Domingo', dayOfWeek: DayOfWeek.Sunday, isOpen: false, slots: [] }
+  ]);
+
+  // Computed para verificar si hay cambios sin guardar
+  hasUnsavedChanges = computed(() => {
+    const current = JSON.stringify(this.weekSchedule());
+    return current !== this.originalSchedule && this.originalSchedule !== '';
+  });
+
+  // Listener para detectar cuando el usuario intenta salir
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any): void {
+    if (this.hasUnsavedChanges()) {
+      $event.returnValue = true;
+    }
+  }
+
+  ngOnInit(): void {
+    this.loadSchedules();
+  }
+
+  loadSchedules(): void {
+    // Intentar cargar primero desde localStorage (persistencia temporal)
+    const tempSchedule = this.loadFromLocalStorage();
+    if (tempSchedule) {
+      this.weekSchedule.set(tempSchedule);
+      this.originalSchedule = JSON.stringify(tempSchedule);
+      this.successMessage.set('Se cargó un borrador guardado localmente');
+      setTimeout(() => this.clearMessages(), 3000);
+      return;
+    }
+
+    // Si no hay datos temporales, cargar desde el backend usando el endpoint 'me'
+    this.isLoading.set(true);
+    this.scheduleService.getMySchedules().subscribe({
+      next: (schedules: any[]) => {
+        this.mapBackendToFrontend(schedules);
+        this.originalSchedule = JSON.stringify(this.weekSchedule());
+        this.isLoading.set(false);
+      },
+      error: (error: any) => {
+        console.error('Error loading schedules:', error);
+        this.errorMessage.set('Error al cargar los horarios');
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  private loadFromLocalStorage(): DaySchedule[] | null {
+    try {
+      const stored = localStorage.getItem(this.STORAGE_KEY);
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch (error) {
+      console.error('Error loading from localStorage:', error);
+    }
+    return null;
+  }
+
+  private saveToLocalStorage(): void {
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.weekSchedule()));
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+    }
+  }
+
+  private clearLocalStorage(): void {
+    try {
+      localStorage.removeItem(this.STORAGE_KEY);
+    } catch (error) {
+      console.error('Error clearing localStorage:', error);
+    }
+  }
+
+  private mapBackendToFrontend(schedules: any[]): void {
+    // Crear un mapa de día -> rangos horarios
+    const scheduleMap = new Map<DayOfWeek, TimeRange[]>();
+
+    schedules.forEach(schedule => {
+      // Soportar tanto snake_case como camelCase
+      const dayOfWeek = (schedule.day_of_week ?? schedule.dayOfWeek) as DayOfWeek;
+      const startTime = schedule.start_time ?? schedule.startTime;
+      const endTime = schedule.end_time ?? schedule.endTime;
+
+      const timeRange: TimeRange = {
+        start: this.formatTimeSpan(startTime),
+        end: this.formatTimeSpan(endTime)
+      };
+
+      if (!scheduleMap.has(dayOfWeek)) {
+        scheduleMap.set(dayOfWeek, []);
+      }
+      scheduleMap.get(dayOfWeek)!.push(timeRange);
+    });
+
+    // Actualizar el signal con los datos del backend
+    const updatedSchedule = this.weekSchedule().map(day => ({
+      ...day,
+      slots: scheduleMap.get(day.dayOfWeek) || [],
+      isOpen: scheduleMap.has(day.dayOfWeek) && scheduleMap.get(day.dayOfWeek)!.length > 0
+    }));
+
+    this.weekSchedule.set(updatedSchedule);
+  }
+
+  private formatTimeSpan(timeSpan: string | undefined | null): string {
+    if (!timeSpan) {
+      return '00:00';
+    }
+    // Convertir "09:00:00" a "09:00"
+    return timeSpan.substring(0, 5);
+  }
+
+  toggleDay(dayIndex: number): void {
+    const schedule = [...this.weekSchedule()];
+    const day = schedule[dayIndex];
+
+    day.isOpen = !day.isOpen;
+
+    // Si se activa y no tiene slots, agregar uno por defecto
+    if (day.isOpen && day.slots.length === 0) {
+      day.slots = [{ start: '09:00', end: '18:00' }];
+    }
+
+    // Si se desactiva, limpiar los slots
+    if (!day.isOpen) {
+      day.slots = [];
+    }
+
+    this.weekSchedule.set(schedule);
+    this.saveToLocalStorage();
+    this.clearMessages();
+  }
+
+  addSlot(dayIndex: number): void {
+    const schedule = [...this.weekSchedule()];
+    const day = schedule[dayIndex];
+
+    // Agregar un nuevo slot con horario por defecto
+    const newSlot: TimeRange = { start: '09:00', end: '18:00' };
+    day.slots.push(newSlot);
+
+    this.weekSchedule.set(schedule);
+    this.saveToLocalStorage();
+    this.clearMessages();
+  }
+
+  removeSlot(dayIndex: number, slotIndex: number): void {
+    const schedule = [...this.weekSchedule()];
+    const day = schedule[dayIndex];
+
+    day.slots.splice(slotIndex, 1);
+
+    // Si se eliminan todos los slots, desactivar el día
+    if (day.slots.length === 0) {
+      day.isOpen = false;
+    }
+
+    this.weekSchedule.set(schedule);
+    this.saveToLocalStorage();
+    this.clearMessages();
+  }
+
+  updateSlot(dayIndex: number, slotIndex: number, field: 'start' | 'end', value: string): void {
+    const schedule = [...this.weekSchedule()];
+    schedule[dayIndex].slots[slotIndex][field] = value;
+    this.weekSchedule.set(schedule);
+    this.saveToLocalStorage();
+    this.clearMessages();
+  }
+
+  copyToAll(dayIndex: number): void {
+    const schedule = [...this.weekSchedule()];
+    const sourceDayConfig = schedule[dayIndex];
+
+    // Copiar la configuración a todos los demás días
+    schedule.forEach((day, index) => {
+      if (index !== dayIndex) {
+        day.isOpen = sourceDayConfig.isOpen;
+        day.slots = sourceDayConfig.slots.map(slot => ({ ...slot })); // Deep copy
+      }
+    });
+
+    this.weekSchedule.set(schedule);
+    this.saveToLocalStorage();
+    this.successMessage.set(`Configuración del ${sourceDayConfig.dayName} copiada a todos los días`);
+
+    // Limpiar mensaje después de 3 segundos
+    setTimeout(() => this.clearMessages(), 3000);
+  }
+
+  async saveChanges(): Promise<void> {
+    this.isSaving.set(true);
+    this.clearMessages();
+
+    // Convertir el formato frontend al formato del backend (snake_case)
+    const schedulesToSave = this.weekSchedule()
+      .filter(day => day.isOpen && day.slots.length > 0)
+      .flatMap(day =>
+        day.slots.map((slot: TimeRange) => ({
+          day_of_week: day.dayOfWeek,
+          start_time: `${slot.start}:00`, // Agregar segundos
+          end_time: `${slot.end}:00`
+        }))
+      );
+
+    const dto = {
+      schedules: schedulesToSave
+    };
+
+    this.scheduleService.bulkUpdateMySchedules(dto).subscribe({
+      next: () => {
+        this.successMessage.set('¡Cambios guardados exitosamente!');
+        this.isSaving.set(false);
+        this.originalSchedule = JSON.stringify(this.weekSchedule());
+        this.clearLocalStorage(); // Limpiar borrador después de guardar exitosamente
+
+        // Limpiar mensaje después de 3 segundos
+        setTimeout(() => this.clearMessages(), 3000);
+      },
+      error: (error: any) => {
+        this.errorMessage.set(error?.error?.message || 'Error al guardar los cambios');
+        this.isSaving.set(false);
+      }
+    });
+  }
+
+  private clearMessages(): void {
+    this.successMessage.set('');
+    this.errorMessage.set('');
+  }
+
+  discardChanges(): void {
+    if (confirm('¿Estás seguro de que deseas descartar los cambios no guardados?')) {
+      this.clearLocalStorage();
+      this.loadSchedules();
+      this.successMessage.set('Cambios descartados');
+      setTimeout(() => this.clearMessages(), 3000);
+    }
+  }
+
+  // Validación de rango horario
+  isValidTimeRange(slot: TimeRange): boolean {
+    return slot.start < slot.end;
+  }
+
+  // Verificar si hay errores de validación
+  hasValidationErrors(): boolean {
+    return this.weekSchedule().some(day =>
+      day.isOpen && day.slots.some(slot => !this.isValidTimeRange(slot))
+    );
+  }
+}

@@ -1,4 +1,4 @@
-﻿import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -20,14 +20,26 @@ export class RegisterStep3Component {
   providerSpecialty = signal<string>('');
   avatarPreview = signal<string | null>(null);
 
+  // Variable local para prevenir doble submit
+  private isProcessing = signal<boolean>(false);
+
   errors = signal<{
     providerName?: string;
+    providerSpecialty?: string;
   }>({});
 
-  ngOnInit(): void {
-    const data = this.formData();
-    this.providerName.set(data.providerName || '');
-    this.providerSpecialty.set(data.providerSpecialty || '');
+  constructor() {
+    // Usar effect para sincronizar con formData cuando cambie
+    effect(() => {
+      const data = this.formData();
+      console.log('Step3: Inicializando/Actualizando con formData:', data);
+      if (data.providerName !== undefined) {
+        this.providerName.set(data.providerName || '');
+      }
+      if (data.providerSpecialty !== undefined) {
+        this.providerSpecialty.set(data.providerSpecialty || '');
+      }
+    });
   }
 
   onFileSelected(event: Event): void {
@@ -49,6 +61,13 @@ export class RegisterStep3Component {
 
     if (!this.providerName() || this.providerName().trim() === '') {
       newErrors.providerName = 'El nombre profesional es requerido';
+    } else if (this.providerName().length > 200) {
+      newErrors.providerName = 'El nombre no puede exceder 200 caracteres';
+    }
+
+    // Validar specialty solo si no está vacía (es opcional)
+    if (this.providerSpecialty() && this.providerSpecialty().length > 200) {
+      newErrors.providerSpecialty = 'La especialidad no puede exceder 200 caracteres';
     }
 
     this.errors.set(newErrors);
@@ -56,12 +75,32 @@ export class RegisterStep3Component {
   }
 
   onSubmit(): void {
+    // Prevenir múltiples envíos - verificar tanto el input como la variable local
+    if (this.isSubmitting() || this.isProcessing()) {
+      console.warn('Step3: Ya se está procesando, ignorando submit');
+      return;
+    }
+
     if (this.validateForm()) {
-      this.updateData.emit({
+      // Marcar como procesando INMEDIATAMENTE
+      this.isProcessing.set(true);
+
+      console.log('Step3: Validación exitosa, emitiendo datos:', {
         providerName: this.providerName(),
         providerSpecialty: this.providerSpecialty()
       });
+
+      this.updateData.emit({
+        providerName: this.providerName().trim(),
+        providerSpecialty: this.providerSpecialty().trim()
+      });
+
       this.submit.emit();
+
+      // Reset después de 2 segundos por seguridad (en caso de error)
+      setTimeout(() => this.isProcessing.set(false), 2000);
+    } else {
+      console.error('Step3: Validación falló, errores:', this.errors());
     }
   }
 

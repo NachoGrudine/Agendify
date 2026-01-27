@@ -53,10 +53,22 @@ public class AuthService : IAuthService
 
         business = await _businessRepository.AddAsync(business);
 
+        // Crear el User
+        var user = new User
+        {
+            Email = registerDto.Email,
+            PasswordHash = _passwordHasher.HashPassword(registerDto.Password),
+            BusinessId = business.Id,
+        };
+
+        user = await _userRepository.AddAsync(user);
+
         // Crear el Provider (el usuario será el primer proveedor del negocio)
+        // ✅ AHORA creamos el provider con el UserId desde el inicio
         var provider = new Provider
         {
             BusinessId = business.Id,
+            UserId = user.Id,  // ✅ Asignado desde el inicio
             Name = registerDto.ProviderName,
             Specialty = registerDto.ProviderSpecialty,
             IsActive = true
@@ -67,15 +79,6 @@ public class AuthService : IAuthService
         // Crear horarios por defecto (lunes a viernes de 09:00 a 18:00)
         await _providerScheduleService.CreateDefaultSchedulesAsync(provider.Id);
 
-        // Crear el User y asociarlo con el Provider
-        var user = new User
-        {
-            Email = registerDto.Email,
-            PasswordHash = _passwordHasher.HashPassword(registerDto.Password),
-            BusinessId = business.Id,
-        };
-
-        user = await _userRepository.AddAsync(user);
 
         // Generar token
         var token = _jwtService.GenerateToken(user);
@@ -85,8 +88,7 @@ public class AuthService : IAuthService
             Token = token,
             UserId = user.Id,
             Email = user.Email,
-            BusinessId = user.BusinessId,
-            ProviderId = provider.Id
+            BusinessId = user.BusinessId
         });
     }
 
@@ -107,15 +109,6 @@ public class AuthService : IAuthService
             return Result.Fail(new UnauthorizedError("Email o contraseña incorrectos"));
         }
 
-        // Buscar el provider asociado al business
-        var providers = await _providerRepository.FindAsync(p => p.BusinessId == user.BusinessId);
-        var provider = providers.FirstOrDefault();
-        
-        if (provider == null)
-        {
-            return Result.Fail(new NotFoundError("No se encontró un proveedor asociado al negocio"));
-        }
-
         // Generar token
         var token = _jwtService.GenerateToken(user);
 
@@ -124,8 +117,7 @@ public class AuthService : IAuthService
             Token = token,
             UserId = user.Id,
             Email = user.Email,
-            BusinessId = user.BusinessId,
-            ProviderId = provider.Id
+            BusinessId = user.BusinessId
         });
     }
 }

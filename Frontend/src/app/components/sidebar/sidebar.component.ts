@@ -2,7 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { LucideAngularModule, Calendar, Users, Briefcase, BarChart3, Settings, LogOut } from 'lucide-angular';
+import { LucideAngularModule, Calendar, Users, Briefcase, BarChart3, Settings, LogOut, Clock } from 'lucide-angular';
 
 @Component({
   selector: 'app-sidebar',
@@ -23,11 +23,13 @@ export class SidebarComponent {
   readonly UsersIcon = Users;
   readonly BriefcaseIcon = Briefcase;
   readonly BarChart3Icon = BarChart3;
+  readonly ClockIcon = Clock;
   readonly SettingsIcon = Settings;
   readonly LogOutIcon = LogOut;
 
   menuItems = [
     { icon: this.CalendarIcon, label: 'Agenda', route: '/dashboard/agenda', active: true },
+    { icon: this.ClockIcon, label: 'Mis Horarios', route: '/dashboard/horarios', active: false },
     { icon: this.UsersIcon, label: 'Clientes', route: '/dashboard/clientes', active: false },
     { icon: this.BriefcaseIcon, label: 'Empleados', route: '/dashboard/empleados', active: false },
     { icon: this.BarChart3Icon, label: 'Reportes', route: '/dashboard/reportes', active: false }

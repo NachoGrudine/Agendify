@@ -1,4 +1,4 @@
-﻿﻿namespace Agendify.DTOs.Auth;
+﻿namespace Agendify.DTOs.Auth;
 
 public class RegisterDto
 {

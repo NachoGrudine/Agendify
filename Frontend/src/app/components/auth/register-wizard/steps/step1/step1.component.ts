@@ -1,4 +1,4 @@
-﻿import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -47,21 +47,25 @@ export class RegisterStep1Component {
     const newErrors: any = {};
 
     // Validar email
-    if (!this.email()) {
+    if (!this.email() || this.email().trim() === '') {
       newErrors.email = 'El correo electrónico es requerido';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email())) {
       newErrors.email = 'Ingresa un correo electrónico válido';
+    } else if (this.email().length > 200) {
+      newErrors.email = 'El email no puede exceder 200 caracteres';
     }
 
     // Validar contraseña
-    if (!this.password()) {
+    if (!this.password() || this.password().trim() === '') {
       newErrors.password = 'La contraseña es requerida';
     } else if (this.password().length < 6) {
       newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+    } else if (this.password().length > 100) {
+      newErrors.password = 'La contraseña no puede exceder 100 caracteres';
     }
 
     // Validar confirmación de contraseña
-    if (!this.confirmPassword()) {
+    if (!this.confirmPassword() || this.confirmPassword().trim() === '') {
       newErrors.confirmPassword = 'Debes confirmar tu contraseña';
     } else if (this.password() !== this.confirmPassword()) {
       newErrors.confirmPassword = 'Las contraseñas no coinciden';

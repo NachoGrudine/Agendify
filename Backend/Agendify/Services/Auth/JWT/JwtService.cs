@@ -1,4 +1,4 @@
-﻿﻿using Agendify.Models.Entities;
+﻿﻿﻿﻿using Agendify.Models.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -20,13 +20,13 @@ public class JwtService : IJwtService
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]!));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+        // Usar custom claims simples igual que BusinessId
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim("BusinessId", user.BusinessId.ToString())
+            new Claim("UserId", user.Id.ToString()),           // ✅ Custom claim simple
+            new Claim("Email", user.Email),                    // ✅ Custom claim simple
+            new Claim("BusinessId", user.BusinessId.ToString()) // ✅ Custom claim simple
         };
-
 
         var token = new JwtSecurityToken(
             issuer: _configuration["Jwt:Issuer"],
@@ -59,9 +59,14 @@ public class JwtService : IJwtService
             }, out SecurityToken validatedToken);
 
             var jwtToken = (JwtSecurityToken)validatedToken;
-            var userId = int.Parse(jwtToken.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
+            var userIdClaim = jwtToken.Claims.FirstOrDefault(x => x.Type == "UserId");
 
-            return userId;
+            if (userIdClaim != null)
+            {
+                return int.Parse(userIdClaim.Value);
+            }
+
+            return null;
         }
         catch
         {

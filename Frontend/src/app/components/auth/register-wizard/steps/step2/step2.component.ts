@@ -1,4 +1,4 @@
-﻿import { Component, input, output, signal } from '@angular/core';
+﻿import { Component, input, output, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -38,10 +38,12 @@ export class RegisterStep2Component {
     { value: 'Otro', label: 'Otro' }
   ];
 
-  ngOnInit(): void {
-    const data = this.formData();
-    this.businessName.set(data.businessName || '');
-    this.industry.set(data.industry || '');
+  constructor() {
+    effect(() => {
+      const data = this.formData();
+      this.businessName.set(data.businessName || '');
+      this.industry.set(data.industry || '');
+    });
   }
 
   validateForm(): boolean {
@@ -49,10 +51,14 @@ export class RegisterStep2Component {
 
     if (!this.businessName() || this.businessName().trim() === '') {
       newErrors.businessName = 'El nombre del negocio es requerido';
+    } else if (this.businessName().length > 200) {
+      newErrors.businessName = 'El nombre del negocio no puede exceder 200 caracteres';
     }
 
     if (!this.industry() || this.industry() === '') {
       newErrors.industry = 'Debes seleccionar una industria';
+    } else if (this.industry().length > 100) {
+      newErrors.industry = 'La industria no puede exceder 100 caracteres';
     }
 
     this.errors.set(newErrors);

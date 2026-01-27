@@ -21,6 +21,7 @@ using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Configurar DbContext con SQL Server
 builder.Services.AddDbContext<AgendifyDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

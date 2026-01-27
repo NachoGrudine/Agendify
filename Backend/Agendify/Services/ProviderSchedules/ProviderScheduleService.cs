@@ -10,13 +10,16 @@ namespace Agendify.Services.ProviderSchedules;
 public class ProviderScheduleService : IProviderScheduleService
 {
     private readonly IRepository<ProviderSchedule> _scheduleRepository;
+    private readonly IRepository<Provider> _providerRepository;
     private readonly IProviderService _providerService;
 
     public ProviderScheduleService(
         IRepository<ProviderSchedule> scheduleRepository,
+        IRepository<Provider> providerRepository,
         IProviderService providerService)
     {
         _scheduleRepository = scheduleRepository;
+        _providerRepository = providerRepository;
         _providerService = providerService;
     }
 
@@ -205,6 +208,77 @@ public class ProviderScheduleService : IProviderScheduleService
             var schedule = new ProviderSchedule
             {
                 ProviderId = providerId,
+                DayOfWeek = item.DayOfWeek,
+                StartTime = item.StartTime,
+                EndTime = item.EndTime
+            };
+            
+            var created = await _scheduleRepository.AddAsync(schedule);
+            newSchedules.Add(created);
+        }
+
+        return Result.Ok(newSchedules.Select(MapToResponseDto));
+    }
+
+    public async Task<Result<IEnumerable<ProviderScheduleResponseDto>>> GetByUserIdAsync(int userId)
+    {
+        // Buscar el provider asociado al userId
+        var providers = await _providerRepository.FindAsync(p => p.UserId == userId);
+        var provider = providers.FirstOrDefault();
+        
+        if (provider == null)
+        {
+            return Result.Fail(new NotFoundError("No se encontró un proveedor asociado al usuario"));
+        }
+
+        // Obtener los schedules del provider
+        var schedules = await _scheduleRepository.FindAsync(s => s.ProviderId == provider.Id);
+        return Result.Ok(schedules.Select(MapToResponseDto));
+    }
+
+    public async Task<Result<IEnumerable<ProviderScheduleResponseDto>>> BulkUpdateByUserIdAsync(
+        int userId, 
+        BulkUpdateProviderSchedulesDto dto)
+    {
+        // Buscar el provider asociado al userId
+        var providers = await _providerRepository.FindAsync(p => p.UserId == userId);
+        var provider = providers.FirstOrDefault();
+        
+        if (provider == null)
+        {
+            return Result.Fail(new NotFoundError("No se encontró un proveedor asociado al usuario"));
+        }
+
+        // Validación adicional: StartTime debe ser menor a EndTime
+        foreach (var item in dto.Schedules)
+        {
+            if (item.StartTime >= item.EndTime)
+            {
+                return Result.Fail(new BadRequestError(
+                    $"La hora de inicio debe ser menor a la hora de fin para el día {item.DayOfWeek}"));
+            }
+        }
+
+        // 1. Identificar días afectados
+        var affectedDays = dto.Schedules.Select(s => s.DayOfWeek).Distinct().ToList();
+
+        // 2. Limpieza específica (Wipe): Eliminar SOLO los horarios de los días afectados
+        var existingSchedules = await _scheduleRepository.FindAsync(
+            s => s.ProviderId == provider.Id && affectedDays.Contains(s.DayOfWeek));
+        
+        var schedulesList = existingSchedules.ToList();
+        if (schedulesList.Any())
+        {
+            await _scheduleRepository.DeleteRangeAsync(schedulesList);
+        }
+
+        // 3. Inserción (Replace): Insertar los nuevos horarios
+        var newSchedules = new List<ProviderSchedule>();
+        foreach (var item in dto.Schedules)
+        {
+            var schedule = new ProviderSchedule
+            {
+                ProviderId = provider.Id,
                 DayOfWeek = item.DayOfWeek,
                 StartTime = item.StartTime,
                 EndTime = item.EndTime

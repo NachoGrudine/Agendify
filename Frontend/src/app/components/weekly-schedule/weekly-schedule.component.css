@@ -1,0 +1,535 @@
+﻿/* Container Principal */
+.schedule-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Header */
+.schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  gap: 2rem;
+}
+
+.header-content {
+  flex: 1;
+}
+
+.title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.header-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.unsaved-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  border: 1px solid #fcd34d;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.header-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Header Actions */
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* Discard Button */
+.btn-discard {
+  padding: 0.625rem 1.25rem;
+  background: white;
+  color: #ef4444;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.btn-discard:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+
+.icon-discard {
+  width: 16px;
+  height: 16px;
+}
+
+/* Save Button */
+.btn-save {
+  padding: 0.625rem 1.25rem;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: #1d4ed8;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.icon-save {
+  width: 16px;
+  height: 16px;
+}
+
+/* Alerts */
+.alert {
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+.alert-success {
+  background-color: #d1fae5;
+  border: 1px solid #6ee7b7;
+  color: #065f46;
+}
+
+.alert-error {
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.alert-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  color: #6b7280;
+}
+
+.loading-spinner,
+.spinner {
+  width: 32px;
+  height: 32px;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-circle {
+  stroke-dasharray: 50;
+  stroke-dashoffset: 25;
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
+/* Schedule Card */
+.schedule-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Days List */
+.days-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Day Row */
+.day-row {
+  display: grid;
+  grid-template-columns: 200px 1fr auto;
+  gap: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  align-items: flex-start;
+  transition: all 0.2s;
+}
+
+.day-row:last-child {
+  border-bottom: none;
+}
+
+.day-row:hover {
+  background: #f9fafb;
+}
+
+.day-closed {
+  opacity: 0.5;
+}
+
+/* Column 1: Day Control */
+.day-control {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.day-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggle-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #d1d5db;
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-input:checked + .toggle-slider {
+  background-color: #2563eb;
+}
+
+.toggle-input:checked + .toggle-slider:before {
+  transform: translateX(20px);
+}
+
+/* Column 2: Time Ranges */
+.time-ranges {
+  flex: 1;
+  min-width: 0;
+}
+
+.closed-label {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.slots-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.slot-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Time Inputs */
+.time-input-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.time-input {
+  padding: 0.5rem 0.75rem 0.5rem 2rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #374151;
+  background: white;
+  transition: all 0.2s;
+  min-width: 110px;
+}
+
+.time-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.time-input.input-error {
+  border-color: #ef4444;
+}
+
+.time-icon {
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.time-separator {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Delete Slot Button */
+.btn-delete-slot {
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  transition: all 0.2s;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-delete-slot:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.icon-trash {
+  width: 18px;
+  height: 18px;
+}
+
+/* Add Slot Button */
+.btn-add-slot {
+  padding: 0.5rem 0.75rem;
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+  margin-top: 0.25rem;
+}
+
+.btn-add-slot:hover {
+  background: #eff6ff;
+}
+
+.icon-plus {
+  width: 16px;
+  height: 16px;
+}
+
+/* Column 3: Copy Button */
+.day-actions {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 0.25rem;
+}
+
+.btn-copy {
+  padding: 0.5rem 0.875rem;
+  background: white;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-copy:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.btn-copy:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.icon-copy {
+  width: 16px;
+  height: 16px;
+}
+
+/* Error Message */
+.error-message {
+  font-size: 0.8125rem;
+  color: #dc2626;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Footer */
+.schedule-footer {
+  padding: 1.25rem 1.5rem;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+}
+
+.footer-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.note-icon {
+  width: 20px;
+  height: 20px;
+  color: #2563eb;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.footer-note p {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .schedule-container {
+    padding: 1rem;
+  }
+
+  .schedule-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .btn-save {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .day-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .day-actions {
+    justify-content: flex-start;
+  }
+
+  .btn-copy {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .slot-row {
+    flex-wrap: wrap;
+  }
+
+  .time-input {
+    min-width: 90px;
+  }
+}
