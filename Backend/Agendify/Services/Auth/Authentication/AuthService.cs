@@ -5,6 +5,7 @@ using Agendify.Common.Errors;
 using Agendify.Repositories;
 using Agendify.Services.Auth.Password;
 using Agendify.Services.Auth.JWT;
+using Agendify.Services.ProviderSchedules;
 using FluentResults;
 
 namespace Agendify.Services.Auth.Authentication;
@@ -16,19 +17,22 @@ public class AuthService : IAuthService
     private readonly IRepository<Provider> _providerRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtService _jwtService;
+    private readonly IProviderScheduleService _providerScheduleService;
 
     public AuthService(
         IRepository<User> userRepository,
         IRepository<BusinessEntity> businessRepository,
         IRepository<Provider> providerRepository,
         IPasswordHasher passwordHasher,
-        IJwtService jwtService)
+        IJwtService jwtService,
+        IProviderScheduleService providerScheduleService)
     {
         _userRepository = userRepository;
         _businessRepository = businessRepository;
         _providerRepository = providerRepository;
         _passwordHasher = passwordHasher;
         _jwtService = jwtService;
+        _providerScheduleService = providerScheduleService;
     }
 
     public async Task<Result<AuthResponseDto>> RegisterAsync(RegisterDto registerDto)
@@ -59,6 +63,9 @@ public class AuthService : IAuthService
         };
 
         provider = await _providerRepository.AddAsync(provider);
+
+        // Crear horarios por defecto (lunes a viernes de 09:00 a 18:00)
+        await _providerScheduleService.CreateDefaultSchedulesAsync(provider.Id);
 
         // Crear el User y asociarlo con el Provider
         var user = new User

@@ -1,4 +1,4 @@
-﻿﻿using Agendify.Models.Entities;
+﻿using Agendify.Models.Entities;
 using Agendify.DTOs.ProviderSchedule;
 using Agendify.Repositories;
 using Agendify.Common.Errors;
@@ -133,6 +133,33 @@ public class ProviderScheduleService : IProviderScheduleService
         schedule.IsDeleted = true;
         await _scheduleRepository.UpdateAsync(schedule);
         
+        return Result.Ok();
+    }
+
+    public async Task<Result> CreateDefaultSchedulesAsync(int providerId)
+    {
+        // Crear horarios por defecto de lunes a viernes de 09:00 a 18:00
+        var defaultSchedules = new List<ProviderSchedule>();
+        
+        for (int day = (int)DayOfWeek.Monday; day <= (int)DayOfWeek.Friday; day++)
+        {
+            var schedule = new ProviderSchedule
+            {
+                ProviderId = providerId,
+                DayOfWeek = (DayOfWeek)day,
+                StartTime = new TimeSpan(9, 0, 0),  // 09:00
+                EndTime = new TimeSpan(18, 0, 0)     // 18:00
+            };
+            
+            defaultSchedules.Add(schedule);
+        }
+
+        // Agregar todos los horarios
+        foreach (var schedule in defaultSchedules)
+        {
+            await _scheduleRepository.AddAsync(schedule);
+        }
+
         return Result.Ok();
     }
 

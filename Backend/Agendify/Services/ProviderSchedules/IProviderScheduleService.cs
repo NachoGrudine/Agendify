@@ -1,4 +1,4 @@
-﻿﻿using Agendify.DTOs.ProviderSchedule;
+﻿using Agendify.DTOs.ProviderSchedule;
 using FluentResults;
 
 namespace Agendify.Services.ProviderSchedules;
@@ -11,4 +11,5 @@ public interface IProviderScheduleService
     Task<Result<IEnumerable<ProviderScheduleResponseDto>>> GetByProviderAsync(int businessId, int providerId);
     Task<Dictionary<DayOfWeek, int>> GetScheduledMinutesByProviderIdsAsync(List<int> providerIds);
     Task<Result> DeleteAsync(int businessId, int id);
+    Task<Result> CreateDefaultSchedulesAsync(int providerId);
 }
