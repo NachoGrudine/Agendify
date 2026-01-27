@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+﻿﻿using System.Linq.Expressions;
 
 namespace Agendify.Repositories;
 
@@ -10,6 +10,7 @@ public interface IRepository<T> where T : class
     Task<T> AddAsync(T entity);
     Task<T> UpdateAsync(T entity);
     Task DeleteAsync(T entity);
+    Task DeleteRangeAsync(IEnumerable<T> entities);
     Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
     Task<int> CountAsync(Expression<Func<T, bool>> predicate);
 }

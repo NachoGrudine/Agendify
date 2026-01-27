@@ -69,7 +69,7 @@ public static class ResultExtensions
                 Type = "https://httpstatuses.com/404"
             }),
             
-            ValidationError => new BadRequestObjectResult(new ProblemDetails
+            ValidationError or BadRequestError => new BadRequestObjectResult(new ProblemDetails
             {
                 Status = StatusCodes.Status400BadRequest,
                 Title = "Bad Request",
@@ -130,7 +130,7 @@ public static class ResultExtensions
                 Type = "https://httpstatuses.com/404"
             }),
             
-            ValidationError => new BadRequestObjectResult(new ProblemDetails
+            ValidationError or BadRequestError => new BadRequestObjectResult(new ProblemDetails
             {
                 Status = StatusCodes.Status400BadRequest,
                 Title = "Bad Request",

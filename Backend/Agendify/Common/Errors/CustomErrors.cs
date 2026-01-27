@@ -19,6 +19,13 @@ public class ValidationError : Error
     }
 }
 
+public class BadRequestError : Error
+{
+    public BadRequestError(string message) : base(message)
+    {
+    }
+}
+
 public class UnauthorizedError : Error
 {
     public UnauthorizedError(string message) : base(message)

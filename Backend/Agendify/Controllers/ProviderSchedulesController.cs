@@ -27,6 +27,7 @@ public class ProviderSchedulesController : BaseController
         return result.ToActionResult();
     }
 
+
     [HttpGet("{id}")]
     public async Task<ActionResult<ProviderScheduleResponseDto>> GetById(int id)
     {
@@ -48,6 +49,16 @@ public class ProviderSchedulesController : BaseController
     {
         var businessId = GetBusinessId();
         var result = await _scheduleService.UpdateAsync(businessId, id, dto);
+        return result.ToActionResult();
+    }
+
+    [HttpPut("provider/{providerId}/bulk-update")]
+    public async Task<ActionResult<IEnumerable<ProviderScheduleResponseDto>>> BulkUpdate(
+        int providerId, 
+        [FromBody] BulkUpdateProviderSchedulesDto dto)
+    {
+        var businessId = GetBusinessId();
+        var result = await _scheduleService.BulkUpdateAsync(businessId, providerId, dto);
         return result.ToActionResult();
     }
 

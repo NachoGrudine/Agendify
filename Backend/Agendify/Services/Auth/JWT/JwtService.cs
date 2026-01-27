@@ -27,6 +27,7 @@ public class JwtService : IJwtService
             new Claim("BusinessId", user.BusinessId.ToString())
         };
 
+
         var token = new JwtSecurityToken(
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],

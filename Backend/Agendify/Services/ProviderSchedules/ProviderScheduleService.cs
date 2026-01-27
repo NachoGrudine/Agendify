@@ -163,6 +163,60 @@ public class ProviderScheduleService : IProviderScheduleService
         return Result.Ok();
     }
 
+    public async Task<Result<IEnumerable<ProviderScheduleResponseDto>>> BulkUpdateAsync(
+        int businessId, 
+        int providerId, 
+        BulkUpdateProviderSchedulesDto dto)
+    {
+        // Verificar que el provider pertenece al business
+        var providerResult = await _providerService.GetByIdAsync(businessId, providerId);
+        if (providerResult.IsFailed)
+        {
+            return Result.Fail(providerResult.Errors);
+        }
+
+        // Validación adicional: StartTime debe ser menor a EndTime
+        foreach (var item in dto.Schedules)
+        {
+            if (item.StartTime >= item.EndTime)
+            {
+                return Result.Fail(new BadRequestError(
+                    $"La hora de inicio debe ser menor a la hora de fin para el día {item.DayOfWeek}"));
+            }
+        }
+
+        // 1. Identificar días afectados
+        var affectedDays = dto.Schedules.Select(s => s.DayOfWeek).Distinct().ToList();
+
+        // 2. Limpieza específica (Wipe): Eliminar SOLO los horarios de los días afectados
+        var existingSchedules = await _scheduleRepository.FindAsync(
+            s => s.ProviderId == providerId && affectedDays.Contains(s.DayOfWeek));
+        
+        var schedulesList = existingSchedules.ToList();
+        if (schedulesList.Any())
+        {
+            await _scheduleRepository.DeleteRangeAsync(schedulesList);
+        }
+
+        // 3. Inserción (Replace): Insertar los nuevos horarios
+        var newSchedules = new List<ProviderSchedule>();
+        foreach (var item in dto.Schedules)
+        {
+            var schedule = new ProviderSchedule
+            {
+                ProviderId = providerId,
+                DayOfWeek = item.DayOfWeek,
+                StartTime = item.StartTime,
+                EndTime = item.EndTime
+            };
+            
+            var created = await _scheduleRepository.AddAsync(schedule);
+            newSchedules.Add(created);
+        }
+
+        return Result.Ok(newSchedules.Select(MapToResponseDto));
+    }
+
     private static ProviderScheduleResponseDto MapToResponseDto(ProviderSchedule schedule)
     {
         return new ProviderScheduleResponseDto

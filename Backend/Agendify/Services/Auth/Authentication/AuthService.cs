@@ -86,6 +86,7 @@ public class AuthService : IAuthService
             UserId = user.Id,
             Email = user.Email,
             BusinessId = user.BusinessId,
+            ProviderId = provider.Id
         });
     }
 
@@ -106,6 +107,15 @@ public class AuthService : IAuthService
             return Result.Fail(new UnauthorizedError("Email o contraseña incorrectos"));
         }
 
+        // Buscar el provider asociado al business
+        var providers = await _providerRepository.FindAsync(p => p.BusinessId == user.BusinessId);
+        var provider = providers.FirstOrDefault();
+        
+        if (provider == null)
+        {
+            return Result.Fail(new NotFoundError("No se encontró un proveedor asociado al negocio"));
+        }
+
         // Generar token
         var token = _jwtService.GenerateToken(user);
 
@@ -114,7 +124,8 @@ public class AuthService : IAuthService
             Token = token,
             UserId = user.Id,
             Email = user.Email,
-            BusinessId = user.BusinessId
+            BusinessId = user.BusinessId,
+            ProviderId = provider.Id
         });
     }
 }
