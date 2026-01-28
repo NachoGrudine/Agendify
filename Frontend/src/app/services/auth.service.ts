@@ -103,21 +103,15 @@ export class AuthService {
       const payload = token.split('.')[1];
       const decoded = JSON.parse(atob(payload));
 
-      console.log('🔍 Token JWT decodificado:', decoded);
-
       const decodedToken = {
-        // Custom claims simples
         userId: parseInt(decoded.UserId || decoded.userId || '0'),
         businessId: parseInt(decoded.BusinessId || decoded.businessId || '0'),
         email: decoded.Email || decoded.email || '',
         exp: decoded.exp
       };
 
-      console.log('✅ Token decodificado correctamente:', decodedToken);
-
       return decodedToken;
     } catch (error) {
-      console.error('Error decodificando token:', error);
       return null;
     }
   }

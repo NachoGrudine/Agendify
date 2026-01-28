@@ -1,4 +1,4 @@
-﻿import { Component, signal, OnInit, inject, ViewChild } from '@angular/core';
+import { Component, signal, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FullCalendarModule, FullCalendarComponent } from '@fullcalendar/angular';
 import { CalendarOptions, EventClickArg, DateSelectArg, DatesSetArg } from '@fullcalendar/core';

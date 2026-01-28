@@ -75,20 +75,12 @@ export class RegisterStep3Component {
   }
 
   onSubmit(): void {
-    // Prevenir múltiples envíos - verificar tanto el input como la variable local
     if (this.isSubmitting() || this.isProcessing()) {
-      console.warn('Step3: Ya se está procesando, ignorando submit');
       return;
     }
 
     if (this.validateForm()) {
-      // Marcar como procesando INMEDIATAMENTE
       this.isProcessing.set(true);
-
-      console.log('Step3: Validación exitosa, emitiendo datos:', {
-        providerName: this.providerName(),
-        providerSpecialty: this.providerSpecialty()
-      });
 
       this.updateData.emit({
         providerName: this.providerName().trim(),
@@ -97,10 +89,7 @@ export class RegisterStep3Component {
 
       this.submit.emit();
 
-      // Reset después de 2 segundos por seguridad (en caso de error)
       setTimeout(() => this.isProcessing.set(false), 2000);
-    } else {
-      console.error('Step3: Validación falló, errores:', this.errors());
     }
   }
 

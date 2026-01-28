@@ -13,10 +13,6 @@ public interface IProviderScheduleService
     Task<Result> DeleteAsync(int businessId, int id);
     Task<Result> CreateDefaultSchedulesAsync(int providerId);
     Task<Result<IEnumerable<ProviderScheduleResponseDto>>> BulkUpdateAsync(int businessId, int providerId, BulkUpdateProviderSchedulesDto dto);
-    
-    // Métodos basados en UserId
-    Task<Result<IEnumerable<ProviderScheduleResponseDto>>> GetByUserIdAsync(int userId);
-    Task<Result<IEnumerable<ProviderScheduleResponseDto>>> BulkUpdateByUserIdAsync(int userId, BulkUpdateProviderSchedulesDto dto);
 }
 
 

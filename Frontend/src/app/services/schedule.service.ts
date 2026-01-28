@@ -9,24 +9,13 @@ import { BulkUpdateScheduleDto, ProviderScheduleResponse } from '../models/sched
 })
 export class ScheduleService {
   private readonly http = inject(HttpClient);
-private readonly API_URL = `${environment.apiUrl}/ProviderSchedules`;
+  private readonly API_URL = `${environment.apiUrl}/ProviderSchedules`;
 
-  // Obtener horarios del usuario logueado
   getMySchedules(): Observable<ProviderScheduleResponse[]> {
     return this.http.get<ProviderScheduleResponse[]>(`${this.API_URL}/me`);
   }
 
-  // Actualizar horarios del usuario logueado
   bulkUpdateMySchedules(dto: BulkUpdateScheduleDto): Observable<ProviderScheduleResponse[]> {
     return this.http.put<ProviderScheduleResponse[]>(`${this.API_URL}/me/bulk-update`, dto);
-  }
-
-  // Métodos legacy (por si se necesitan en el futuro)
-  getByProvider(providerId: number): Observable<ProviderScheduleResponse[]> {
-    return this.http.get<ProviderScheduleResponse[]>(`${this.API_URL}/provider/${providerId}`);
-  }
-
-  bulkUpdate(providerId: number, dto: BulkUpdateScheduleDto): Observable<ProviderScheduleResponse[]> {
-    return this.http.put<ProviderScheduleResponse[]>(`${this.API_URL}/provider/${providerId}/bulk`, dto);
   }
 }

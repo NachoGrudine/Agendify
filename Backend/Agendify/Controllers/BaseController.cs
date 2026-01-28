@@ -34,5 +34,14 @@ public abstract class BaseController : ControllerBase
     {
         return User.FindFirst("Email")?.Value;
     }
+
+    /// <summary>
+    /// Obtiene el ProviderId del usuario autenticado desde los claims del JWT
+    /// </summary>
+    /// <returns>El ID del proveedor asociado al usuario</returns>
+    protected int GetProviderId()
+    {
+        return int.Parse(User.FindFirst("ProviderId")?.Value ?? "0");
+    }
 }
 

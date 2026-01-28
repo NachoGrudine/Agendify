@@ -1,4 +1,4 @@
-﻿﻿﻿﻿using Agendify.Models.Entities;
+﻿using Agendify.Models.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -20,12 +20,13 @@ public class JwtService : IJwtService
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]!));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        // Usar custom claims simples igual que BusinessId
+        // Crear claims
         var claims = new[]
         {
-            new Claim("UserId", user.Id.ToString()),           // ✅ Custom claim simple
-            new Claim("Email", user.Email),                    // ✅ Custom claim simple
-            new Claim("BusinessId", user.BusinessId.ToString()) // ✅ Custom claim simple
+            new Claim("UserId", user.Id.ToString()),
+            new Claim("Email", user.Email),
+            new Claim("BusinessId", user.BusinessId.ToString()),
+            new Claim("ProviderId", user.ProviderId.ToString())
         };
 
         var token = new JwtSecurityToken(

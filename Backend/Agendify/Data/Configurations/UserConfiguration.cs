@@ -28,5 +28,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .WithOne(b => b.User)
             .HasForeignKey<User>(u => u.BusinessId)
             .OnDelete(DeleteBehavior.Restrict);
+        
+        // Relación 1:1 con Provider (requerida)
+        builder.HasOne(u => u.Provider)
+            .WithOne()
+            .HasForeignKey<User>(u => u.ProviderId)
+            .OnDelete(DeleteBehavior.Restrict)
+            .IsRequired();
     }
 }

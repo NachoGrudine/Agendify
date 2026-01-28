@@ -1,4 +1,4 @@
-﻿using Agendify.DTOs.ProviderSchedule;
+﻿﻿using Agendify.DTOs.ProviderSchedule;
 using Agendify.Services.ProviderSchedules;
 using Agendify.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -17,14 +17,14 @@ public class ProviderSchedulesController : BaseController
     {
         _scheduleService = scheduleService;
     }
-
-
+    
     [HttpGet("me")]
     public async Task<ActionResult<IEnumerable<ProviderScheduleResponseDto>>> GetMySchedules()
     {
-        var userId = GetUserId();
-
-        var result = await _scheduleService.GetByUserIdAsync(userId);
+        var providerId = GetProviderId();
+        var businessId = GetBusinessId();
+        
+        var result = await _scheduleService.GetByProviderAsync(businessId, providerId);
         return result.ToActionResult();
     }
 
@@ -56,8 +56,10 @@ public class ProviderSchedulesController : BaseController
     public async Task<ActionResult<IEnumerable<ProviderScheduleResponseDto>>> BulkUpdateMySchedules(
         [FromBody] BulkUpdateProviderSchedulesDto dto)
     {
-        var userId = GetUserId();
-        var result = await _scheduleService.BulkUpdateByUserIdAsync(userId, dto);
+        var providerId = GetProviderId();
+        var businessId = GetBusinessId();
+        
+        var result = await _scheduleService.BulkUpdateAsync(businessId, providerId, dto);
         return result.ToActionResult();
     }
 

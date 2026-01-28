@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Agendify.Migrations
 {
     [DbContext(typeof(AgendifyDbContext))]
-    [Migration("20260127201240_InitialCreate")]
+    [Migration("20260128130353_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -195,14 +195,9 @@ namespace Agendify.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BusinessId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Providers", (string)null);
                 });
@@ -307,12 +302,18 @@ namespace Agendify.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<int>("ProviderId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BusinessId")
                         .IsUnique();
 
                     b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("ProviderId")
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
@@ -370,13 +371,7 @@ namespace Agendify.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Agendify.Models.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Business");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Agendify.Models.Entities.ProviderSchedule", b =>
@@ -409,7 +404,15 @@ namespace Agendify.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Agendify.Models.Entities.Provider", "Provider")
+                        .WithOne()
+                        .HasForeignKey("Agendify.Models.Entities.User", "ProviderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Business");
+
+                    b.Navigation("Provider");
                 });
 
             modelBuilder.Entity("Agendify.Models.Entities.Business", b =>

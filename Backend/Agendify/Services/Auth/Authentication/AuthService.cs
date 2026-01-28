@@ -64,17 +64,19 @@ public class AuthService : IAuthService
         user = await _userRepository.AddAsync(user);
 
         // Crear el Provider (el usuario será el primer proveedor del negocio)
-        // ✅ AHORA creamos el provider con el UserId desde el inicio
         var provider = new Provider
         {
             BusinessId = business.Id,
-            UserId = user.Id,  // ✅ Asignado desde el inicio
             Name = registerDto.ProviderName,
             Specialty = registerDto.ProviderSpecialty,
             IsActive = true
         };
 
         provider = await _providerRepository.AddAsync(provider);
+
+        // Asignar el ProviderId al User
+        user.ProviderId = provider.Id;
+        user = await _userRepository.UpdateAsync(user);
 
         // Crear horarios por defecto (lunes a viernes de 09:00 a 18:00)
         await _providerScheduleService.CreateDefaultSchedulesAsync(provider.Id);
