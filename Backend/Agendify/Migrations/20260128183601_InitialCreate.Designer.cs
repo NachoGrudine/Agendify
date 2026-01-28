@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Agendify.Migrations
 {
     [DbContext(typeof(AgendifyDbContext))]
-    [Migration("20260128130353_InitialCreate")]
+    [Migration("20260128183601_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -233,9 +233,17 @@ namespace Agendify.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("ValidFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ValidUntil")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProviderId", "DayOfWeek");
+
+                    b.HasIndex("ProviderId", "ValidFrom", "ValidUntil");
 
                     b.ToTable("ProviderSchedules", (string)null);
                 });

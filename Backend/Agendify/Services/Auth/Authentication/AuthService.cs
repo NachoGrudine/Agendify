@@ -44,26 +44,15 @@ public class AuthService : IAuthService
             return Result.Fail(new ConflictError("El email ya está registrado"));
         }
 
-        // Crear el Business primero
+        // 1. Crear el Business primero
         var business = new BusinessEntity
         {
             Name = registerDto.BusinessName,
             Industry = registerDto.Industry
         };
-
         business = await _businessRepository.AddAsync(business);
 
-        // Crear el User
-        var user = new User
-        {
-            Email = registerDto.Email,
-            PasswordHash = _passwordHasher.HashPassword(registerDto.Password),
-            BusinessId = business.Id,
-        };
-
-        user = await _userRepository.AddAsync(user);
-
-        // Crear el Provider (el usuario será el primer proveedor del negocio)
+        // 2. Crear el Provider (el usuario será el primer proveedor del negocio)
         var provider = new Provider
         {
             BusinessId = business.Id,
@@ -71,18 +60,22 @@ public class AuthService : IAuthService
             Specialty = registerDto.ProviderSpecialty,
             IsActive = true
         };
-
         provider = await _providerRepository.AddAsync(provider);
 
-        // Asignar el ProviderId al User
-        user.ProviderId = provider.Id;
-        user = await _userRepository.UpdateAsync(user);
+        // 3. Crear el User con el ProviderId ya asignado
+        var user = new User
+        {
+            Email = registerDto.Email,
+            PasswordHash = _passwordHasher.HashPassword(registerDto.Password),
+            BusinessId = business.Id,
+            ProviderId = provider.Id
+        };
+        user = await _userRepository.AddAsync(user);
 
-        // Crear horarios por defecto (lunes a viernes de 09:00 a 18:00)
+        // 4. Crear horarios por defecto (lunes a viernes de 09:00 a 18:00)
         await _providerScheduleService.CreateDefaultSchedulesAsync(provider.Id);
 
-
-        // Generar token
+        // 5. Generar token
         var token = _jwtService.GenerateToken(user);
 
         return Result.Ok(new AuthResponseDto

@@ -122,7 +122,6 @@ export class AgendaComponent implements OnInit {
 
     // Evitar recargar si ya tenemos los datos de este mes
     if (this.currentLoadedMonth === monthKey) {
-      console.log(`📅 Mes ${monthKey} ya cargado, omitiendo llamada`);
       return;
     }
 
@@ -140,12 +139,8 @@ export class AgendaComponent implements OnInit {
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
 
-    console.log(`📅 Cargando datos del calendario: ${firstDay.toLocaleDateString()} - ${lastDay.toLocaleDateString()}`);
-
     this.calendarService.getCalendarSummary(firstDay, lastDay).subscribe({
       next: (data) => {
-        console.log(`✅ Datos recibidos: ${data.length} días`, data);
-
         // Crear un Map con la fecha como key para acceso rápido
         const dataMap = new Map<string, CalendarDaySummaryDto>();
         data.forEach(day => {
@@ -160,7 +155,6 @@ export class AgendaComponent implements OnInit {
         this.forceCalendarRerender();
       },
       error: (error) => {
-        console.error('❌ Error cargando datos del calendario:', error);
         this.isLoading.set(false);
       }
     });
@@ -175,7 +169,6 @@ export class AgendaComponent implements OnInit {
         const calendarApi = this.calendarComponent.getApi();
         // Usamos rerenderEvents y luego render para forzar actualización completa
         calendarApi.render();
-        console.log('🔄 Calendario re-renderizado con nuevos datos');
       }
     }, 0);
   }
@@ -231,7 +224,6 @@ export class AgendaComponent implements OnInit {
   }
 
   handleEventClick(clickInfo: EventClickArg): void {
-    console.log('Event clicked:', clickInfo.event);
     // Aquí se puede abrir un modal con los detalles del turno
   }
 

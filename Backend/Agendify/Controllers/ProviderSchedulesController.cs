@@ -1,4 +1,4 @@
-﻿﻿using Agendify.DTOs.ProviderSchedule;
+﻿using Agendify.DTOs.ProviderSchedule;
 using Agendify.Services.ProviderSchedules;
 using Agendify.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -35,23 +35,7 @@ public class ProviderSchedulesController : BaseController
         var result = await _scheduleService.GetByProviderAsync(businessId, providerId);
         return result.ToActionResult();
     }
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<ProviderScheduleResponseDto>> GetById(int id)
-    {
-        var businessId = GetBusinessId();
-        var result = await _scheduleService.GetByIdAsync(businessId, id);
-        return result.ToActionResult();
-    }
-
-    [HttpPost]
-    public async Task<ActionResult<ProviderScheduleResponseDto>> Create([FromBody] CreateProviderScheduleDto dto)
-    {
-        var businessId = GetBusinessId();
-        var result = await _scheduleService.CreateAsync(businessId, dto);
-        return result.ToCreatedResult(nameof(GetById), x => new { id = x.Id });
-    }
-
+    
     [HttpPut("me/bulk-update")]
     public async Task<ActionResult<IEnumerable<ProviderScheduleResponseDto>>> BulkUpdateMySchedules(
         [FromBody] BulkUpdateProviderSchedulesDto dto)
@@ -65,27 +49,11 @@ public class ProviderSchedulesController : BaseController
 
     [HttpPut("provider/{providerId}/bulk-update")]
     public async Task<ActionResult<IEnumerable<ProviderScheduleResponseDto>>> BulkUpdate(
-        int providerId, 
+        int providerId,
         [FromBody] BulkUpdateProviderSchedulesDto dto)
     {
         var businessId = GetBusinessId();
         var result = await _scheduleService.BulkUpdateAsync(businessId, providerId, dto);
-        return result.ToActionResult();
-    }
-
-    [HttpPut("{id}")]
-    public async Task<ActionResult<ProviderScheduleResponseDto>> Update(int id, [FromBody] UpdateProviderScheduleDto dto)
-    {
-        var businessId = GetBusinessId();
-        var result = await _scheduleService.UpdateAsync(businessId, id, dto);
-        return result.ToActionResult();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var businessId = GetBusinessId();
-        var result = await _scheduleService.DeleteAsync(businessId, id);
         return result.ToActionResult();
     }
 }

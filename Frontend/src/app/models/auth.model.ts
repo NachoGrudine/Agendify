@@ -22,6 +22,7 @@ export interface RegisterDto {
 export interface DecodedToken {
   userId: number;
   businessId: number;
+  providerId: number;
   email: string;
   exp: number;
 }

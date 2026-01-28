@@ -1,4 +1,4 @@
-﻿using Agendify.Data;
+﻿﻿using Agendify.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -35,6 +35,14 @@ public class Repository<T> : IRepository<T> where T : class
         await _dbSet.AddAsync(entity);
         await _context.SaveChangesAsync();
         return entity;
+    }
+
+    public virtual async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
+    {
+        var entityList = entities.ToList();
+        await _dbSet.AddRangeAsync(entityList);
+        await _context.SaveChangesAsync();
+        return entityList;
     }
 
     public virtual async Task<T> UpdateAsync(T entity)

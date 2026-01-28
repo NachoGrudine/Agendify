@@ -230,9 +230,17 @@ namespace Agendify.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("ValidFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ValidUntil")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProviderId", "DayOfWeek");
+
+                    b.HasIndex("ProviderId", "ValidFrom", "ValidUntil");
 
                     b.ToTable("ProviderSchedules", (string)null);
                 });

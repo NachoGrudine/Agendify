@@ -32,7 +32,6 @@ export class RegisterStep3Component {
     // Usar effect para sincronizar con formData cuando cambie
     effect(() => {
       const data = this.formData();
-      console.log('Step3: Inicializando/Actualizando con formData:', data);
       if (data.providerName !== undefined) {
         this.providerName.set(data.providerName || '');
       }

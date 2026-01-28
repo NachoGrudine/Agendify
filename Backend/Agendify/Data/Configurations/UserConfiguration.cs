@@ -1,4 +1,4 @@
-﻿using Agendify.Models.Entities;
+﻿﻿using Agendify.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

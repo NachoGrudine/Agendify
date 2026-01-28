@@ -128,6 +128,8 @@ export class WeeklyScheduleComponent implements OnInit {
     this.isSaving.set(true);
     this.clearMessages();
 
+    // IMPORTANTE: Enviamos TODOS los horarios configurados (días abiertos con slots)
+    // El backend eliminará TODOS los horarios existentes y los reemplazará con estos
     const schedulesToSave = this.weekSchedule()
       .filter(day => day.isOpen && day.slots.length > 0)
       .flatMap(day =>

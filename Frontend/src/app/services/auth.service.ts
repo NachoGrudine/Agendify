@@ -26,34 +26,19 @@ export class AuthService {
         this.currentUser.set(this.getDecodedToken());
       }),
       catchError(error => {
-        console.error('Error en login:', error);
         return throwError(() => error);
       })
     );
   }
 
   register(registerData: RegisterDto): Observable<AuthResponseDto> {
-    console.log('📤 Enviando registro al backend:', registerData);
     return this.http.post<AuthResponseDto>(`${this.API_URL}/register`, registerData).pipe(
       tap(response => {
-        console.log('📥 Respuesta del registro recibida:', response);
-        console.log('🔑 Token recibido:', response.token ? 'SI (longitud: ' + response.token.length + ')' : 'NO');
-
         this.saveToken(response.token);
-
-        console.log('💾 Token guardado en localStorage');
-        console.log('🔑 Token recuperado de localStorage:', this.getToken() ? 'SI' : 'NO');
-
         this.isAuthenticated.set(true);
         this.currentUser.set(this.getDecodedToken());
-
-        console.log('✅ Estado de autenticación actualizado:', {
-          isAuthenticated: this.isAuthenticated(),
-          currentUser: this.currentUser()
-        });
       }),
       catchError(error => {
-        console.error('❌ Error en registro:', error);
         return throwError(() => error);
       })
     );
@@ -98,6 +83,11 @@ export class AuthService {
     return decoded?.businessId ?? null;
   }
 
+  getProviderId(): number | null {
+    const decoded = this.getDecodedToken();
+    return decoded?.providerId ?? null;
+  }
+
   private decodeToken(token: string): DecodedToken | null {
     try {
       const payload = token.split('.')[1];
@@ -106,6 +96,7 @@ export class AuthService {
       const decodedToken = {
         userId: parseInt(decoded.UserId || decoded.userId || '0'),
         businessId: parseInt(decoded.BusinessId || decoded.businessId || '0'),
+        providerId: parseInt(decoded.ProviderId || decoded.providerId || '0'),
         email: decoded.Email || decoded.email || '',
         exp: decoded.exp
       };

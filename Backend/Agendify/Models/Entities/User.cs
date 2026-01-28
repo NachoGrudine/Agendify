@@ -7,7 +7,7 @@ public class User
     public string PasswordHash { get; set; } = string.Empty;
     public int BusinessId { get; set; }
     public int ProviderId { get; set; }
-    
+
     // Navigation properties
     public Business? Business { get; set; }
     public Provider? Provider { get; set; }

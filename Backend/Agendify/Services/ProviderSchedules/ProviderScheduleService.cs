@@ -1,7 +1,6 @@
-﻿﻿using Agendify.Models.Entities;
+﻿using Agendify.Models.Entities;
 using Agendify.DTOs.ProviderSchedule;
 using Agendify.Repositories;
-using Agendify.Common.Errors;
 using Agendify.Services.Providers;
 using FluentResults;
 
@@ -19,88 +18,123 @@ public class ProviderScheduleService : IProviderScheduleService
         _scheduleRepository = scheduleRepository;
         _providerService = providerService;
     }
-
-    public async Task<Result<ProviderScheduleResponseDto>> CreateAsync(int businessId, CreateProviderScheduleDto dto)
-    {
-        // Verificar que el provider pertenece al business
-        var providerResult = await _providerService.GetByIdAsync(businessId, dto.ProviderId);
-        if (providerResult.IsFailed)
-        {
-            return Result.Fail(providerResult.Errors);
-        }
-
-        var schedule = new ProviderSchedule
-        {
-            ProviderId = dto.ProviderId,
-            DayOfWeek = dto.DayOfWeek,
-            StartTime = dto.StartTime,
-            EndTime = dto.EndTime
-        };
-
-        await _scheduleRepository.AddAsync(schedule);
-        return Result.Ok(MapToResponseDto(schedule));
-    }
-
-    public async Task<Result<ProviderScheduleResponseDto>> UpdateAsync(int businessId, int id, UpdateProviderScheduleDto dto)
-    {
-        var schedule = await _scheduleRepository.GetByIdAsync(id);
-        if (schedule == null)
-        {
-            return Result.Fail(new NotFoundError("Horario no encontrado"));
-        }
-
-        // Verificar que el provider pertenece al business
-        var providerResult = await _providerService.GetByIdAsync(businessId, schedule.ProviderId);
-        if (providerResult.IsFailed)
-        {
-            return Result.Fail(providerResult.Errors);
-        }
-
-        schedule.DayOfWeek = dto.DayOfWeek;
-        schedule.StartTime = dto.StartTime;
-        schedule.EndTime = dto.EndTime;
-
-        var updated = await _scheduleRepository.UpdateAsync(schedule);
-        return Result.Ok(MapToResponseDto(updated));
-    }
-
-    public async Task<Result<ProviderScheduleResponseDto>> GetByIdAsync(int businessId, int id)
-    {
-        var schedule = await _scheduleRepository.GetByIdAsync(id);
-        if (schedule == null)
-        {
-            return Result.Fail(new NotFoundError("Horario no encontrado"));
-        }
-
-        // Verificar que el provider pertenece al business
-        var providerResult = await _providerService.GetByIdAsync(businessId, schedule.ProviderId);
-        if (providerResult.IsFailed)
-        {
-            return Result.Fail(providerResult.Errors);
-        }
-
-        return Result.Ok(MapToResponseDto(schedule));
-    }
-
+    
+    /// <summary>
+    /// Obtiene los schedules vigentes (actuales) de un provider específico
+    /// </summary>
+    /// <returns>Lista de schedules con ValidUntil = NULL (solo los que están activos actualmente)</returns>
     public async Task<Result<IEnumerable<ProviderScheduleResponseDto>>> GetByProviderAsync(int businessId, int providerId)
     {
-        // Verificar que el provider pertenece al business
         var providerResult = await _providerService.GetByIdAsync(businessId, providerId);
         if (providerResult.IsFailed)
         {
             return Result.Fail(providerResult.Errors);
         }
 
-        var schedules = await _scheduleRepository.FindAsync(s => s.ProviderId == providerId);
+        var schedules = await _scheduleRepository.FindAsync(s => 
+            s.ProviderId == providerId && s.ValidUntil == null);
+        
         return Result.Ok(schedules.Select(MapToResponseDto));
     }
 
-    public async Task<Dictionary<DayOfWeek, int>> GetScheduledMinutesByProviderIdsAsync(List<int> providerIds)
+    /// <summary>
+    /// Obtiene minutos programados por día de semana para UNA FECHA ESPECÍFICA usando versionado temporal
+    /// </summary>
+    /// <param name="providerIds">Lista de IDs de providers</param>
+    /// <param name="date">Fecha específica para consultar schedules históricos</param>
+    /// <returns>Dictionary con minutos por día de semana (ej: {Monday: 540, Tuesday: 540})</returns>
+    /// <remarks>Usa ValidFrom/ValidUntil para obtener schedules que eran válidos en esa fecha</remarks>
+    public async Task<Dictionary<DayOfWeek, int>> GetScheduledMinutesByProviderIdsForDateAsync(
+        List<int> providerIds, 
+        DateTime date)
     {
-        var allSchedules = await _scheduleRepository.FindAsync(s => providerIds.Contains(s.ProviderId));
+        var schedules = await _scheduleRepository.FindAsync(s => 
+            providerIds.Contains(s.ProviderId) &&
+            s.ValidFrom <= date &&
+            (s.ValidUntil == null || s.ValidUntil >= date));
+        
+        return CalculateMinutesByDayOfWeek(schedules);
+    }
+
+    /// <summary>
+    /// Obtiene TODOS los schedules que intersectan con un rango de fechas (1 query optimizada)
+    /// </summary>
+    /// <param name="providerIds">Lista de IDs de providers</param>
+    /// <param name="startDate">Fecha inicio del rango</param>
+    /// <param name="endDate">Fecha fin del rango</param>
+    /// <returns>Lista completa de schedules (incluye históricos y vigentes) para filtrar en memoria</returns>
+    /// <remarks>Retorna schedules donde ValidFrom menor igual endDate AND (ValidUntil IS NULL OR ValidUntil mayor igual startDate)</remarks>
+    public async Task<List<ProviderSchedule>> GetSchedulesForDateRangeAsync(
+        List<int> providerIds,
+        DateTime startDate,
+        DateTime endDate)
+    {
+        var schedules = await _scheduleRepository.FindAsync(s =>
+            providerIds.Contains(s.ProviderId) &&
+            s.ValidFrom <= endDate &&
+            (s.ValidUntil == null || s.ValidUntil >= startDate));
+
+        return schedules.ToList();
+    }
+    
+    /// <summary>
+    /// Crea schedules por defecto para un provider nuevo (Lun-Vie 9-18)
+    /// </summary>
+    /// <param name="providerId">ID del provider</param>
+    /// <returns>Result Ok si se crearon correctamente</returns>
+    /// <remarks>Inserta 5 schedules en bulk con ValidFrom = hoy, ValidUntil = NULL</remarks>
+    public async Task<Result> CreateDefaultSchedulesAsync(int providerId)
+    {
+        var defaultSchedules = CreateDefaultSchedulesList(providerId);
+        await _scheduleRepository.AddRangeAsync(defaultSchedules);
+        return Result.Ok();
+    }
+
+    /// <summary>
+    /// Actualiza schedules de un provider usando estrategia granular (cierra viejos, inserta nuevos)
+    /// </summary>
+    /// <param name="businessId">ID del business</param>
+    /// <param name="providerId">ID del provider</param>
+    /// <param name="dto">Lista de schedules nuevos a aplicar</param>
+    /// <returns>Lista de schedules vigentes después del update</returns>
+    /// <remarks>
+    /// NO elimina schedules, los cierra (ValidUntil = ayer) para mantener historial.
+    /// Usa comparación granular: solo modifica lo que cambió.
+    /// Operaciones bulk para mejor performance.
+    /// </remarks>
+    public async Task<Result<IEnumerable<ProviderScheduleResponseDto>>> BulkUpdateAsync(
+        int businessId, 
+        int providerId, 
+        BulkUpdateProviderSchedulesDto dto)
+    {
+        var providerResult = await _providerService.GetByIdAsync(businessId, providerId);
+        if (providerResult.IsFailed)
+        {
+            return Result.Fail(providerResult.Errors);
+        }
+
+        var existingSchedules = await _scheduleRepository.FindAsync(s => 
+            s.ProviderId == providerId && s.ValidUntil == null);
+        
+        var (toClose, toInsert) = IdentifyChanges(existingSchedules.ToList(), dto.Schedules, providerId);
+
+        await CloseOldSchedules(toClose);
+        await InsertNewSchedules(toInsert);
+
+        var finalSchedules = await _scheduleRepository.FindAsync(s => 
+            s.ProviderId == providerId && s.ValidUntil == null);
+        
+        return Result.Ok(finalSchedules.Select(MapToResponseDto));
+    }
+    
+    /// <summary>
+    /// Calcula minutos programados por día de semana
+    /// </summary>
+    private static Dictionary<DayOfWeek, int> CalculateMinutesByDayOfWeek(IEnumerable<ProviderSchedule> schedules)
+    {
         var minutesByDayOfWeek = new Dictionary<DayOfWeek, int>();
 
-        foreach (var schedule in allSchedules)
+        foreach (var schedule in schedules)
         {
             var minutes = (int)(schedule.EndTime - schedule.StartTime).TotalMinutes;
 
@@ -115,106 +149,98 @@ public class ProviderScheduleService : IProviderScheduleService
         return minutesByDayOfWeek;
     }
 
-    public async Task<Result> DeleteAsync(int businessId, int id)
+    /// <summary>
+    /// Crea lista de schedules por defecto (Lun-Vie 9-18)
+    /// </summary>
+    private static List<ProviderSchedule> CreateDefaultSchedulesList(int providerId)
     {
-        var schedule = await _scheduleRepository.GetByIdAsync(id);
-        if (schedule == null)
-        {
-            return Result.Fail(new NotFoundError("Horario no encontrado"));
-        }
-
-        // Verificar que el provider pertenece al business
-        var providerResult = await _providerService.GetByIdAsync(businessId, schedule.ProviderId);
-        if (providerResult.IsFailed)
-        {
-            return Result.Fail(providerResult.Errors);
-        }
-
-        schedule.IsDeleted = true;
-        await _scheduleRepository.UpdateAsync(schedule);
-        
-        return Result.Ok();
-    }
-
-    public async Task<Result> CreateDefaultSchedulesAsync(int providerId)
-    {
-        // Crear horarios por defecto de lunes a viernes de 09:00 a 18:00
         var defaultSchedules = new List<ProviderSchedule>();
-        
+        var now = DateTime.UtcNow;
+
         for (int day = (int)DayOfWeek.Monday; day <= (int)DayOfWeek.Friday; day++)
         {
-            var schedule = new ProviderSchedule
+            defaultSchedules.Add(new ProviderSchedule
             {
                 ProviderId = providerId,
                 DayOfWeek = (DayOfWeek)day,
-                StartTime = new TimeSpan(9, 0, 0),  // 09:00
-                EndTime = new TimeSpan(18, 0, 0)     // 18:00
-            };
-            
-            defaultSchedules.Add(schedule);
+                StartTime = new TimeSpan(9, 0, 0),
+                EndTime = new TimeSpan(18, 0, 0),
+                ValidFrom = now,
+                ValidUntil = null
+            });
         }
 
-        // Agregar todos los horarios
-        foreach (var schedule in defaultSchedules)
-        {
-            await _scheduleRepository.AddAsync(schedule);
-        }
-
-        return Result.Ok();
+        return defaultSchedules;
     }
 
-    public async Task<Result<IEnumerable<ProviderScheduleResponseDto>>> BulkUpdateAsync(
-        int businessId, 
-        int providerId, 
-        BulkUpdateProviderSchedulesDto dto)
+    /// <summary>
+    /// Cierra schedules viejos (setea ValidUntil a ayer)
+    /// </summary>
+    private async Task CloseOldSchedules(List<ProviderSchedule> schedulesToClose)
     {
-        // Verificar que el provider pertenece al business
-        var providerResult = await _providerService.GetByIdAsync(businessId, providerId);
-        if (providerResult.IsFailed)
+        if (!schedulesToClose.Any())
+            return;
+
+        var yesterday = DateTime.UtcNow.Date.AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59);
+
+        foreach (var schedule in schedulesToClose)
         {
-            return Result.Fail(providerResult.Errors);
+            schedule.ValidUntil = yesterday;
+            await _scheduleRepository.UpdateAsync(schedule);
+        }
+    }
+
+    /// <summary>
+    /// Inserta nuevos schedules con validez desde hoy
+    /// </summary>
+    private async Task InsertNewSchedules(List<ProviderSchedule> schedulesToInsert)
+    {
+        if (!schedulesToInsert.Any())
+            return;
+
+        var now = DateTime.UtcNow;
+
+        foreach (var schedule in schedulesToInsert)
+        {
+            schedule.ValidFrom = now.Date;
+            schedule.ValidUntil = null;
         }
 
-        // Validación adicional: StartTime debe ser menor a EndTime
-        foreach (var item in dto.Schedules)
-        {
-            if (item.StartTime >= item.EndTime)
-            {
-                return Result.Fail(new BadRequestError(
-                    $"La hora de inicio debe ser menor a la hora de fin para el día {item.DayOfWeek}"));
-            }
-        }
+        await _scheduleRepository.AddRangeAsync(schedulesToInsert);
+    }
 
-        // 1. Identificar días afectados
-        var affectedDays = dto.Schedules.Select(s => s.DayOfWeek).Distinct().ToList();
+    /// <summary>
+    /// Identifica qué schedules cerrar y cuáles insertar (comparación granular)
+    /// </summary>
+    private static (List<ProviderSchedule> ToClose, List<ProviderSchedule> ToInsert) IdentifyChanges(
+        List<ProviderSchedule> existing,
+        List<ProviderScheduleItemDto> incoming,
+        int providerId)
+    {
+        var incomingSet = incoming
+            .Select(s => new ScheduleKey(s.DayOfWeek, s.StartTime, s.EndTime))
+            .ToHashSet();
 
-        // 2. Limpieza específica (Wipe): Eliminar SOLO los horarios de los días afectados
-        var existingSchedules = await _scheduleRepository.FindAsync(
-            s => s.ProviderId == providerId && affectedDays.Contains(s.DayOfWeek));
-        
-        var schedulesList = existingSchedules.ToList();
-        if (schedulesList.Any())
-        {
-            await _scheduleRepository.DeleteRangeAsync(schedulesList);
-        }
+        var existingSet = existing
+            .Select(s => new ScheduleKey(s.DayOfWeek, s.StartTime, s.EndTime))
+            .ToHashSet();
 
-        // 3. Inserción (Replace): Insertar los nuevos horarios
-        var newSchedules = new List<ProviderSchedule>();
-        foreach (var item in dto.Schedules)
-        {
-            var schedule = new ProviderSchedule
+        var toClose = existing
+            .Where(e => !incomingSet.Contains(new ScheduleKey(e.DayOfWeek, e.StartTime, e.EndTime)))
+            .ToList();
+
+        var toInsert = incoming
+            .Where(i => !existingSet.Contains(new ScheduleKey(i.DayOfWeek, i.StartTime, i.EndTime)))
+            .Select(s => new ProviderSchedule
             {
                 ProviderId = providerId,
-                DayOfWeek = item.DayOfWeek,
-                StartTime = item.StartTime,
-                EndTime = item.EndTime
-            };
-            
-            var created = await _scheduleRepository.AddAsync(schedule);
-            newSchedules.Add(created);
-        }
+                DayOfWeek = s.DayOfWeek,
+                StartTime = s.StartTime,
+                EndTime = s.EndTime
+            })
+            .ToList();
 
-        return Result.Ok(newSchedules.Select(MapToResponseDto));
+        return (toClose, toInsert);
     }
 
     private static ProviderScheduleResponseDto MapToResponseDto(ProviderSchedule schedule)
@@ -228,5 +254,7 @@ public class ProviderScheduleService : IProviderScheduleService
             EndTime = schedule.EndTime
         };
     }
+
+    private record ScheduleKey(DayOfWeek DayOfWeek, TimeSpan StartTime, TimeSpan EndTime);
 }
 

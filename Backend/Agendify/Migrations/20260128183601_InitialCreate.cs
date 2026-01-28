@@ -113,6 +113,8 @@ namespace Agendify.Migrations
                     DayOfWeek = table.Column<int>(type: "int", nullable: false),
                     StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     EndTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    ValidFrom = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ValidUntil = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
@@ -237,6 +239,11 @@ namespace Agendify.Migrations
                 name: "IX_ProviderSchedules_ProviderId_DayOfWeek",
                 table: "ProviderSchedules",
                 columns: new[] { "ProviderId", "DayOfWeek" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProviderSchedules_ProviderId_ValidFrom_ValidUntil",
+                table: "ProviderSchedules",
+                columns: new[] { "ProviderId", "ValidFrom", "ValidUntil" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Services_BusinessId",
