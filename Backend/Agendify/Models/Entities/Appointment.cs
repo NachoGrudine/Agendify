@@ -11,6 +11,7 @@ public class Appointment : BaseEntity
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
     public AppointmentStatus Status { get; set; }
+    public string? Notes { get; set; }
     
     // Navigation properties
     public Business? Business { get; set; }

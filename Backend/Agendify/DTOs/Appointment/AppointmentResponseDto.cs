@@ -1,4 +1,4 @@
-﻿using Agendify.Models.Enums;
+﻿﻿using Agendify.Models.Enums;
 
 namespace Agendify.DTOs.Appointment;
 
@@ -14,5 +14,6 @@ public class AppointmentResponseDto
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
     public AppointmentStatus Status { get; set; }
+    public string? Notes { get; set; }
 }
 

@@ -1,4 +1,4 @@
-﻿using Agendify.Models.Entities;
+﻿﻿using Agendify.Models.Entities;
 using Agendify.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -22,6 +22,9 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
         builder.Property(a => a.Status)
             .IsRequired()
             .HasDefaultValue(AppointmentStatus.Pending);
+        
+        builder.Property(a => a.Notes)
+            .HasMaxLength(1000);
         
         builder.Property(a => a.CreatedAt)
             .IsRequired();
