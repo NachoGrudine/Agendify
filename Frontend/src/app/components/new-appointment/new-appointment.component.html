@@ -1,0 +1,152 @@
+﻿<div class="modal-overlay">
+  <div class="modal-card">
+    <!-- Header con Fecha -->
+    <div class="modal-header">
+      <div>
+        <h2 class="modal-title">Nuevo Turno</h2>
+        <p class="modal-subtitle">{{ formattedSelectedDate }}</p>
+      </div>
+      <button class="btn-icon-close" (click)="onCancel()" type="button">
+        <i-lucide [img]="XIcon" [size]="20"></i-lucide>
+      </button>
+    </div>
+
+    <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()" class="modal-body">
+
+      <!-- Provider (si hay múltiples) -->
+      @if (showProviderField()) {
+        <div class="form-field">
+          <label class="field-label">PROFESIONAL</label>
+          <select formControlName="providerId" class="field-select" (change)="onProviderChange($event)">
+            <option value="">Seleccionar profesional...</option>
+            @for (provider of providers(); track provider.id) {
+              <option [value]="provider.id">{{ provider.name }} - {{ provider.specialty }}</option>
+            }
+          </select>
+        </div>
+      }
+
+      <!-- Cliente -->
+      <div class="form-field">
+        <label class="field-label">CLIENTE</label>
+        <div class="field-input-wrapper">
+          <i-lucide [img]="UserIcon" [size]="18" class="field-icon"></i-lucide>
+          <input
+            type="text"
+            formControlName="customerSearch"
+            class="field-input with-icon"
+            placeholder="Buscar cliente..."
+            autocomplete="off">
+        </div>
+
+        @if (showCustomerDropdown() && filteredCustomers().length > 0) {
+          <div class="dropdown-results">
+            @for (customer of filteredCustomers(); track customer.id) {
+              <button type="button" class="dropdown-item" (click)="selectCustomer(customer)">
+                <strong>{{ customer.name }}</strong>
+                @if (customer.phone || customer.email) {
+                  <span class="item-meta">{{ customer.phone || customer.email }}</span>
+                }
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Servicio -->
+      <div class="form-field">
+        <label class="field-label">SERVICIO</label>
+        <div class="field-input-wrapper">
+          <i-lucide [img]="BriefcaseIcon" [size]="18" class="field-icon"></i-lucide>
+          <input
+            type="text"
+            formControlName="serviceSearch"
+            class="field-input with-icon"
+            placeholder="Buscar servicio..."
+            autocomplete="off">
+        </div>
+
+        @if (showServiceDropdown() && filteredServices().length > 0) {
+          <div class="dropdown-results">
+            @for (service of filteredServices(); track service.id) {
+              <button type="button" class="dropdown-item" (click)="selectService(service)">
+                <strong>{{ service.name }}</strong>
+                <span class="item-meta">{{ service.defaultDuration }} min @if (service.price) {· ${{ service.price }}}</span>
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Horarios -->
+      <div class="form-grid-2">
+        <div class="form-field">
+          <label class="field-label">HORA INICIO</label>
+          <div class="field-input-wrapper">
+            <i-lucide [img]="ClockIcon" [size]="18" class="field-icon"></i-lucide>
+            <input
+              type="time"
+              formControlName="startTime"
+              class="field-input with-icon">
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="field-label">HORA FIN</label>
+          <div class="field-input-wrapper">
+            <i-lucide [img]="ClockIcon" [size]="18" class="field-icon"></i-lucide>
+            <input
+              type="time"
+              formControlName="endTime"
+              class="field-input with-icon">
+          </div>
+        </div>
+      </div>
+
+      <!-- Notas Internas -->
+      <div class="form-field">
+        <label class="field-label">NOTAS INTERNAS</label>
+        <textarea
+          formControlName="notes"
+          class="field-textarea"
+          rows="3"
+          placeholder="Detalles adicionales..."></textarea>
+      </div>
+
+      <!-- Alertas -->
+      @if (errorMessage()) {
+        <div class="alert alert-danger">
+          {{ errorMessage() }}
+        </div>
+      }
+      @if (successMessage()) {
+        <div class="alert alert-success">
+          {{ successMessage() }}
+        </div>
+      }
+
+    </form>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn-text" (click)="appointmentForm.reset()">
+        Limpiar
+      </button>
+      <div class="footer-actions">
+        <button type="button" class="btn-secondary" (click)="onCancel()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-primary" (click)="onSubmit()" [disabled]="isSaving()">
+          Crear Turno
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    @if (isLoading()) {
+      <div class="loading-overlay">
+        <div class="spinner"></div>
+      </div>
+    }
+  </div>
+</div>

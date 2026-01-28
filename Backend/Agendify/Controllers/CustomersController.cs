@@ -1,4 +1,4 @@
-﻿using Agendify.DTOs.Customer;
+﻿﻿using Agendify.DTOs.Customer;
 using Agendify.Services.Customers;
 using Agendify.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -24,6 +24,14 @@ public class CustomersController : BaseController
     {
         var businessId = GetBusinessId();
         var customers = await _customerService.GetByBusinessAsync(businessId);
+        return Ok(customers);
+    }
+
+    [HttpGet("search")]
+    public async Task<ActionResult<IEnumerable<CustomerResponseDto>>> Search([FromQuery] string name)
+    {
+        var businessId = GetBusinessId();
+        var customers = await _customerService.SearchByNameAsync(businessId, name);
         return Ok(customers);
     }
 

@@ -15,6 +15,10 @@ export class ScheduleService {
     return this.http.get<ProviderScheduleResponse[]>(`${this.API_URL}/me`);
   }
 
+  getProviderSchedules(providerId: number): Observable<ProviderScheduleResponse[]> {
+    return this.http.get<ProviderScheduleResponse[]>(`${this.API_URL}/provider/${providerId}`);
+  }
+
   bulkUpdateMySchedules(dto: BulkUpdateScheduleDto): Observable<ProviderScheduleResponse[]> {
     return this.http.put<ProviderScheduleResponse[]>(`${this.API_URL}/me/bulk-update`, dto);
   }

@@ -1,5 +1,6 @@
 import { Component, signal, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { FullCalendarModule, FullCalendarComponent } from '@fullcalendar/angular';
 import { CalendarOptions, EventClickArg, DateSelectArg, DatesSetArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -8,16 +9,18 @@ import esLocale from '@fullcalendar/core/locales/es';
 import { CalendarService } from '../../services/calendar.service';
 import { CalendarDaySummaryDto } from '../../models/calendar.model';
 import { LucideAngularModule, X, ChevronLeft, ChevronRight, Bell } from 'lucide-angular';
+import { DayActionModalComponent } from '../day-action-modal/day-action-modal.component';
 
 @Component({
   selector: 'app-agenda',
   standalone: true,
-  imports: [CommonModule, FullCalendarModule, LucideAngularModule],
+  imports: [CommonModule, FullCalendarModule, LucideAngularModule, DayActionModalComponent],
   templateUrl: './agenda.component.html',
   styleUrls: ['./agenda.component.css']
 })
 export class AgendaComponent implements OnInit {
   private readonly calendarService = inject(CalendarService);
+  private readonly router = inject(Router);
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
 
   // Iconos Lucide
@@ -234,5 +237,20 @@ export class AgendaComponent implements OnInit {
   closeModal(): void {
     this.showNewAppointmentModal.set(false);
     this.selectedDate.set(null);
+  }
+
+  onViewDay(): void {
+    console.log('Ver agenda del día:', this.selectedDate());
+    // TODO: Navegar a vista detallada del día o abrir modal con detalles
+  }
+
+  onNewAppointment(): void {
+    const date = this.selectedDate();
+    if (date) {
+      // Navegar al formulario de nuevo turno pasando la fecha
+      this.router.navigate(['/dashboard/nuevo-turno'], {
+        queryParams: { date: date.toISOString().split('T')[0] }
+      });
+    }
   }
 }

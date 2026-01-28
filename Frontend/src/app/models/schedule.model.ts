@@ -22,16 +22,16 @@ export enum DayOfWeek {
 
 export interface BulkUpdateScheduleDto {
   schedules: {
-    day_of_week: DayOfWeek;
-    start_time: string;
-    end_time: string;
+    dayOfWeek: DayOfWeek;
+    startTime: string;
+    endTime: string;
   }[];
 }
 
 export interface ProviderScheduleResponse {
   id: number;
-  provider_id: number;
-  day_of_week: DayOfWeek;
-  start_time: string;
-  end_time: string;
+  providerId: number;
+  dayOfWeek: DayOfWeek;
+  startTime: string;
+  endTime: string;
 }

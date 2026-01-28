@@ -20,7 +20,6 @@ public class ServiceConfiguration : IEntityTypeConfiguration<Service>
             .IsRequired();
         
         builder.Property(s => s.Price)
-            .IsRequired()
             .HasPrecision(18, 2);
         
         builder.Property(s => s.CreatedAt)

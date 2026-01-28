@@ -21,6 +21,10 @@ export const routes: Routes = [
         loadComponent: () => import('./components/agenda/agenda.component').then(m => m.AgendaComponent)
       },
       {
+        path: 'nuevo-turno',
+        loadComponent: () => import('./components/new-appointment/new-appointment.component').then(m => m.NewAppointmentComponent)
+      },
+      {
         path: 'clientes',
         loadComponent: () => import('./components/clientes/clientes.component').then(m => m.ClientesComponent)
       },

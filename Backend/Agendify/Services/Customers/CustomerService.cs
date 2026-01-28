@@ -1,4 +1,4 @@
-﻿using Agendify.Common.Errors;
+﻿﻿using Agendify.Common.Errors;
 using Agendify.Models.Entities;
 using Agendify.DTOs.Customer;
 using Agendify.Repositories;
@@ -59,6 +59,14 @@ public class CustomerService : ICustomerService
     public async Task<IEnumerable<CustomerResponseDto>> GetByBusinessAsync(int businessId)
     {
         var customers = await _customerRepository.FindAsync(c => c.BusinessId == businessId);
+        return customers.Select(MapToResponseDto);
+    }
+
+    public async Task<IEnumerable<CustomerResponseDto>> SearchByNameAsync(int businessId, string name)
+    {
+        var customers = await _customerRepository.FindAsync(c =>
+            c.BusinessId == businessId &&
+            c.Name.ToLower().Contains(name.ToLower()));
         return customers.Select(MapToResponseDto);
     }
 

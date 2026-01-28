@@ -1,4 +1,4 @@
-﻿using Agendify.Models.Entities;
+﻿﻿using Agendify.Models.Entities;
 using Agendify.DTOs.Service;
 using Agendify.Repositories;
 using Agendify.Common.Errors;
@@ -59,6 +59,14 @@ public class ServiceService : IServiceService
     public async Task<IEnumerable<ServiceResponseDto>> GetByBusinessAsync(int businessId)
     {
         var services = await _serviceRepository.FindAsync(s => s.BusinessId == businessId);
+        return services.Select(MapToResponseDto);
+    }
+
+    public async Task<IEnumerable<ServiceResponseDto>> SearchByNameAsync(int businessId, string name)
+    {
+        var services = await _serviceRepository.FindAsync(s =>
+            s.BusinessId == businessId &&
+            s.Name.ToLower().Contains(name.ToLower()));
         return services.Select(MapToResponseDto);
     }
 

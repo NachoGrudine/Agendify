@@ -1,4 +1,4 @@
-﻿<div class="agenda-container">
+﻿﻿<div class="agenda-container">
   <!-- Header superior con selector de mes, notificaciones y usuario -->
   <div class="top-header">
     <div class="header-content">
@@ -57,27 +57,12 @@
     </div>
   </div>
 
-  <!-- Modal para nuevo turno (placeholder) -->
-  @if (showNewAppointmentModal()) {
-    <div class="modal-overlay" (click)="closeModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <h2>Nuevo Turno</h2>
-          <button class="btn-close" (click)="closeModal()">
-            <i-lucide [img]="XIcon" [size]="20"></i-lucide>
-          </button>
-        </div>
-        <div class="modal-body">
-          <p>Formulario de nuevo turno en desarrollo...</p>
-          @if (selectedDate()) {
-            <p class="selected-date">Fecha seleccionada: {{ selectedDate() | date:'dd/MM/yyyy' }}</p>
-          }
-        </div>
-        <div class="modal-footer">
-          <button class="btn-secondary" (click)="closeModal()">Cancelar</button>
-          <button class="btn-primary">Crear Turno</button>
-        </div>
-      </div>
-    </div>
-  }
+  <!-- Modal para seleccionar acción del día -->
+  <app-day-action-modal
+    [isOpen]="showNewAppointmentModal()"
+    [selectedDate]="selectedDate()"
+    (close)="closeModal()"
+    (viewDay)="onViewDay()"
+    (newAppointment)="onNewAppointment()"
+  ></app-day-action-modal>
 </div>

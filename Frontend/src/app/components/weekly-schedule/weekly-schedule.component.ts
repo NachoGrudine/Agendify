@@ -134,9 +134,9 @@ export class WeeklyScheduleComponent implements OnInit {
       .filter(day => day.isOpen && day.slots.length > 0)
       .flatMap(day =>
         day.slots.map((slot: TimeRange) => ({
-          day_of_week: day.dayOfWeek,
-          start_time: `${slot.start}:00`,
-          end_time: `${slot.end}:00`
+          dayOfWeek: day.dayOfWeek,
+          startTime: `${slot.start}:00`,
+          endTime: `${slot.end}:00`
         }))
       );
 
