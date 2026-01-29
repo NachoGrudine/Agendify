@@ -48,11 +48,14 @@ public class ProviderScheduleService : IProviderScheduleService
         List<int> providerIds, 
         DateTime date)
     {
-        var schedules = await _scheduleRepository.FindAsync(s => 
+        // Normalizar la fecha a medianoche para comparaciones correctas
+        var dateOnly = date.Date;
+
+        var schedules = await _scheduleRepository.FindAsync(s =>
             providerIds.Contains(s.ProviderId) &&
-            s.ValidFrom <= date &&
-            (s.ValidUntil == null || s.ValidUntil >= date));
-        
+            s.ValidFrom.Date <= dateOnly &&
+            (s.ValidUntil == null || s.ValidUntil.Value.Date >= dateOnly));
+
         return CalculateMinutesByDayOfWeek(schedules);
     }
 
@@ -69,10 +72,14 @@ public class ProviderScheduleService : IProviderScheduleService
         DateTime startDate,
         DateTime endDate)
     {
+        // Normalizar las fechas a medianoche para comparaciones correctas
+        var startDateOnly = startDate.Date;
+        var endDateOnly = endDate.Date;
+
         var schedules = await _scheduleRepository.FindAsync(s =>
             providerIds.Contains(s.ProviderId) &&
-            s.ValidFrom <= endDate &&
-            (s.ValidUntil == null || s.ValidUntil >= startDate));
+            s.ValidFrom.Date <= endDateOnly &&
+            (s.ValidUntil == null || s.ValidUntil.Value.Date >= startDateOnly));
 
         return schedules.ToList();
     }
@@ -155,7 +162,7 @@ public class ProviderScheduleService : IProviderScheduleService
     private static List<ProviderSchedule> CreateDefaultSchedulesList(int providerId)
     {
         var defaultSchedules = new List<ProviderSchedule>();
-        var now = DateTime.UtcNow;
+        var now = DateTime.Now; // Usar hora local para consistencia
 
         for (int day = (int)DayOfWeek.Monday; day <= (int)DayOfWeek.Friday; day++)
         {
@@ -181,7 +188,7 @@ public class ProviderScheduleService : IProviderScheduleService
         if (!schedulesToClose.Any())
             return;
 
-        var yesterday = DateTime.UtcNow.Date.AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59);
+        var yesterday = DateTime.Now.Date.AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59); // Usar hora local
 
         foreach (var schedule in schedulesToClose)
         {
@@ -198,7 +205,7 @@ public class ProviderScheduleService : IProviderScheduleService
         if (!schedulesToInsert.Any())
             return;
 
-        var now = DateTime.UtcNow;
+        var now = DateTime.Now; // Usar hora local
 
         foreach (var schedule in schedulesToInsert)
         {

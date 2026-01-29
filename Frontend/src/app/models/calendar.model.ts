@@ -10,9 +10,14 @@ export interface DayDetailsDto {
   date: string;
   dayOfWeek: string;
   totalAppointments: number;
+  appointmentsTrend: number; // Diferencia con el día anterior (ej: +2, -3, 0)
   totalScheduledMinutes: number;
   totalOccupiedMinutes: number;
   appointments: AppointmentDetailDto[];
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  totalCount: number;
 }
 
 export interface AppointmentDetailDto {

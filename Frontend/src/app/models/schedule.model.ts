@@ -31,7 +31,7 @@ export interface BulkUpdateScheduleDto {
 export interface ProviderScheduleResponse {
   id: number;
   providerId: number;
-  dayOfWeek: DayOfWeek;
+  dayOfWeek: DayOfWeek | string; // Puede venir como número o string ("Monday", "Tuesday", etc.)
   startTime: string;
   endTime: string;
 }

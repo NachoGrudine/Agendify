@@ -8,13 +8,12 @@ import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import { CalendarService } from '../../services/calendar.service';
 import { CalendarDaySummaryDto } from '../../models/calendar.model';
-import { LucideAngularModule, X, ChevronLeft, ChevronRight, Bell } from 'lucide-angular';
-import { DayActionModalComponent } from '../day-action-modal/day-action-modal.component';
+import { LucideAngularModule, ChevronLeft, ChevronRight, Bell } from 'lucide-angular';
 
 @Component({
   selector: 'app-agenda',
   standalone: true,
-  imports: [CommonModule, FullCalendarModule, LucideAngularModule, DayActionModalComponent],
+  imports: [CommonModule, FullCalendarModule, LucideAngularModule],
   templateUrl: './agenda.component.html',
   styleUrls: ['./agenda.component.css']
 })
@@ -24,7 +23,6 @@ export class AgendaComponent implements OnInit {
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
 
   // Iconos Lucide
-  readonly XIcon = X;
   readonly ChevronLeftIcon = ChevronLeft;
   readonly ChevronRightIcon = ChevronRight;
   readonly BellIcon = Bell;
@@ -72,9 +70,6 @@ export class AgendaComponent implements OnInit {
     dayCellContent: this.renderDayCell.bind(this),
     events: []
   });
-
-  showNewAppointmentModal = signal(false);
-  selectedDate = signal<Date | null>(null);
 
   ngOnInit(): void {
     this.updateMonthYearDisplay();
@@ -147,7 +142,9 @@ export class AgendaComponent implements OnInit {
         // Crear un Map con la fecha como key para acceso rápido
         const dataMap = new Map<string, CalendarDaySummaryDto>();
         data.forEach(day => {
-          const dateKey = new Date(day.date).toISOString().split('T')[0];
+          // Parsear la fecha del backend y usar formato local
+          const d = new Date(day.date);
+          const dateKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
           dataMap.set(dateKey, day);
         });
 
@@ -180,7 +177,9 @@ export class AgendaComponent implements OnInit {
    * Personaliza el contenido de cada celda del día
    */
   renderDayCell(arg: any): any {
-    const dateStr = arg.date.toISOString().split('T')[0];
+    // Usar formato local para evitar problemas de timezone
+    const d = arg.date;
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     const dayData = this.calendarData().get(dateStr);
 
     // Si no hay datos o ambos valores son 0, solo mostrar el número
@@ -222,34 +221,23 @@ export class AgendaComponent implements OnInit {
   }
 
   handleDateSelect(selectInfo: DateSelectArg): void {
-    this.selectedDate.set(selectInfo.start);
-    this.showNewAppointmentModal.set(true);
+    // Navegar directamente a la vista de detalle del día
+    // Usar formato local para evitar problemas de timezone
+    const d = selectInfo.start;
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    this.router.navigate(['/dashboard/agenda/dia'], {
+      queryParams: { date: dateStr }
+    });
   }
 
   handleEventClick(clickInfo: EventClickArg): void {
-    // Aquí se puede abrir un modal con los detalles del turno
-  }
-
-  openNewAppointmentModal(): void {
-    this.showNewAppointmentModal.set(true);
-  }
-
-  closeModal(): void {
-    this.showNewAppointmentModal.set(false);
-    this.selectedDate.set(null);
-  }
-
-  onViewDay(): void {
-    console.log('Ver agenda del día:', this.selectedDate());
-    // TODO: Navegar a vista detallada del día o abrir modal con detalles
-  }
-
-  onNewAppointment(): void {
-    const date = this.selectedDate();
-    if (date) {
-      // Navegar al formulario de nuevo turno pasando la fecha
-      this.router.navigate(['/dashboard/nuevo-turno'], {
-        queryParams: { date: date.toISOString().split('T')[0] }
+    // Cuando se hace clic en un evento, también ir al día completo
+    const eventStart = clickInfo.event.start;
+    if (eventStart) {
+      // Usar formato local para evitar problemas de timezone
+      const dateStr = `${eventStart.getFullYear()}-${String(eventStart.getMonth() + 1).padStart(2, '0')}-${String(eventStart.getDate()).padStart(2, '0')}`;
+      this.router.navigate(['/dashboard/agenda/dia'], {
+        queryParams: { date: dateStr }
       });
     }
   }

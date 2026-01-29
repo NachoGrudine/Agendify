@@ -78,29 +78,14 @@
         }
       </div>
 
-      <!-- Horarios -->
-      <div class="form-grid-2">
-        <div class="form-field">
-          <label class="field-label">HORA INICIO</label>
-          <div class="field-input-wrapper">
-            <i-lucide [img]="ClockIcon" [size]="18" class="field-icon"></i-lucide>
-            <input
-              type="time"
-              formControlName="startTime"
-              class="field-input with-icon">
-          </div>
-        </div>
-
-        <div class="form-field">
-          <label class="field-label">HORA FIN</label>
-          <div class="field-input-wrapper">
-            <i-lucide [img]="ClockIcon" [size]="18" class="field-icon"></i-lucide>
-            <input
-              type="time"
-              formControlName="endTime"
-              class="field-input with-icon">
-          </div>
-        </div>
+      <!-- Horarios con Time Range Picker -->
+      <div class="form-field full-width">
+        <app-time-range-picker
+          [startTime]="appointmentForm.get('startTime')?.value || '09:00'"
+          [endTime]="appointmentForm.get('endTime')?.value || '10:00'"
+          [step]="15"
+          (timeRangeChange)="onTimeRangeChange($event)">
+        </app-time-range-picker>
       </div>
 
       <!-- Notas Internas -->

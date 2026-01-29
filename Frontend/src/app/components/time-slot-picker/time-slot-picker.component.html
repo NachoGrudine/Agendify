@@ -1,0 +1,42 @@
+﻿<div class="time-slot-picker">
+  <div class="picker-header">
+    <i-lucide [img]="ClockIcon" [size]="20"></i-lucide>
+    <span class="header-title">Selecciona un Horario</span>
+  </div>
+
+  <div class="slots-loading" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Cargando horarios disponibles...</p>
+  </div>
+
+  <div class="slots-container" *ngIf="!loading && slots.length > 0">
+    <button
+      *ngFor="let slot of slots"
+      class="slot-button"
+      [class.selected]="selectedSlot === slot"
+      [class.unavailable]="!slot.available"
+      [disabled]="!slot.available"
+      (click)="selectSlot(slot)"
+      [title]="slot.available ? formatTimeRange(slot) : 'Horario no disponible'">
+
+      <div class="slot-time">
+        <span class="time-start">{{ slot.start }}</span>
+        <span class="time-arrow">→</span>
+        <span class="time-end">{{ slot.end }}</span>
+      </div>
+
+      <i-lucide
+        *ngIf="selectedSlot === slot"
+        [img]="CheckIcon"
+        [size]="16"
+        class="check-icon">
+      </i-lucide>
+    </button>
+  </div>
+
+  <div class="slots-empty" *ngIf="!loading && slots.length === 0">
+    <i-lucide [img]="ClockIcon" [size]="48"></i-lucide>
+    <p>No hay horarios disponibles para este día</p>
+    <span class="empty-hint">Selecciona otra fecha o profesional</span>
+  </div>
+</div>

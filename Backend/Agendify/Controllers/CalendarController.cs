@@ -36,24 +36,26 @@ public class CalendarController : BaseController
     /// <summary>
     /// Obtiene el detalle completo de un día específico con todos los turnos.
     /// Retorna: información del día, lista de turnos con cliente, proveedor, horario y duración.
-    /// Se puede filtrar por estado, hora, nombre de cliente o nombre de proveedor.
+    /// Se puede filtrar por estado, hora, o texto de búsqueda general (busca en cliente, servicio y proveedor).
     /// </summary>
     [HttpGet("day/{date}")]
     public async Task<ActionResult<DayDetailsDto>> GetDayDetails(
         DateTime date,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 15,
         [FromQuery] string? status = null,
         [FromQuery] string? startTime = null,
-        [FromQuery] string? customerName = null,
-        [FromQuery] string? providerName = null)
+        [FromQuery] string? searchText = null)
     {
         var businessId = GetBusinessId();
         var details = await _calendarService.GetDayDetailsAsync(
             businessId, 
-            date, 
-            status, 
+            date,
+            page,
+            pageSize,
+            status,
             startTime, 
-            customerName, 
-            providerName);
+            searchText);
         return Ok(details);
     }
 }

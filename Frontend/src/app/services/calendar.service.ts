@@ -18,9 +18,13 @@ export class CalendarService {
    * @returns Lista de resúmenes por día con turnos, tiempo ocupado y disponible
    */
   getCalendarSummary(startDate: Date, endDate: Date): Observable<CalendarDaySummaryDto[]> {
+    // Usar formato YYYY-MM-DD para evitar problemas de timezone
+    const formatDate = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
     const params = new HttpParams()
-      .set('startDate', startDate.toISOString())
-      .set('endDate', endDate.toISOString());
+      .set('startDate', formatDate(startDate))
+      .set('endDate', formatDate(endDate));
 
     return this.http.get<CalendarDaySummaryDto[]>(`${this.apiUrl}/summary`, { params });
   }
@@ -28,26 +32,31 @@ export class CalendarService {
   /**
    * Obtiene el detalle completo de un día específico con todos los turnos
    * @param date Fecha del día
-   * @param filters Filtros opcionales (status, startTime, customerName, providerName)
-   * @returns Detalle del día con lista de turnos
+   * @param page Número de página (1-based)
+   * @param pageSize Cantidad de registros por página
+   * @param filters Filtros opcionales (status, startTime, searchText)
+   * @returns Detalle del día con lista de turnos paginados
    */
   getDayDetails(
     date: Date,
+    page: number = 1,
+    pageSize: number = 15,
     filters?: {
       status?: string;
       startTime?: string;
-      customerName?: string;
-      providerName?: string;
+      searchText?: string;
     }
   ): Observable<DayDetailsDto> {
-    let params = new HttpParams();
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
 
     if (filters?.status) params = params.set('status', filters.status);
     if (filters?.startTime) params = params.set('startTime', filters.startTime);
-    if (filters?.customerName) params = params.set('customerName', filters.customerName);
-    if (filters?.providerName) params = params.set('providerName', filters.providerName);
+    if (filters?.searchText) params = params.set('searchText', filters.searchText);
 
-    const dateStr = date.toISOString().split('T')[0];
+    // Usar formato local YYYY-MM-DD para evitar problemas de timezone
+    const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     return this.http.get<DayDetailsDto>(`${this.apiUrl}/day/${dateStr}`, { params });
   }
 }

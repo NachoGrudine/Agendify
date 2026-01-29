@@ -1,4 +1,4 @@
-﻿﻿<div class="agenda-container">
+﻿<div class="agenda-container">
   <!-- Header superior con selector de mes, notificaciones y usuario -->
   <div class="top-header">
     <div class="header-content">
@@ -56,13 +56,4 @@
       <full-calendar #calendar [options]="calendarOptions()"></full-calendar>
     </div>
   </div>
-
-  <!-- Modal para seleccionar acción del día -->
-  <app-day-action-modal
-    [isOpen]="showNewAppointmentModal()"
-    [selectedDate]="selectedDate()"
-    (close)="closeModal()"
-    (viewDay)="onViewDay()"
-    (newAppointment)="onNewAppointment()"
-  ></app-day-action-modal>
 </div>

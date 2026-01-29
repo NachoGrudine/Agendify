@@ -55,83 +55,152 @@ public class CalendarService : ICalendarService
     /// <summary>
     /// Obtiene detalles completos de un día específico con appointments y métricas de disponibilidad
     /// </summary>
-    /// <param name="businessId">ID del business</param>
-    /// <param name="date">Fecha del día a consultar</param>
-    /// <param name="status">Filtro opcional por estado del appointment</param>
-    /// <param name="startTime">Filtro opcional por hora de inicio (formato HH:mm)</param>
-    /// <param name="customerName">Filtro opcional por nombre de cliente (búsqueda parcial)</param>
-    /// <param name="providerName">Filtro opcional por nombre de provider (búsqueda parcial)</param>
-    /// <returns>Detalles del día incluyendo lista de appointments filtrados y totales de minutos</returns>
-    /// <remarks>Usa schedules históricos para calcular minutos programados correctamente</remarks>
     public async Task<DayDetailsDto> GetDayDetailsAsync(
         int businessId, 
-        DateTime date, 
+        DateTime date,
+        int page = 1,
+        int pageSize = 10,
         string? status = null, 
         string? startTime = null, 
-        string? customerName = null, 
-        string? providerName = null)
+        string? searchText = null)
     {
         date = date.Date;
+        ValidatePaginationParams(ref page, ref pageSize);
 
-        // 1. Obtener todos los appointments de ese día
+        // 1. Obtener todos los appointments del día
+        var allAppointments = await GetAllAppointmentsForDateAsync(businessId, date);
+
+        // 2. Calcular totales del día completo (sin filtros)
+        var (totalAppointments, totalOccupiedMinutes) = CalculateDayTotals(allAppointments);
+
+        // 3. Aplicar filtros de búsqueda
+        var filteredAppointments = ApplyFilters(allAppointments, status, startTime, searchText);
+
+        // 4. Aplicar paginación
+        var (paginatedAppointments, totalCount, totalPages) = ApplyPagination(filteredAppointments, page, pageSize);
+
+        // 5. Calcular minutos programados del día
+        var totalScheduledMinutes = await GetScheduledMinutesForDateAsync(businessId, date);
+
+        // 6. Calcular tendencia de appointments (comparar con día anterior)
+        var appointmentsTrend = await _appointmentService.GetAppointmentsTrendAsync(businessId, date);
+
+        // 7. Mapear a DTOs
+        var appointmentDetails = paginatedAppointments.Select(MapToAppointmentDetailDto).ToList();
+
+        return new DayDetailsDto
+        {
+            Date = date,
+            DayOfWeek = date.DayOfWeek.ToString(),
+            TotalAppointments = totalAppointments,
+            AppointmentsTrend = appointmentsTrend,
+            TotalScheduledMinutes = totalScheduledMinutes,
+            TotalOccupiedMinutes = totalOccupiedMinutes,
+            Appointments = appointmentDetails,
+            CurrentPage = page,
+            PageSize = pageSize,
+            TotalPages = totalPages,
+            TotalCount = totalCount
+        };
+    }
+
+    /// <summary>
+    /// Valida y corrige parámetros de paginación
+    /// </summary>
+    private static void ValidatePaginationParams(ref int page, ref int pageSize)
+    {
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 10;
+    }
+
+    /// <summary>
+    /// Obtiene todos los appointments de un día específico
+    /// </summary>
+    private async Task<List<Appointment>> GetAllAppointmentsForDateAsync(int businessId, DateTime date)
+    {
         var appointments = await _appointmentService.GetAppointmentsWithDetailsByDateRangeAsync(
             businessId, date, date.AddDays(1).AddSeconds(-1));
 
-        var appointmentsList = appointments
-            .OrderByDescending(a => a.StartTime)
-            .ToList();
+        return appointments.ToList();
+    }
 
-        // 2. Aplicar filtros
+    /// <summary>
+    /// Calcula totales del día: cantidad de turnos y minutos ocupados
+    /// </summary>
+    private static (int TotalAppointments, int TotalOccupiedMinutes) CalculateDayTotals(List<Appointment> appointments)
+    {
+        var totalAppointments = appointments.Count;
+        var totalOccupiedMinutes = appointments.Sum(a => (int)(a.EndTime - a.StartTime).TotalMinutes);
+        
+        return (totalAppointments, totalOccupiedMinutes);
+    }
+
+    /// <summary>
+    /// Aplica filtros de búsqueda a la lista de appointments
+    /// </summary>
+    private static List<Appointment> ApplyFilters(
+        List<Appointment> appointments, 
+        string? status, 
+        string? startTime, 
+        string? searchText)
+    {
+        var filtered = appointments.OrderByDescending(a => a.StartTime).ToList();
+
         if (!string.IsNullOrWhiteSpace(status))
         {
-            appointmentsList = appointmentsList
+            filtered = filtered
                 .Where(a => a.Status.ToString().Equals(status, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
 
         if (!string.IsNullOrWhiteSpace(startTime))
         {
-            appointmentsList = appointmentsList
+            filtered = filtered
                 .Where(a => a.StartTime.ToString("HH:mm") == startTime)
                 .ToList();
         }
 
-        if (!string.IsNullOrWhiteSpace(customerName))
+        if (!string.IsNullOrWhiteSpace(searchText))
         {
-            appointmentsList = appointmentsList
-                .Where(a => a.Customer != null && 
-                           a.Customer.Name.Contains(customerName, StringComparison.OrdinalIgnoreCase))
+            filtered = filtered
+                .Where(a =>
+                    (a.Customer != null && a.Customer.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)) ||
+                    (a.Service != null && a.Service.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)) ||
+                    (a.Provider != null && a.Provider.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)))
                 .ToList();
         }
 
-        if (!string.IsNullOrWhiteSpace(providerName))
-        {
-            appointmentsList = appointmentsList
-                .Where(a => a.Provider != null && 
-                           a.Provider.Name.Contains(providerName, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-        }
+        return filtered;
+    }
 
-        // 3. Calcular minutos programados para ese día específico (con schedules históricos)
+    /// <summary>
+    /// Aplica paginación a la lista de appointments
+    /// </summary>
+    private static (List<Appointment> PaginatedAppointments, int TotalCount, int TotalPages) ApplyPagination(
+        List<Appointment> appointments, 
+        int page, 
+        int pageSize)
+    {
+        var totalCount = appointments.Count;
+        var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+        var paginated = appointments
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        return (paginated, totalCount, totalPages);
+    }
+
+    /// <summary>
+    /// Obtiene los minutos programados para una fecha específica
+    /// </summary>
+    private async Task<int> GetScheduledMinutesForDateAsync(int businessId, DateTime date)
+    {
         var providerIds = await GetProviderIdsAsync(businessId);
         var minutesByDayOfWeek = await _scheduleService.GetScheduledMinutesByProviderIdsForDateAsync(providerIds, date);
-        var totalScheduledMinutes = minutesByDayOfWeek.GetValueOrDefault(date.DayOfWeek, 0);
-
-        // 4. Calcular minutos ocupados (solo de los appointments filtrados)
-        var totalOccupiedMinutes = appointmentsList.Sum(a => (int)(a.EndTime - a.StartTime).TotalMinutes);
-
-        // 5. Mapear appointments a DTOs
-        var appointmentDetails = appointmentsList.Select(MapToAppointmentDetailDto).ToList();
-
-        return new DayDetailsDto
-        {
-            Date = date,
-            DayOfWeek = date.DayOfWeek.ToString(),
-            TotalAppointments = appointmentsList.Count,
-            TotalScheduledMinutes = totalScheduledMinutes,
-            TotalOccupiedMinutes = totalOccupiedMinutes,
-            Appointments = appointmentDetails
-        };
+        
+        return minutesByDayOfWeek.GetValueOrDefault(date.DayOfWeek, 0);
     }
 
     /// <summary>

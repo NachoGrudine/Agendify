@@ -1,0 +1,244 @@
+<div class="day-detail-container">
+  <!-- Header -->
+  <div class="header">
+    <button class="back-button" (click)="goBack()">
+      <i-lucide [img]="ArrowLeftIcon" [size]="20"></i-lucide>
+      <span>Volver al Calendario</span>
+    </button>
+
+    <h1 class="page-title">{{ getFormattedDate() }}</h1>
+
+    <div class="header-actions">
+      <button class="btn-filter" (click)="toggleFilters()" [class.active]="showFilters()">
+        <i-lucide [img]="FilterIcon" [size]="20"></i-lucide>
+        <span>Filtros</span>
+      </button>
+      <button class="btn-primary" (click)="newAppointment()">
+        <i-lucide [img]="PlusIcon" [size]="20"></i-lucide>
+        <span>Nuevo Turno</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters Panel -->
+  <div class="filters-panel" *ngIf="showFilters()">
+    <div class="filters-content">
+      <div class="filter-group">
+        <label for="status-filter">Estado</label>
+        <select id="status-filter" [(ngModel)]="filters.status" (change)="applyFilters()">
+          <option *ngFor="let status of availableStatuses" [value]="status.value">
+            {{ status.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="time-filter">Hora de Inicio</label>
+        <input
+          type="time"
+          id="time-filter"
+          [(ngModel)]="filters.startTime"
+          (change)="applyFilters()"
+        />
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn-clear" (click)="clearFilters()">
+          <i-lucide [img]="XIcon" [size]="16"></i-lucide>
+          <span>Limpiar Filtros</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards" *ngIf="dayDetails()">
+    <div class="summary-card">
+      <div class="card-icon">
+        <i-lucide [img]="CalendarIcon" [size]="24"></i-lucide>
+      </div>
+      <div class="card-content">
+        <div class="card-label">Total Turnos</div>
+        <div class="card-value">{{ dayDetails()?.totalAppointments || 0 }}</div>
+        <div
+          class="card-change"
+          [class.positive]="(dayDetails()?.appointmentsTrend || 0) > 0"
+          [class.negative]="(dayDetails()?.appointmentsTrend || 0) < 0"
+          *ngIf="dayDetails()?.appointmentsTrend !== 0">
+          {{ (dayDetails()?.appointmentsTrend || 0) > 0 ? '+' : '' }}{{ dayDetails()?.appointmentsTrend }} vs ayer
+        </div>
+        <div class="card-change neutral" *ngIf="dayDetails()?.appointmentsTrend === 0">
+          = vs ayer
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="card-icon">
+        <i-lucide [img]="ClockIcon" [size]="24"></i-lucide>
+      </div>
+      <div class="card-content">
+        <div class="card-label">Tiempo Programado</div>
+        <div class="card-value">{{ formatMinutesToHours(dayDetails()?.totalScheduledMinutes || 0) }}</div>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="card-icon">
+        <i-lucide [img]="ClockIcon" [size]="24"></i-lucide>
+      </div>
+      <div class="card-content">
+        <div class="card-label">Tiempo Ocupado</div>
+        <div class="card-value">{{ formatMinutesToHours(dayDetails()?.totalOccupiedMinutes || 0) }}</div>
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            [style.width.%]="(dayDetails()?.totalScheduledMinutes || 0) > 0
+              ? ((dayDetails()?.totalOccupiedMinutes || 0) / (dayDetails()?.totalScheduledMinutes || 1)) * 100
+              : 0"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter Bar -->
+  <div class="search-filter-bar">
+    <div class="search-box">
+      <i-lucide [img]="Users" [size]="20"></i-lucide>
+      <input
+        type="text"
+        placeholder="Buscar cliente, servicio o profesional..."
+        [(ngModel)]="searchText"
+        (ngModelChange)="onSearchChange()"
+      />
+    </div>
+  </div>
+
+  <!-- Appointments Table -->
+  <div class="appointments-section">
+    <div class="table-container">
+      <table class="appointments-table">
+        <thead>
+          <tr>
+            <th>Horario</th>
+            <th>Cliente</th>
+            <th>Servicio</th>
+            <th>Profesional</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="isLoading()">
+            <td colspan="6" class="loading-row">
+              <div class="spinner"></div>
+              Cargando turnos...
+            </td>
+          </tr>
+
+          <tr *ngIf="!isLoading() && (!dayDetails()?.appointments || (dayDetails()?.appointments?.length ?? 0) === 0)">
+            <td colspan="6" class="empty-row">
+              <i-lucide [img]="CalendarIcon" [size]="48"></i-lucide>
+              <p>No hay turnos para este día</p>
+            </td>
+          </tr>
+
+          <tr *ngFor="let appointment of dayDetails()?.appointments" class="appointment-row">
+            <td class="time-cell">
+              <div class="time-range">
+                <span class="time-start">{{ appointment.startTime }}</span>
+                <span class="time-separator">-</span>
+                <span class="time-end">{{ appointment.endTime }}</span>
+              </div>
+              <div class="duration">({{ appointment.durationMinutes }}m)</div>
+            </td>
+
+            <td class="customer-cell">
+              <div class="customer-avatar">
+                {{ appointment.customerName.substring(0, 2).toUpperCase() }}
+              </div>
+              <span class="customer-name">{{ appointment.customerName }}</span>
+            </td>
+
+            <td class="service-cell">
+              <span class="service-name">{{ appointment.serviceName || '-' }}</span>
+              <span class="service-duration" *ngIf="appointment.serviceName">({{ appointment.durationMinutes }}m)</span>
+            </td>
+
+            <td class="provider-cell">
+              <span class="provider-name">{{ appointment.providerName }}</span>
+            </td>
+
+            <td class="status-cell">
+              <span class="status-badge" [ngClass]="getStatusClass(appointment.status)">
+                <i-lucide [img]="getStatusIcon(appointment.status)" [size]="16"></i-lucide>
+                {{ appointment.status }}
+              </span>
+            </td>
+
+            <td class="actions-cell">
+              <button class="btn-action" (click)="viewAppointmentDetail(appointment.id)" title="Ver detalles">
+                <i-lucide [img]="EyeIcon" [size]="18"></i-lucide>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="dayDetails() && dayDetails()!.totalPages > 0">
+      <div class="pagination-left">
+        <div class="pagination-info">
+          Mostrando
+          <strong>{{ (dayDetails()!.currentPage - 1) * dayDetails()!.pageSize + 1 }}</strong>
+          a
+          <strong>{{ Math.min(dayDetails()!.currentPage * dayDetails()!.pageSize, dayDetails()!.totalCount) }}</strong>
+          de
+          <strong>{{ dayDetails()!.totalCount }}</strong>
+          resultados
+        </div>
+        <div class="page-size-selector">
+          <label for="page-size">Mostrar:</label>
+          <select
+            id="page-size"
+            [ngModel]="pageSize()"
+            (ngModelChange)="changePageSize($event)"
+          >
+            <option *ngFor="let size of pageSizeOptions" [ngValue]="size">{{ size }}</option>
+          </select>
+          <span>por página</span>
+        </div>
+      </div>
+
+      <div class="pagination-controls">
+        <button
+          class="btn-page btn-nav"
+          (click)="previousPage()"
+          [disabled]="currentPage() === 1"
+          title="Página anterior"
+        >
+          <span>&lsaquo;</span>
+        </button>
+
+        <button
+          *ngFor="let page of getPageNumbers()"
+          class="btn-page btn-number"
+          [class.active]="page === currentPage()"
+          (click)="goToPage(page)"
+          [title]="'Ir a página ' + page"
+        >{{ page }}</button>
+
+        <button
+          class="btn-page btn-nav"
+          (click)="nextPage()"
+          [disabled]="currentPage() === dayDetails()!.totalPages"
+          title="Página siguiente"
+        >
+          <span>&rsaquo;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

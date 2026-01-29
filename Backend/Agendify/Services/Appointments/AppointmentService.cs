@@ -1,4 +1,4 @@
-﻿﻿﻿using Agendify.Common.Errors;
+﻿using Agendify.Common.Errors;
 using Agendify.Models.Entities;
 using Agendify.Models.Enums;
 using Agendify.DTOs.Appointment;
@@ -143,6 +143,31 @@ public class AppointmentService : IAppointmentService
         await _appointmentRepository.UpdateAsync(appointment);
         
         return Result.Ok();
+    }
+
+    /// <summary>
+    /// Obtiene la tendencia de appointments comparando un día específico con el día anterior
+    /// </summary>
+    /// <param name="businessId">ID del business</param>
+    /// <param name="date">Fecha a consultar</param>
+    /// <returns>Diferencia de turnos: +N si hay más que ayer, -N si hay menos, 0 si es igual</returns>
+    public async Task<int> GetAppointmentsTrendAsync(int businessId, DateTime date)
+    {
+        date = date.Date; // Normalizar a medianoche
+        var previousDate = date.AddDays(-1);
+
+        // Contar turnos del día consultado
+        var todayAppointments = await _appointmentRepository.GetByDateRangeAsync(
+            businessId, date, date.AddDays(1).AddSeconds(-1));
+        var todayCount = todayAppointments.Count();
+
+        // Contar turnos del día anterior
+        var yesterdayAppointments = await _appointmentRepository.GetByDateRangeAsync(
+            businessId, previousDate, previousDate.AddDays(1).AddSeconds(-1));
+        var yesterdayCount = yesterdayAppointments.Count();
+
+        // Retornar la diferencia
+        return todayCount - yesterdayCount;
     }
 
     /// <summary>

@@ -196,7 +196,7 @@ export class WeeklyScheduleComponent implements OnInit {
         this.originalSchedule = JSON.stringify(this.weekSchedule());
         this.isLoading.set(false);
       },
-      error: () => {
+      error: (err) => {
         this.errorMessage.set('Error al cargar los horarios');
         this.isLoading.set(false);
       }
@@ -206,8 +206,30 @@ export class WeeklyScheduleComponent implements OnInit {
   private mapBackendToFrontend(schedules: any[]): void {
     const scheduleMap = new Map<DayOfWeek, TimeRange[]>();
 
-    schedules.forEach(schedule => {
-      const dayOfWeek = (schedule.day_of_week ?? schedule.dayOfWeek) as DayOfWeek;
+    // Mapeo de nombres de días a números (para cuando el backend envía strings)
+    const dayNameToNumber: { [key: string]: DayOfWeek } = {
+      'Sunday': DayOfWeek.Sunday,
+      'Monday': DayOfWeek.Monday,
+      'Tuesday': DayOfWeek.Tuesday,
+      'Wednesday': DayOfWeek.Wednesday,
+      'Thursday': DayOfWeek.Thursday,
+      'Friday': DayOfWeek.Friday,
+      'Saturday': DayOfWeek.Saturday
+    };
+
+    schedules.forEach((schedule, index) => {
+      // El backend puede enviar dayOfWeek como número o como string ("Monday", "Tuesday", etc.)
+      let rawDayOfWeek = schedule.day_of_week ?? schedule.dayOfWeek;
+      let dayOfWeek: DayOfWeek;
+
+      if (typeof rawDayOfWeek === 'string') {
+        // Si es string, convertir a número usando el mapeo
+        dayOfWeek = dayNameToNumber[rawDayOfWeek] ?? DayOfWeek.Sunday;
+      } else {
+        // Si ya es número, usarlo directamente
+        dayOfWeek = rawDayOfWeek as DayOfWeek;
+      }
+
       const startTime = schedule.start_time ?? schedule.startTime;
       const endTime = schedule.end_time ?? schedule.endTime;
 
@@ -222,11 +244,16 @@ export class WeeklyScheduleComponent implements OnInit {
       scheduleMap.get(dayOfWeek)!.push(timeRange);
     });
 
-    const updatedSchedule = this.weekSchedule().map(day => ({
-      ...day,
-      slots: scheduleMap.get(day.dayOfWeek) || [],
-      isOpen: scheduleMap.has(day.dayOfWeek) && scheduleMap.get(day.dayOfWeek)!.length > 0
-    }));
+    const updatedSchedule = this.weekSchedule().map(day => {
+      const slots = scheduleMap.get(day.dayOfWeek) || [];
+      const isOpen = slots.length > 0;
+      return {
+        ...day,
+        slots,
+        isOpen
+      };
+    });
+
 
     this.weekSchedule.set(updatedSchedule);
   }

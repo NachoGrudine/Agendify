@@ -57,6 +57,7 @@ public class AppointmentsController : BaseController
         return Ok(appointments);
     }
 
+
     [HttpPost]
     public async Task<ActionResult<AppointmentResponseDto>> Create([FromBody] CreateAppointmentDto dto)
     {

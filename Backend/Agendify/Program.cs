@@ -1,6 +1,7 @@
 using Agendify.Data;
 using Agendify.Repositories;
 using Agendify.Middleware;
+using Agendify.Common.Converters;
 using Agendify.Services.Auth.Authentication;
 using Agendify.Services.Auth.JWT;
 using Agendify.Services.Auth.Password;
@@ -78,6 +79,11 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.SnakeCaseLower;
+        // Converter para manejar DateTime como hora local (evita conversiones UTC)
+        options.JsonSerializerOptions.Converters.Add(new LocalDateTimeConverter());
+        // Converter para manejar TimeSpan desde strings (ej: "09:00:00")
+        options.JsonSerializerOptions.Converters.Add(new TimeSpanConverter());
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
 
 // Configurar ProblemDetails (RFC 7807)

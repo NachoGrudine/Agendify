@@ -11,12 +11,13 @@ import { ScheduleService } from '../../services/schedule.service';
 import { AuthService } from '../../services/auth.service';
 import { ProviderResponse, CustomerResponse, ServiceResponse } from '../../models/appointment.model';
 import { ProviderScheduleResponse } from '../../models/schedule.model';
+import { TimeRangePickerComponent, TimeRange } from '../time-range-picker/time-range-picker.component';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-new-appointment',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, TimeRangePickerComponent],
   templateUrl: './new-appointment.component.html',
   styleUrls: ['./new-appointment.component.css']
 })
@@ -68,13 +69,31 @@ export class NewAppointmentComponent implements OnInit {
   showCustomerDropdown = signal(false);
   showServiceDropdown = signal(false);
 
+
   ngOnInit(): void {
     // Leer fecha de query params si existe
     this.route.queryParams.subscribe(params => {
       if (params['date']) {
-        // Parsear la fecha correctamente evitando timezone issues
-        const [year, month, day] = params['date'].split('-').map(Number);
-        this.selectedDate = new Date(year, month - 1, day);
+        try {
+          // Parsear la fecha correctamente evitando timezone issues
+          const dateStr = params['date'];
+
+          // Si viene en formato ISO completo (con hora)
+          if (dateStr.includes('T')) {
+            this.selectedDate = new Date(dateStr);
+          } else {
+            // Si viene solo la fecha (YYYY-MM-DD)
+            const [year, month, day] = dateStr.split('-').map(Number);
+            this.selectedDate = new Date(year, month - 1, day);
+          }
+
+          // Validar que la fecha sea válida
+          if (isNaN(this.selectedDate.getTime())) {
+            this.selectedDate = new Date();
+          }
+        } catch (error) {
+          this.selectedDate = new Date();
+        }
       }
     });
 
@@ -110,34 +129,16 @@ export class NewAppointmentComponent implements OnInit {
     this.isLoading.set(true);
     this.providerService.getAll().subscribe({
       next: (data) => {
-        console.log('✅ Respuesta de providers:', data);
-        console.log('📊 Total de providers:', data.length);
-        console.log('🔍 Estructura del primer provider:', data[0]);
-
-        // Verificar si el problema es el nombre del campo
-        if (data.length > 0) {
-          const firstProvider = data[0] as any;
-          console.log('🔑 Keys del primer provider:', Object.keys(firstProvider));
-          console.log('👁️ Valor de isActive:', firstProvider.isActive);
-        }
-
-        console.log('🔍 Providers activos (isActive):', data.filter(p => p.isActive));
-        console.log('❌ Providers inactivos (isActive):', data.filter(p => !p.isActive));
-
         this.providers.set(data.filter(p => p.isActive));
-
-        console.log('Providers activos finales:', this.providers().length, this.providers());
 
         // Si hay solo 1 provider, autoseleccionarlo y ocultar el campo
         if (this.providers().length === 1) {
-          console.log('✅ Solo hay 1 provider, ocultando campo');
           this.appointmentForm.patchValue({ providerId: this.providers()[0].id });
           this.showProviderField.set(false);
           this.appointmentForm.get('providerId')?.clearValidators();
           this.appointmentForm.get('providerId')?.updateValueAndValidity();
           this.loadProviderSchedules(this.providers()[0].id);
         } else if (this.providers().length > 1) {
-          console.log('📋 Hay múltiples providers, mostrando campo');
           const currentProviderId = this.authService.getProviderId();
           if (currentProviderId) {
             const currentProvider = this.providers().find(p => p.id === currentProviderId);
@@ -147,15 +148,12 @@ export class NewAppointmentComponent implements OnInit {
             }
           }
         } else {
-          console.error('⚠️ No hay providers activos para este negocio!');
-          console.error('💡 Revisa si el campo is_active está llegando correctamente del backend');
           this.errorMessage.set('No hay providers disponibles. Por favor, contacta al administrador.');
         }
 
         this.isLoading.set(false);
       },
       error: (err) => {
-        console.error('❌ Error al cargar providers:', err);
         this.errorMessage.set('Error al cargar providers');
         this.isLoading.set(false);
       }
@@ -167,7 +165,7 @@ export class NewAppointmentComponent implements OnInit {
       next: (data) => {
         this.customers.set(data);
       },
-      error: () => console.error('Error al cargar clientes')
+      error: () => {}
     });
   }
 
@@ -176,7 +174,7 @@ export class NewAppointmentComponent implements OnInit {
       next: (data) => {
         this.services.set(data);
       },
-      error: () => console.error('Error al cargar servicios')
+      error: () => {}
     });
   }
 
@@ -185,7 +183,7 @@ export class NewAppointmentComponent implements OnInit {
       next: (schedules) => {
         this.providerSchedules.set(schedules);
       },
-      error: () => console.error('Error al cargar horarios del provider')
+      error: () => {}
     });
   }
 
@@ -253,6 +251,16 @@ export class NewAppointmentComponent implements OnInit {
     this.showServiceDropdown.set(false);
   }
 
+  /**
+   * Maneja el cambio de rango de tiempo desde el TimeRangePicker
+   */
+  onTimeRangeChange(timeRange: TimeRange): void {
+    this.appointmentForm.patchValue({
+      startTime: timeRange.startTime,
+      endTime: timeRange.endTime
+    });
+  }
+
   onSubmit(): void {
     if (this.appointmentForm.invalid) {
       Object.keys(this.appointmentForm.controls).forEach(key => {
@@ -263,13 +271,21 @@ export class NewAppointmentComponent implements OnInit {
 
     const formValue = this.appointmentForm.value;
 
-    // Usar la fecha seleccionada del calendario
-    const dateStr = this.formatDate(this.selectedDate || new Date());
-    const startTime = formValue.startTime;
-    const endTime = formValue.endTime;
+    // Construir las fechas correctamente sin problemas de timezone
+    const baseDate = this.selectedDate || new Date();
+    const startTime = formValue.startTime; // formato "HH:mm"
+    const endTime = formValue.endTime;     // formato "HH:mm"
 
-    const startDateTime = new Date(`${dateStr}T${startTime}`);
-    const endDateTime = new Date(`${dateStr}T${endTime}`);
+    // Extraer horas y minutos
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const [endHour, endMinute] = endTime.split(':').map(Number);
+
+    // Crear fechas en la zona horaria local
+    const startDateTime = new Date(baseDate);
+    startDateTime.setHours(startHour, startMinute, 0, 0);
+
+    const endDateTime = new Date(baseDate);
+    endDateTime.setHours(endHour, endMinute, 0, 0);
 
     if (startDateTime >= endDateTime) {
       this.errorMessage.set('La hora de inicio debe ser menor a la hora de fin');
@@ -283,10 +299,12 @@ export class NewAppointmentComponent implements OnInit {
     }
 
     // Preparar DTO en camelCase - el interceptor lo convierte a snake_case automáticamente
+    // IMPORTANTE: Usamos formato ISO local (sin Z) para evitar conversión UTC
+    // El turno de las 9:00 AM debe guardarse como 9:00 AM, no convertirse a UTC
     const dto: any = {
       providerId: formValue.providerId,
-      startTime: startDateTime.toISOString(),
-      endTime: endDateTime.toISOString(),
+      startTime: this.toLocalISOString(startDateTime),
+      endTime: this.toLocalISOString(endDateTime),
       notes: formValue.notes || null
     };
 
@@ -303,6 +321,7 @@ export class NewAppointmentComponent implements OnInit {
     } else if (formValue.serviceSearch && !formValue.serviceId) {
       dto.serviceName = formValue.serviceSearch;
     }
+
 
     this.isSaving.set(true);
     this.errorMessage.set('');
@@ -324,8 +343,26 @@ export class NewAppointmentComponent implements OnInit {
   }
 
   private isWithinProviderSchedule(start: Date, end: Date): boolean {
-    const dayOfWeek = start.getDay();
-    const daySchedules = this.providerSchedules().filter(s => s.dayOfWeek === dayOfWeek);
+    const dayOfWeek = start.getDay(); // 0 = Sunday, 1 = Monday, etc.
+
+    // Mapeo de nombres de días a números (backend envía strings como "Monday")
+    const dayNameToNumber: { [key: string]: number } = {
+      'Sunday': 0,
+      'Monday': 1,
+      'Tuesday': 2,
+      'Wednesday': 3,
+      'Thursday': 4,
+      'Friday': 5,
+      'Saturday': 6
+    };
+
+    // Filtrar schedules del día actual, manejando tanto strings como números
+    const daySchedules = this.providerSchedules().filter(s => {
+      const scheduleDayOfWeek = typeof s.dayOfWeek === 'string'
+        ? dayNameToNumber[s.dayOfWeek]
+        : s.dayOfWeek;
+      return scheduleDayOfWeek === dayOfWeek;
+    });
 
     if (daySchedules.length === 0) {
       return false;
@@ -352,11 +389,32 @@ export class NewAppointmentComponent implements OnInit {
   }
 
   private formatDate(date: Date): string {
-    return date.toISOString().split('T')[0];
+    // Validar que la fecha sea válida
+    if (!date || isNaN(date.getTime())) {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    }
+    // Usar formato local para evitar problemas de timezone
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   }
 
   private formatTime(date: Date): string {
     return date.toTimeString().slice(0, 5);
+  }
+
+  /**
+   * Convierte una fecha a formato ISO pero en hora LOCAL (sin convertir a UTC)
+   * Ejemplo: 2026-01-29 09:00 local → "2026-01-29T09:00:00" (sin Z al final)
+   * Esto evita que el backend interprete la hora como UTC
+   */
+  private toLocalISOString(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
   }
 
   get formattedSelectedDate(): string {

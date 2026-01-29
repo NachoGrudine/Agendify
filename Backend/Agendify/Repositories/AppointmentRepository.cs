@@ -16,6 +16,7 @@ public class AppointmentRepository : Repository<Appointment>, IAppointmentReposi
         return await _dbSet
             .Where(a => a.BusinessId == businessId && !a.IsDeleted)
             .Include(a => a.Provider)
+            .Include(a => a.Customer)
             .Include(a => a.Service)
             .ToListAsync();
     }
@@ -25,6 +26,7 @@ public class AppointmentRepository : Repository<Appointment>, IAppointmentReposi
         return await _dbSet
             .Where(a => a.ProviderId == providerId && !a.IsDeleted)
             .Include(a => a.Provider)
+            .Include(a => a.Customer)
             .Include(a => a.Service)
             .ToListAsync();
     }
@@ -37,6 +39,7 @@ public class AppointmentRepository : Repository<Appointment>, IAppointmentReposi
                 && a.StartTime >= startDate 
                 && a.StartTime <= endDate)
             .Include(a => a.Provider)
+            .Include(a => a.Customer)
             .Include(a => a.Service)
             .OrderBy(a => a.StartTime)
             .ToListAsync();
@@ -53,6 +56,7 @@ public class AppointmentRepository : Repository<Appointment>, IAppointmentReposi
                 && !a.IsDeleted 
                 && a.StartTime.Date == date.Date)
             .Include(a => a.Provider)
+            .Include(a => a.Customer)
             .Include(a => a.Service);
 
         var totalCount = await query.CountAsync();
