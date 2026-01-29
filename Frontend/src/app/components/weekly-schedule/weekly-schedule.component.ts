@@ -2,7 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DaySchedule, TimeRange, DayOfWeek } from '../../models/schedule.model';
-import { ScheduleService } from '../../services/schedule.service';
+import { ScheduleService } from '../../services/schedule/schedule.service';
 
 @Component({
   selector: 'app-weekly-schedule',

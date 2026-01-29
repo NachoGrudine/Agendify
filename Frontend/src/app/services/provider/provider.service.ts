@@ -2,8 +2,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
-import { ProviderResponse } from '../models/appointment.model';
+import { environment } from '../../../environments/environment';
+import { ProviderResponse } from '../../models/appointment.model';
 
 @Injectable({
   providedIn: 'root'

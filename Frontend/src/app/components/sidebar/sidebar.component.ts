@@ -1,7 +1,7 @@
 ﻿import { Component, inject, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { LucideAngularModule, Calendar, Users, Briefcase, BarChart3, Settings, LogOut, Clock, Store } from 'lucide-angular';
 
 @Component({

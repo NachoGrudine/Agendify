@@ -1,8 +1,8 @@
 ﻿import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { CalendarDaySummaryDto, DayDetailsDto } from '../models/calendar.model';
+import { environment } from '../../../environments/environment';
+import { CalendarDaySummaryDto, DayDetailsDto } from '../../models/calendar.model';
 
 @Injectable({
   providedIn: 'root'

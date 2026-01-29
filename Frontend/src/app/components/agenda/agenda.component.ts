@@ -6,7 +6,7 @@ import { CalendarOptions, EventClickArg, DateSelectArg, DatesSetArg } from '@ful
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
-import { CalendarService } from '../../services/calendar.service';
+import { CalendarService } from '../../services/calendar/calendar.service';
 import { CalendarDaySummaryDto } from '../../models/calendar.model';
 import { LucideAngularModule, ChevronLeft, ChevronRight, Bell } from 'lucide-angular';
 

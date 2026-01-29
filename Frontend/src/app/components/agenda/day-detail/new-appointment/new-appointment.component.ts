@@ -3,15 +3,19 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LucideAngularModule, Calendar, Clock, User, Briefcase, FileText, Save, X, Search } from 'lucide-angular';
-import { AppointmentService } from '../../../../services/appointment.service';
-import { ProviderService } from '../../../../services/provider.service';
-import { CustomerService } from '../../../../services/customer.service';
-import { ServiceService } from '../../../../services/service.service';
-import { ScheduleService } from '../../../../services/schedule.service';
-import { AuthService } from '../../../../services/auth.service';
+import { AppointmentService } from '../../../../services/appointment/appointment.service';
+import { ProviderService } from '../../../../services/provider/provider.service';
+import { CustomerService } from '../../../../services/customer/customer.service';
+import { ServiceService } from '../../../../services/service-catalog/service.service';
+import { ScheduleService } from '../../../../services/schedule/schedule.service';
+import { AuthService } from '../../../../services/auth/auth.service';
+import { AppointmentFormService } from '../../../../services/appointment/appointment-form.service';
 import { ProviderResponse, CustomerResponse, ServiceResponse } from '../../../../models/appointment.model';
 import { ProviderScheduleResponse } from '../../../../models/schedule.model';
 import { TimeRangePickerComponent, TimeRange } from '../time-range-picker/time-range-picker.component';
+import { DateTimeHelper } from '../../../../helpers/date-time.helper';
+import { ScheduleValidator } from '../../../../validators/schedule.validator';
+import { AppointmentDTOBuilder } from '../../../../builders/appointment-dto.builder';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
@@ -34,6 +38,7 @@ export class NewAppointmentComponent implements OnInit {
   private readonly serviceService = inject(ServiceService);
   private readonly scheduleService = inject(ScheduleService);
   private readonly authService = inject(AuthService);
+  private readonly formService = inject(AppointmentFormService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
@@ -54,8 +59,6 @@ export class NewAppointmentComponent implements OnInit {
   providers = signal<ProviderResponse[]>([]);
   customers = signal<CustomerResponse[]>([]);
   services = signal<ServiceResponse[]>([]);
-  filteredCustomers = signal<CustomerResponse[]>([]);
-  filteredServices = signal<ServiceResponse[]>([]);
   providerSchedules = signal<ProviderScheduleResponse[]>([]);
 
   // UI State
@@ -64,34 +67,21 @@ export class NewAppointmentComponent implements OnInit {
   errorMessage = signal('');
   successMessage = signal('');
   showProviderField = signal(true);
-  customerSearchText = signal('');
-  serviceSearchText = signal('');
-  showCustomerDropdown = signal(false);
-  showServiceDropdown = signal(false);
+
+  // Delegated to formService
+  get filteredCustomers() { return this.formService.filteredCustomers; }
+  get filteredServices() { return this.formService.filteredServices; }
+  get showCustomerDropdown() { return this.formService.showCustomerDropdown; }
+  get showServiceDropdown() { return this.formService.showServiceDropdown; }
 
 
   ngOnInit(): void {
     // Leer fecha de query params si existe
     this.route.queryParams.subscribe(params => {
       if (params['date']) {
-        try {
-          // Parsear la fecha correctamente evitando timezone issues
-          const dateStr = params['date'];
+        this.selectedDate = DateTimeHelper.parseDate(params['date']);
 
-          // Si viene en formato ISO completo (con hora)
-          if (dateStr.includes('T')) {
-            this.selectedDate = new Date(dateStr);
-          } else {
-            // Si viene solo la fecha (YYYY-MM-DD)
-            const [year, month, day] = dateStr.split('-').map(Number);
-            this.selectedDate = new Date(year, month - 1, day);
-          }
-
-          // Validar que la fecha sea válida
-          if (isNaN(this.selectedDate.getTime())) {
-            this.selectedDate = new Date();
-          }
-        } catch (error) {
+        if (!DateTimeHelper.isValidDate(this.selectedDate)) {
           this.selectedDate = new Date();
         }
       }
@@ -105,24 +95,7 @@ export class NewAppointmentComponent implements OnInit {
   }
 
   private initForm(): void {
-    const today = this.selectedDate || new Date();
-    const startTime = new Date(today);
-    startTime.setHours(9, 0, 0, 0);
-    const endTime = new Date(today);
-    endTime.setHours(10, 0, 0, 0);
-
-    this.appointmentForm = this.fb.group({
-      providerId: [null, Validators.required],
-      customerSearch: [''],
-      customerId: [null],
-      customerName: [''],
-      serviceSearch: [''],
-      serviceId: [null],
-      serviceName: [''],
-      startTime: [this.formatTime(startTime), Validators.required],
-      endTime: [this.formatTime(endTime), Validators.required],
-      notes: ['', Validators.maxLength(1000)]
-    });
+    this.appointmentForm = this.formService.createForm(this.selectedDate);
   }
 
   private loadProviders(): void {
@@ -201,17 +174,7 @@ export class NewAppointmentComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe(searchText => {
-      this.customerSearchText.set(searchText);
-      if (searchText && searchText.length >= 2) {
-        const filtered = this.customers().filter(c =>
-          c.name.toLowerCase().includes(searchText.toLowerCase())
-        );
-        this.filteredCustomers.set(filtered);
-        this.showCustomerDropdown.set(true);
-      } else {
-        this.filteredCustomers.set([]);
-        this.showCustomerDropdown.set(false);
-      }
+      this.formService.filterCustomers(searchText, this.customers());
     });
 
     // Service search
@@ -219,36 +182,16 @@ export class NewAppointmentComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe(searchText => {
-      this.serviceSearchText.set(searchText);
-      if (searchText && searchText.length >= 2) {
-        const filtered = this.services().filter(s =>
-          s.name.toLowerCase().includes(searchText.toLowerCase())
-        );
-        this.filteredServices.set(filtered);
-        this.showServiceDropdown.set(true);
-      } else {
-        this.filteredServices.set([]);
-        this.showServiceDropdown.set(false);
-      }
+      this.formService.filterServices(searchText, this.services());
     });
   }
 
   selectCustomer(customer: CustomerResponse): void {
-    this.appointmentForm.patchValue({
-      customerSearch: customer.name,
-      customerId: customer.id,
-      customerName: ''
-    });
-    this.showCustomerDropdown.set(false);
+    this.formService.selectCustomer(this.appointmentForm, customer);
   }
 
   selectService(service: ServiceResponse): void {
-    this.appointmentForm.patchValue({
-      serviceSearch: service.name,
-      serviceId: service.id,
-      serviceName: ''
-    });
-    this.showServiceDropdown.set(false);
+    this.formService.selectService(this.appointmentForm, service);
   }
 
   /**
@@ -262,64 +205,35 @@ export class NewAppointmentComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.appointmentForm.invalid) {
-      Object.keys(this.appointmentForm.controls).forEach(key => {
-        this.appointmentForm.get(key)?.markAsTouched();
-      });
+    // Validar formulario
+    if (!this.formService.validateForm(this.appointmentForm)) {
       return;
     }
 
     const formValue = this.appointmentForm.value;
-
-    // Construir las fechas correctamente sin problemas de timezone
     const baseDate = this.selectedDate || new Date();
-    const startTime = formValue.startTime; // formato "HH:mm"
-    const endTime = formValue.endTime;     // formato "HH:mm"
 
-    // Extraer horas y minutos
-    const [startHour, startMinute] = startTime.split(':').map(Number);
-    const [endHour, endMinute] = endTime.split(':').map(Number);
+    // Construir DTO usando el builder
+    const dto = AppointmentDTOBuilder.buildCreateDTO(formValue, baseDate);
 
-    // Crear fechas en la zona horaria local
-    const startDateTime = new Date(baseDate);
-    startDateTime.setHours(startHour, startMinute, 0, 0);
+    // Parsear tiempos para validación
+    const { hours: startHour, minutes: startMinute } = DateTimeHelper.parseTime(formValue.startTime);
+    const { hours: endHour, minutes: endMinute } = DateTimeHelper.parseTime(formValue.endTime);
 
-    const endDateTime = new Date(baseDate);
-    endDateTime.setHours(endHour, endMinute, 0, 0);
+    const startDateTime = DateTimeHelper.createDateTime(baseDate, startHour, startMinute);
+    const endDateTime = DateTimeHelper.createDateTime(baseDate, endHour, endMinute);
 
-    if (startDateTime >= endDateTime) {
-      this.errorMessage.set('La hora de inicio debe ser menor a la hora de fin');
+    // Validar tiempos
+    const timeValidation = AppointmentDTOBuilder.validateTimes(startDateTime, endDateTime);
+    if (!timeValidation.valid) {
+      this.errorMessage.set(timeValidation.error!);
       return;
     }
 
     // Validar que esté dentro del horario del provider
-    if (!this.isWithinProviderSchedule(startDateTime, endDateTime)) {
+    if (!ScheduleValidator.isWithinProviderSchedule(startDateTime, endDateTime, this.providerSchedules())) {
       this.errorMessage.set('El horario seleccionado está fuera del horario laboral del provider');
       return;
-    }
-
-    // Preparar DTO en camelCase - el interceptor lo convierte a snake_case automáticamente
-    // IMPORTANTE: Usamos formato ISO local (sin Z) para evitar conversión UTC
-    // El turno de las 9:00 AM debe guardarse como 9:00 AM, no convertirse a UTC
-    const dto: any = {
-      providerId: formValue.providerId,
-      startTime: this.toLocalISOString(startDateTime),
-      endTime: this.toLocalISOString(endDateTime),
-      notes: formValue.notes || null
-    };
-
-    // Customer: ID o Name
-    if (formValue.customerId) {
-      dto.customerId = formValue.customerId;
-    } else if (formValue.customerSearch && !formValue.customerId) {
-      dto.customerName = formValue.customerSearch;
-    }
-
-    // Service: ID o Name
-    if (formValue.serviceId) {
-      dto.serviceId = formValue.serviceId;
-    } else if (formValue.serviceSearch && !formValue.serviceId) {
-      dto.serviceName = formValue.serviceSearch;
     }
 
 
@@ -342,87 +256,13 @@ export class NewAppointmentComponent implements OnInit {
     });
   }
 
-  private isWithinProviderSchedule(start: Date, end: Date): boolean {
-    const dayOfWeek = start.getDay(); // 0 = Sunday, 1 = Monday, etc.
-
-    // Mapeo de nombres de días a números (backend envía strings como "Monday")
-    const dayNameToNumber: { [key: string]: number } = {
-      'Sunday': 0,
-      'Monday': 1,
-      'Tuesday': 2,
-      'Wednesday': 3,
-      'Thursday': 4,
-      'Friday': 5,
-      'Saturday': 6
-    };
-
-    // Filtrar schedules del día actual, manejando tanto strings como números
-    const daySchedules = this.providerSchedules().filter(s => {
-      const scheduleDayOfWeek = typeof s.dayOfWeek === 'string'
-        ? dayNameToNumber[s.dayOfWeek]
-        : s.dayOfWeek;
-      return scheduleDayOfWeek === dayOfWeek;
-    });
-
-    if (daySchedules.length === 0) {
-      return false;
-    }
-
-    const startMinutes = start.getHours() * 60 + start.getMinutes();
-    const endMinutes = end.getHours() * 60 + end.getMinutes();
-
-    return daySchedules.some(schedule => {
-      const scheduleStart = this.timeSpanToMinutes(schedule.startTime);
-      const scheduleEnd = this.timeSpanToMinutes(schedule.endTime);
-      return startMinutes >= scheduleStart && endMinutes <= scheduleEnd;
-    });
-  }
-
-  private timeSpanToMinutes(timeSpan: string): number {
-    const parts = timeSpan.split(':');
-    return parseInt(parts[0]) * 60 + parseInt(parts[1]);
-  }
-
   onCancel(): void {
     this.cancel.emit();
     this.router.navigate(['/dashboard/agenda']);
   }
 
-  private formatDate(date: Date): string {
-    // Validar que la fecha sea válida
-    if (!date || isNaN(date.getTime())) {
-      const now = new Date();
-      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    }
-    // Usar formato local para evitar problemas de timezone
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-  }
-
-  private formatTime(date: Date): string {
-    return date.toTimeString().slice(0, 5);
-  }
-
-  /**
-   * Convierte una fecha a formato ISO pero en hora LOCAL (sin convertir a UTC)
-   * Ejemplo: 2026-01-29 09:00 local → "2026-01-29T09:00:00" (sin Z al final)
-   * Esto evita que el backend interprete la hora como UTC
-   */
-  private toLocalISOString(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-  }
-
   get formattedSelectedDate(): string {
     if (!this.selectedDate) return '';
-    const date = new Date(this.selectedDate);
-    const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-    const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-    return `${days[date.getDay()]}, ${date.getDate()} de ${months[date.getMonth()]}`;
+    return DateTimeHelper.formatDateSpanish(this.selectedDate);
   }
 }

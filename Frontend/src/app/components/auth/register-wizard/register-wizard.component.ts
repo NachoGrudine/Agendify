@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { RegisterStep1Component } from './steps/step1/step1.component';
 import { RegisterStep2Component } from './steps/step2/step2.component';
 import { RegisterStep3Component } from './steps/step3/step3.component';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../../services/auth/auth.service';
 import { RegisterDto } from '../../../models/auth.model';
 
 interface RegisterFormData {
