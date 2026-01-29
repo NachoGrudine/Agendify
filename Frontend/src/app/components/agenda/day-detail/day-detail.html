@@ -178,8 +178,11 @@
             </td>
 
             <td class="actions-cell">
-              <button class="btn-action" (click)="viewAppointmentDetail(appointment.id)" title="Ver detalles">
-                <i-lucide [img]="EyeIcon" [size]="18"></i-lucide>
+              <button class="btn-action btn-edit" (click)="editAppointment(appointment.id)" title="Editar turno">
+                <i-lucide [img]="EditIcon" [size]="18"></i-lucide>
+              </button>
+              <button class="btn-action btn-delete" (click)="deleteAppointment(appointment.id, appointment.customerName)" title="Eliminar turno">
+                <i-lucide [img]="TrashIcon" [size]="18"></i-lucide>
               </button>
             </td>
           </tr>

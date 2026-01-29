@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, Input, Output, EventEmitter, signal, inject } from '@angular/core';
+﻿import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -8,39 +8,32 @@ import { ProviderService } from '../../../../services/provider/provider.service'
 import { CustomerService } from '../../../../services/customer/customer.service';
 import { ServiceService } from '../../../../services/service-catalog/service.service';
 import { ScheduleService } from '../../../../services/schedule/schedule.service';
-import { AuthService } from '../../../../services/auth/auth.service';
 import { AppointmentFormService } from '../../../../services/appointment/appointment-form.service';
-import { ProviderResponse, CustomerResponse, ServiceResponse } from '../../../../models/appointment.model';
+import { ProviderResponse, CustomerResponse, ServiceResponse, AppointmentResponse } from '../../../../models/appointment.model';
 import { ProviderScheduleResponse } from '../../../../models/schedule.model';
 import { TimeRangePickerComponent, TimeRange } from '../time-range-picker/time-range-picker.component';
 import { DateTimeHelper } from '../../../../helpers/date-time.helper';
 import { ScheduleValidator } from '../../../../validators/schedule.validator';
-import { AppointmentDTOBuilder } from '../../../../builders/appointment-dto.builder';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 /**
- * Componente para CREAR nuevos appointments
- * Para editar, ver EditAppointmentComponent
+ * Componente para EDITAR appointments existentes
+ * Para crear nuevos, ver NewAppointmentComponent
  */
 @Component({
-  selector: 'app-new-appointment',
+  selector: 'app-edit-appointment',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, TimeRangePickerComponent],
-  templateUrl: './new-appointment.component.html',
-  styleUrls: ['./new-appointment.component.css']
+  templateUrl: './edit-appointment.component.html',
+  styleUrls: ['./edit-appointment.component.css']
 })
-export class NewAppointmentComponent implements OnInit {
-  @Input() selectedDate: Date | null = null;
-  @Output() cancel = new EventEmitter<void>();
-  @Output() success = new EventEmitter<void>();
-
+export class EditAppointmentComponent implements OnInit {
   // Services
   private readonly appointmentService = inject(AppointmentService);
   private readonly providerService = inject(ProviderService);
   private readonly customerService = inject(CustomerService);
   private readonly serviceService = inject(ServiceService);
   private readonly scheduleService = inject(ScheduleService);
-  private readonly authService = inject(AuthService);
   private readonly formService = inject(AppointmentFormService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -54,6 +47,8 @@ export class NewAppointmentComponent implements OnInit {
   appointmentForm!: FormGroup;
 
   // Data
+  appointmentId: number | null = null;
+  originalAppointment: AppointmentResponse | null = null;
   providers = signal<ProviderResponse[]>([]);
   customers = signal<CustomerResponse[]>([]);
   services = signal<ServiceResponse[]>([]);
@@ -64,7 +59,6 @@ export class NewAppointmentComponent implements OnInit {
   isSaving = signal(false);
   errorMessage = signal('');
   successMessage = signal('');
-  showProviderField = signal(true);
 
   // Delegated to formService
   get filteredCustomers() { return this.formService.filteredCustomers; }
@@ -72,76 +66,135 @@ export class NewAppointmentComponent implements OnInit {
   get showCustomerDropdown() { return this.formService.showCustomerDropdown; }
   get showServiceDropdown() { return this.formService.showServiceDropdown; }
 
-
   ngOnInit(): void {
-    // Leer fecha de query params si existe
-    this.route.queryParams.subscribe(params => {
-      if (params['date']) {
-        this.selectedDate = DateTimeHelper.parseDate(params['date']);
-        if (!DateTimeHelper.isValidDate(this.selectedDate)) {
-          this.selectedDate = new Date();
-        }
-      }
-    });
-
     this.initForm();
-    this.loadProviders();
-    this.loadCustomers();
-    this.loadServices();
     this.setupSearchListeners();
-  }
 
-  private loadProviders(): void {
-    this.isLoading.set(true);
-    this.providerService.getAll().subscribe({
-      next: (data) => {
-        this.providers.set(data.filter(p => p.isActive));
-
-        // Si hay solo 1 provider, autoseleccionarlo y ocultar el campo
-        if (this.providers().length === 1) {
-          this.appointmentForm.patchValue({ providerId: this.providers()[0].id });
-          this.showProviderField.set(false);
-          this.appointmentForm.get('providerId')?.clearValidators();
-          this.appointmentForm.get('providerId')?.updateValueAndValidity();
-          this.loadProviderSchedules(this.providers()[0].id);
-        } else if (this.providers().length > 1) {
-          const currentProviderId = this.authService.getProviderId();
-          if (currentProviderId) {
-            const currentProvider = this.providers().find(p => p.id === currentProviderId);
-            if (currentProvider) {
-              this.appointmentForm.patchValue({ providerId: currentProviderId });
-              this.loadProviderSchedules(currentProviderId);
-            }
-          }
-        }
-
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.errorMessage.set('Error al cargar providers');
-        this.isLoading.set(false);
+    // Obtener el ID del appointment de los params
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.appointmentId = parseInt(id);
+        // Cargar datos necesarios ANTES del appointment
+        this.loadInitialData();
+      } else {
+        this.errorMessage.set('ID de turno no válido');
+        setTimeout(() => this.router.navigate(['/dashboard/agenda']), 2000);
       }
     });
   }
 
-  private loadCustomers(): void {
-    this.customerService.getAll().subscribe({
-      next: (data) => this.customers.set(data),
-      error: () => {}
-    });
-  }
+  /**
+   * Carga los datos necesarios (providers, customers, services) antes de cargar el appointment
+   */
+  private loadInitialData(): void {
+    this.isLoading.set(true);
+    let loadedCount = 0;
+    const totalLoads = 3;
 
-  private loadServices(): void {
-    this.serviceService.getAll().subscribe({
-      next: (data) => this.services.set(data),
-      error: () => {}
-    });
+    const checkAllLoaded = () => {
+      loadedCount++;
+      if (loadedCount === totalLoads) {
+        // Todos los datos están cargados, ahora sí cargar el appointment
+        this.loadAppointment();
+      }
+    };
+
+    this.loadProviders(checkAllLoaded);
+    this.loadCustomers(checkAllLoaded);
+    this.loadServices(checkAllLoaded);
   }
 
   private initForm(): void {
-    this.appointmentForm = this.formService.createForm(this.selectedDate);
+    this.appointmentForm = this.formService.createForm(null);
   }
 
+  private loadAppointment(): void {
+    if (!this.appointmentId) return;
+
+    this.isLoading.set(true);
+    this.appointmentService.getById(this.appointmentId).subscribe({
+      next: (appointment) => {
+        this.originalAppointment = appointment;
+        this.populateForm(appointment);
+        this.loadProviderSchedules(appointment.providerId);
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        this.errorMessage.set('Error al cargar el turno');
+        this.isLoading.set(false);
+        setTimeout(() => this.router.navigate(['/dashboard/agenda']), 2000);
+      }
+    });
+  }
+
+  private populateForm(appointment: AppointmentResponse): void {
+    const startDateTime = new Date(appointment.startTime);
+    const endDateTime = new Date(appointment.endTime);
+
+    // Encontrar el customer para mostrar su nombre
+    let customerDisplayName = '';
+    if (appointment.customerId) {
+      const customer = this.customers().find(c => c.id === appointment.customerId);
+      customerDisplayName = customer ? customer.name : '';
+    }
+
+    // Encontrar el service para mostrar su nombre
+    let serviceDisplayName = '';
+    if (appointment.serviceId) {
+      const service = this.services().find(s => s.id === appointment.serviceId);
+      serviceDisplayName = service ? service.name : '';
+    }
+
+    // Popular el formulario con TODOS los valores de una vez
+    this.appointmentForm.patchValue({
+      providerId: appointment.providerId,
+      customerId: appointment.customerId,
+      customerSearch: customerDisplayName,
+      serviceId: appointment.serviceId,
+      serviceSearch: serviceDisplayName,
+      startTime: DateTimeHelper.formatTime(startDateTime),
+      endTime: DateTimeHelper.formatTime(endDateTime),
+      notes: appointment.notes || ''
+    });
+  }
+
+  private loadProviders(onComplete?: () => void): void {
+    this.providerService.getAll().subscribe({
+      next: (data) => {
+        this.providers.set(data.filter(p => p.isActive));
+        if (onComplete) onComplete();
+      },
+      error: () => {
+        this.errorMessage.set('Error al cargar providers');
+        if (onComplete) onComplete();
+      }
+    });
+  }
+
+  private loadCustomers(onComplete?: () => void): void {
+    this.customerService.getAll().subscribe({
+      next: (data) => {
+        this.customers.set(data);
+        if (onComplete) onComplete();
+      },
+      error: () => {
+        if (onComplete) onComplete();
+      }
+    });
+  }
+
+  private loadServices(onComplete?: () => void): void {
+    this.serviceService.getAll().subscribe({
+      next: (data) => {
+        this.services.set(data);
+        if (onComplete) onComplete();
+      },
+      error: () => {
+        if (onComplete) onComplete();
+      }
+    });
+  }
 
   private loadProviderSchedules(providerId: number): void {
     this.scheduleService.getProviderSchedules(providerId).subscribe({
@@ -206,9 +259,6 @@ export class NewAppointmentComponent implements OnInit {
     this.formService.selectService(this.appointmentForm, service);
   }
 
-  /**
-   * Maneja el cambio de rango de tiempo desde el TimeRangePicker
-   */
   onTimeRangeChange(timeRange: TimeRange): void {
     this.appointmentForm.patchValue({
       startTime: timeRange.startTime,
@@ -217,16 +267,21 @@ export class NewAppointmentComponent implements OnInit {
   }
 
   /**
-   * Crear un nuevo appointment
+   * Actualizar un appointment existente
    */
   onSubmit(): void {
+    if (!this.appointmentId || !this.originalAppointment) {
+      this.errorMessage.set('Error: No se puede actualizar el turno');
+      return;
+    }
+
     // Validar formulario
     if (!this.formService.validateForm(this.appointmentForm)) {
       return;
     }
 
     const formValue = this.appointmentForm.value;
-    const baseDate = this.selectedDate || new Date();
+    const baseDate = new Date(this.originalAppointment.startTime);
 
     // Parsear tiempos para validación
     const { hours: startHour, minutes: startMinute } = DateTimeHelper.parseTime(formValue.startTime);
@@ -236,9 +291,8 @@ export class NewAppointmentComponent implements OnInit {
     const endDateTime = DateTimeHelper.createDateTime(baseDate, endHour, endMinute);
 
     // Validar tiempos
-    const timeValidation = AppointmentDTOBuilder.validateTimes(startDateTime, endDateTime);
-    if (!timeValidation.valid) {
-      this.errorMessage.set(timeValidation.error!);
+    if (startDateTime >= endDateTime) {
+      this.errorMessage.set('La hora de inicio debe ser anterior a la hora de fin');
       return;
     }
 
@@ -251,32 +305,55 @@ export class NewAppointmentComponent implements OnInit {
     this.isSaving.set(true);
     this.errorMessage.set('');
 
-    // Construir DTO y crear
-    const dto = AppointmentDTOBuilder.buildCreateDTO(formValue, baseDate);
+    // Construir DTO para actualización
+    const dto: any = {
+      providerId: formValue.providerId,
+      startTime: DateTimeHelper.toLocalISOString(startDateTime),
+      endTime: DateTimeHelper.toLocalISOString(endDateTime),
+      status: this.originalAppointment.status, // Mantener el estado original
+      notes: formValue.notes || null
+    };
 
-    this.appointmentService.create(dto).subscribe({
+    // Customer: ID o Name
+    if (formValue.customerId) {
+      dto.customerId = formValue.customerId;
+      dto.customerName = null;
+    } else if (formValue.customerSearch) {
+      dto.customerId = null;
+      dto.customerName = formValue.customerSearch;
+    }
+
+    // Service: ID o Name
+    if (formValue.serviceId) {
+      dto.serviceId = formValue.serviceId;
+      dto.serviceName = null;
+    } else if (formValue.serviceSearch) {
+      dto.serviceId = null;
+      dto.serviceName = formValue.serviceSearch;
+    }
+
+    this.appointmentService.update(this.appointmentId, dto).subscribe({
       next: () => {
-        this.successMessage.set('¡Turno creado exitosamente!');
+        this.successMessage.set('¡Turno actualizado exitosamente!');
         this.isSaving.set(false);
         setTimeout(() => {
-          this.success.emit();
           this.router.navigate(['/dashboard/agenda']);
         }, 1500);
       },
       error: (error) => {
-        this.errorMessage.set(error?.error?.message || 'Error al crear el turno');
+        this.errorMessage.set(error?.error?.message || 'Error al actualizar el turno');
         this.isSaving.set(false);
       }
     });
   }
 
   onCancel(): void {
-    this.cancel.emit();
     this.router.navigate(['/dashboard/agenda']);
   }
 
   get formattedSelectedDate(): string {
-    if (!this.selectedDate) return '';
-    return DateTimeHelper.formatDateSpanish(this.selectedDate);
+    if (!this.originalAppointment) return '';
+    const date = new Date(this.originalAppointment.startTime);
+    return DateTimeHelper.formatDateSpanish(date);
   }
 }

@@ -163,6 +163,7 @@ public class AppointmentService : IAppointmentService
             ProviderId = appointment.ProviderId,
             ProviderName = appointment.Provider?.Name ?? string.Empty,
             CustomerId = appointment.CustomerId,
+            CustomerName = appointment.Customer?.Name,
             ServiceId = appointment.ServiceId,
             ServiceName = appointment.Service?.Name,
             StartTime = appointment.StartTime,
@@ -172,4 +173,3 @@ public class AppointmentService : IAppointmentService
         };
     }
 }
-

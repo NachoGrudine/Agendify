@@ -1,0 +1,98 @@
+﻿<div class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div>
+        <h2 class="modal-title">Editar Turno</h2>
+        <p class="modal-subtitle">{{ formattedSelectedDate }}</p>
+      </div>
+      <button class="btn-icon-close" (click)="onCancel()" type="button">
+        <i-lucide [img]="XIcon" [size]="20"></i-lucide>
+      </button>
+    </div>
+
+    <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()" class="modal-body">
+      <div class="form-field">
+        <label class="field-label">PROFESIONAL</label>
+        <select formControlName="providerId" class="field-select" (change)="onProviderChange($event)">
+          <option value="">Seleccionar profesional...</option>
+          @for (provider of providers(); track provider.id) {
+            <option [value]="provider.id">{{ provider.name }} - {{ provider.specialty }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">CLIENTE</label>
+        <div class="field-input-wrapper">
+          <i-lucide [img]="UserIcon" [size]="18" class="field-icon"></i-lucide>
+          <input type="text" formControlName="customerSearch" class="field-input with-icon" placeholder="Buscar cliente..." autocomplete="off">
+        </div>
+        @if (showCustomerDropdown() && filteredCustomers().length > 0) {
+          <div class="dropdown-results">
+            @for (customer of filteredCustomers(); track customer.id) {
+              <button type="button" class="dropdown-item" (click)="selectCustomer(customer)">
+                <strong>{{ customer.name }}</strong>
+                @if (customer.phone || customer.email) {
+                  <span class="item-meta">{{ customer.phone || customer.email }}</span>
+                }
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">SERVICIO</label>
+        <div class="field-input-wrapper">
+          <i-lucide [img]="BriefcaseIcon" [size]="18" class="field-icon"></i-lucide>
+          <input type="text" formControlName="serviceSearch" class="field-input with-icon" placeholder="Buscar servicio..." autocomplete="off">
+        </div>
+        @if (showServiceDropdown() && filteredServices().length > 0) {
+          <div class="dropdown-results">
+            @for (service of filteredServices(); track service.id) {
+              <button type="button" class="dropdown-item" (click)="selectService(service)">
+                <strong>{{ service.name }}</strong>
+                <span class="item-meta">{{ service.defaultDuration }} min @if (service.price) {· ${{ service.price }}}</span>
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-field full-width">
+        <app-time-range-picker
+          [startTime]="appointmentForm.get('startTime')?.value || '09:00'"
+          [endTime]="appointmentForm.get('endTime')?.value || '10:00'"
+          [step]="15"
+          (timeRangeChange)="onTimeRangeChange($event)">
+        </app-time-range-picker>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">NOTAS INTERNAS</label>
+        <textarea formControlName="notes" class="field-textarea" rows="3" placeholder="Detalles adicionales..."></textarea>
+      </div>
+
+      @if (errorMessage()) {
+        <div class="alert alert-danger">{{ errorMessage() }}</div>
+      }
+      @if (successMessage()) {
+        <div class="alert alert-success">{{ successMessage() }}</div>
+      }
+    </form>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-text" (click)="appointmentForm.reset()">Limpiar</button>
+      <div class="footer-actions">
+        <button type="button" class="btn-secondary" (click)="onCancel()">Cancelar</button>
+        <button type="submit" class="btn-primary" (click)="onSubmit()" [disabled]="isSaving()">Actualizar Turno</button>
+      </div>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-overlay">
+        <div class="spinner"></div>
+      </div>
+    }
+  </div>
+</div>

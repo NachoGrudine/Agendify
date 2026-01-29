@@ -2,10 +2,11 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularModule, ArrowLeft, Calendar, Clock, Users, Filter, Plus, Eye, X, CheckCircle, XCircle, AlertCircle } from 'lucide-angular';
+import { LucideAngularModule, ArrowLeft, Calendar, Clock, Users, Filter, Plus, Eye, X, CheckCircle, XCircle, AlertCircle, Edit, Trash2 } from 'lucide-angular';
 import { CalendarService } from '../../../services/calendar/calendar.service';
 import { DayDetailFilterService } from '../../../services/calendar/day-detail-filter.service';
 import { ProviderService } from '../../../services/provider/provider.service';
+import { AppointmentService } from '../../../services/appointment/appointment.service';
 import { DayDetailsDto } from '../../../models/calendar.model';
 import { ProviderResponse } from '../../../models/appointment.model';
 import { DateTimeHelper } from '../../../helpers/date-time.helper';
@@ -20,6 +21,7 @@ import { AppointmentStatusHelper } from '../../../helpers/appointment-status.hel
 export class DayDetailComponent implements OnInit {
   private readonly calendarService = inject(CalendarService);
   private readonly providerService = inject(ProviderService);
+  private readonly appointmentService = inject(AppointmentService);
   private readonly filterService = inject(DayDetailFilterService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -39,6 +41,8 @@ export class DayDetailComponent implements OnInit {
   readonly XCircleIcon = XCircle;
   readonly AlertCircleIcon = AlertCircle;
   readonly Users = Users;
+  readonly EditIcon = Edit;
+  readonly TrashIcon = Trash2;
 
   // Datos principales
   dayDetails = signal<DayDetailsDto | null>(null);
@@ -193,5 +197,34 @@ export class DayDetailComponent implements OnInit {
 
   formatMinutesToHours(minutes: number): string {
     return AppointmentStatusHelper.formatMinutesToHours(minutes);
+  }
+
+  /**
+   * Editar un appointment
+   */
+  editAppointment(appointmentId: number): void {
+    this.router.navigate(['/dashboard/editar-turno', appointmentId]);
+  }
+
+  /**
+   * Eliminar un appointment
+   */
+  deleteAppointment(appointmentId: number, customerName: string): void {
+    const confirmed = confirm(`¿Estás seguro de que deseas eliminar el turno de ${customerName}?`);
+
+    if (confirmed) {
+      this.isLoading.set(true);
+
+      this.appointmentService.delete(appointmentId).subscribe({
+        next: () => {
+          // Recargar los detalles del día después de eliminar
+          this.loadDayDetails();
+        },
+        error: (error) => {
+          alert(error?.error?.message || 'Error al eliminar el turno');
+          this.isLoading.set(false);
+        }
+      });
+    }
   }
 }

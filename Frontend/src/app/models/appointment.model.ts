@@ -11,12 +11,25 @@ export interface CreateAppointmentDto {
   notes?: string;
 }
 
+export interface UpdateAppointmentDto {
+  providerId: number;
+  customerId?: number;
+  customerName?: string;
+  serviceId?: number;
+  serviceName?: string;
+  startTime: string;  // ISO DateTime
+  endTime: string;    // ISO DateTime
+  status: string;     // AppointmentStatus
+  notes?: string;
+}
+
 export interface AppointmentResponse {
   id: number;
   businessId: number;  // camelCase en respuestas
   providerId: number;
   providerName: string;
   customerId?: number;
+  customerName?: string; // Agregar customerName
   serviceId?: number;
   serviceName?: string;
   startTime: string;

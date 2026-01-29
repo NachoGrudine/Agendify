@@ -89,4 +89,13 @@ export class DateTimeHelper {
     const [hours, minutes] = timeStr.split(':').map(Number);
     return { hours, minutes };
   }
+
+  /**
+   * Formatea un Date a string de tiempo "HH:mm"
+   */
+  static formatTime(date: Date): string {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
 }

@@ -1,4 +1,4 @@
-﻿﻿using Agendify.Models.Enums;
+﻿using Agendify.Models.Enums;
 
 namespace Agendify.DTOs.Appointment;
 
@@ -9,6 +9,7 @@ public class AppointmentResponseDto
     public int ProviderId { get; set; }
     public string ProviderName { get; set; } = string.Empty;
     public int? CustomerId { get; set; }
+    public string? CustomerName { get; set; } // Agregar CustomerName
     public int? ServiceId { get; set; }
     public string? ServiceName { get; set; }
     public DateTime StartTime { get; set; }

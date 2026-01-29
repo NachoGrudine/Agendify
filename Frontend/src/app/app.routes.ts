@@ -29,6 +29,10 @@ export const routes: Routes = [
         loadComponent: () => import('./components/agenda/day-detail/new-appointment/new-appointment.component').then(m => m.NewAppointmentComponent)
       },
       {
+        path: 'editar-turno/:id',
+        loadComponent: () => import('./components/agenda/day-detail/edit-appointment/edit-appointment.component').then(m => m.EditAppointmentComponent)
+      },
+      {
         path: 'clientes',
         loadComponent: () => import('./components/clientes/clientes.component').then(m => m.ClientesComponent)
       },

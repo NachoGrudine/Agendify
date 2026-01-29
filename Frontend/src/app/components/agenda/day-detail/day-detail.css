@@ -511,12 +511,35 @@
   color: var(--text-secondary);
   cursor: pointer;
   transition: var(--transition-fast);
+  margin-right: 8px;
+}
+
+.btn-action:last-child {
+  margin-right: 0;
 }
 
 .btn-action:hover {
   background: var(--primary-light);
   border-color: var(--primary-color);
   color: var(--primary-color);
+}
+
+.btn-action.btn-edit:hover {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.btn-action.btn-delete:hover {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
 }
 
 /* Loading and Empty States */
