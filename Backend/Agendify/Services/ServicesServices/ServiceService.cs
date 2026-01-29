@@ -1,4 +1,4 @@
-﻿﻿using Agendify.Models.Entities;
+﻿using Agendify.Models.Entities;
 using Agendify.DTOs.Service;
 using Agendify.Repositories;
 using Agendify.Common.Errors;
@@ -82,6 +82,38 @@ public class ServiceService : IServiceService
         await _serviceRepository.UpdateAsync(service);
         
         return Result.Ok();
+    }
+
+    public async Task<int?> ResolveOrCreateAsync(int businessId, int? serviceId, string? serviceName, int defaultDuration)
+    {
+        // Si hay un ID, validar que exista y pertenezca al business
+        if (serviceId.HasValue)
+        {
+            var existing = await _serviceRepository.GetByIdAsync(serviceId.Value);
+            if (existing != null && existing.BusinessId == businessId && !existing.IsDeleted)
+            {
+                return serviceId.Value;
+            }
+            // Si el ID no es válido, se ignora y se intenta crear por nombre
+        }
+
+        // Si hay nombre pero no ID válido, crear nuevo Service
+        if (!string.IsNullOrWhiteSpace(serviceName))
+        {
+            var newService = new Service
+            {
+                BusinessId = businessId,
+                Name = serviceName.Trim(),
+                DefaultDuration = defaultDuration,
+                Price = null
+            };
+
+            await _serviceRepository.AddAsync(newService);
+            return newService.Id;
+        }
+
+        // No hay ni ID válido ni nombre, devolver null
+        return null;
     }
 
     private static ServiceResponseDto MapToResponseDto(Service service)

@@ -15,11 +15,4 @@ export class AppointmentService {
     return this.http.post<AppointmentResponse>(this.API_URL, dto);
   }
 
-  getById(id: number): Observable<AppointmentResponse> {
-    return this.http.get<AppointmentResponse>(`${this.API_URL}/${id}`);
-  }
-
-  getAll(): Observable<AppointmentResponse[]> {
-    return this.http.get<AppointmentResponse[]>(this.API_URL);
-  }
 }

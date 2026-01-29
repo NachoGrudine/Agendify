@@ -11,4 +11,10 @@ public interface ICustomerService
     Task<IEnumerable<CustomerResponseDto>> GetByBusinessAsync(int businessId);
     Task<IEnumerable<CustomerResponseDto>> SearchByNameAsync(int businessId, string name);
     Task<Result> DeleteAsync(int businessId, int id);
+    
+    /// <summary>
+    /// Resuelve un customer existente por ID o crea uno nuevo con el nombre proporcionado
+    /// </summary>
+    /// <returns>ID del customer resuelto o creado, o null si no se proporcionan datos</returns>
+    Task<int?> ResolveOrCreateAsync(int businessId, int? customerId, string? customerName);
 }

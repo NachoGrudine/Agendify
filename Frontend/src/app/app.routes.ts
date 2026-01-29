@@ -22,11 +22,11 @@ export const routes: Routes = [
       },
       {
         path: 'agenda/dia',
-        loadComponent: () => import('./components/day-detail/day-detail').then(m => m.DayDetailComponent)
+        loadComponent: () => import('./components/agenda/day-detail/day-detail').then(m => m.DayDetailComponent)
       },
       {
         path: 'nuevo-turno',
-        loadComponent: () => import('./components/new-appointment/new-appointment.component').then(m => m.NewAppointmentComponent)
+        loadComponent: () => import('./components/agenda/day-detail/new-appointment/new-appointment.component').then(m => m.NewAppointmentComponent)
       },
       {
         path: 'clientes',

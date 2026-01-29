@@ -1,4 +1,4 @@
-﻿﻿using Agendify.Common.Errors;
+﻿using Agendify.Common.Errors;
 using Agendify.Models.Entities;
 using Agendify.DTOs.Customer;
 using Agendify.Repositories;
@@ -82,6 +82,38 @@ public class CustomerService : ICustomerService
         await _customerRepository.UpdateAsync(customer);
         
         return Result.Ok();
+    }
+
+    public async Task<int?> ResolveOrCreateAsync(int businessId, int? customerId, string? customerName)
+    {
+        // Si hay un ID, validar que exista y pertenezca al business
+        if (customerId.HasValue)
+        {
+            var existing = await _customerRepository.GetByIdAsync(customerId.Value);
+            if (existing != null && existing.BusinessId == businessId && !existing.IsDeleted)
+            {
+                return customerId.Value;
+            }
+            // Si el ID no es válido, se ignora y se intenta crear por nombre
+        }
+
+        // Si hay nombre pero no ID válido, crear nuevo Customer
+        if (!string.IsNullOrWhiteSpace(customerName))
+        {
+            var newCustomer = new Customer
+            {
+                BusinessId = businessId,
+                Name = customerName.Trim(),
+                Phone = null,
+                Email = null
+            };
+
+            await _customerRepository.AddAsync(newCustomer);
+            return newCustomer.Id;
+        }
+
+        // No hay ni ID válido ni nombre, devolver null
+        return null;
     }
 
     private static CustomerResponseDto MapToResponseDto(Customer customer)

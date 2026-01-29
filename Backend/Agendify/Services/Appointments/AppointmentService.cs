@@ -4,7 +4,8 @@ using Agendify.Models.Enums;
 using Agendify.DTOs.Appointment;
 using Agendify.DTOs.Common;
 using Agendify.Repositories;
-using Agendify.Data;
+using Agendify.Services.Customers;
+using Agendify.Services.ServicesServices;
 using FluentResults;
 
 namespace Agendify.Services.Appointments;
@@ -12,12 +13,14 @@ namespace Agendify.Services.Appointments;
 public class AppointmentService : IAppointmentService
 {
     private readonly IAppointmentRepository _appointmentRepository;
-    private readonly AgendifyDbContext _context;
+    private readonly ICustomerService _customerService;
+    private readonly IServiceService _serviceService;
 
-    public AppointmentService(IAppointmentRepository appointmentRepository, AgendifyDbContext context)
+    public AppointmentService(IAppointmentRepository appointmentRepository, ICustomerService customerService, IServiceService serviceService)
     {
         _appointmentRepository = appointmentRepository;
-        _context = context;
+        _customerService = customerService;
+        _serviceService = serviceService;
     }
 
     public async Task<Result<AppointmentResponseDto>> CreateAsync(int businessId, CreateAppointmentDto dto)
@@ -31,11 +34,14 @@ public class AppointmentService : IAppointmentService
             return Result.Fail(new ConflictError("El proveedor ya tiene un turno asignado en ese horario"));
         }
 
-        // Resolver o crear Customer
-        int? customerId = await ResolveOrCreateCustomerAsync(businessId, dto.CustomerId, dto.CustomerName);
+        // Resolver o crear Customer usando el servicio correspondiente
+        int? customerId = await _customerService.ResolveOrCreateAsync(
+            businessId, dto.CustomerId, dto.CustomerName);
 
-        // Resolver o crear Service
-        int? serviceId = await ResolveOrCreateServiceAsync(businessId, dto.ServiceId, dto.ServiceName, dto.StartTime, dto.EndTime);
+        // Resolver o crear Service usando el servicio correspondiente
+        var defaultDuration = (int)(dto.EndTime - dto.StartTime).TotalMinutes;
+        int? serviceId = await _serviceService.ResolveOrCreateAsync(
+            businessId, dto.ServiceId, dto.ServiceName, defaultDuration);
 
         var appointment = new Appointment
         {
@@ -51,7 +57,7 @@ public class AppointmentService : IAppointmentService
 
         var created = await _appointmentRepository.AddAsync(appointment);
         
-        return Result.Ok(MapToResponseDto(created!));
+        return Result.Ok(MapToResponseDto(created));
     }
 
     public async Task<Result<AppointmentResponseDto>> UpdateAsync(int businessId, int id, UpdateAppointmentDto dto)
@@ -71,11 +77,13 @@ public class AppointmentService : IAppointmentService
             return Result.Fail(new ConflictError("El proveedor ya tiene un turno asignado en ese horario"));
         }
 
-        // Resolver o crear Customer
-        int? customerId = await ResolveOrCreateCustomerAsync(businessId, dto.CustomerId, dto.CustomerName);
+        // Resolver o crear Customer usando el servicio correspondiente
+        int? customerId = await _customerService.ResolveOrCreateAsync(businessId, dto.CustomerId, dto.CustomerName);
 
-        // Resolver o crear Service
-        int? serviceId = await ResolveOrCreateServiceAsync(businessId, dto.ServiceId, dto.ServiceName, dto.StartTime, dto.EndTime);
+        // Resolver o crear Service usando el servicio correspondiente
+        var defaultDuration = (int)(dto.EndTime - dto.StartTime).TotalMinutes;
+        
+        int? serviceId = await _serviceService.ResolveOrCreateAsync(businessId, dto.ServiceId, dto.ServiceName, defaultDuration);
 
         appointment.ProviderId = dto.ProviderId;
         appointment.CustomerId = customerId;
@@ -99,37 +107,12 @@ public class AppointmentService : IAppointmentService
 
         return Result.Ok(MapToResponseDto(appointment));
     }
-
-    public async Task<IEnumerable<AppointmentResponseDto>> GetByBusinessAsync(int businessId)
-    {
-        var appointments = await _appointmentRepository.GetByBusinessIdAsync(businessId);
-        return appointments.Select(MapToResponseDto);
-    }
-
-    public async Task<IEnumerable<AppointmentResponseDto>> GetByDateRangeAsync(int businessId, DateTime startDate, DateTime endDate)
-    {
-        var appointments = await _appointmentRepository.GetByDateRangeAsync(businessId, startDate, endDate);
-        return appointments.Select(MapToResponseDto);
-    }
-
+    
     public async Task<IEnumerable<Appointment>> GetAppointmentsWithDetailsByDateRangeAsync(int businessId, DateTime startDate, DateTime endDate)
     {
         return await _appointmentRepository.GetByDateRangeAsync(businessId, startDate, endDate);
     }
-
-    public async Task<PagedResultDto<AppointmentResponseDto>> GetPagedByDateAsync(
-        int businessId, DateTime date, int page, int pageSize)
-    {
-        var (items, totalCount) = await _appointmentRepository.GetPagedByDateAsync(businessId, date, page, pageSize);
-
-        return new PagedResultDto<AppointmentResponseDto>
-        {
-            Items = items.Select(MapToResponseDto).ToList(),
-            TotalCount = totalCount,
-            Page = page,
-            PageSize = pageSize
-        };
-    }
+    
 
     public async Task<Result> DeleteAsync(int businessId, int id)
     {
@@ -170,72 +153,6 @@ public class AppointmentService : IAppointmentService
         return todayCount - yesterdayCount;
     }
 
-    /// <summary>
-    /// Resuelve o crea un Customer basado en CustomerId o CustomerName
-    /// </summary>
-    private async Task<int?> ResolveOrCreateCustomerAsync(int businessId, int? customerId, string? customerName)
-    {
-        // Si hay un ID, usarlo directamente
-        if (customerId.HasValue)
-        {
-            return customerId.Value;
-        }
-
-        // Si hay nombre pero no ID, crear nuevo Customer
-        if (!string.IsNullOrWhiteSpace(customerName))
-        {
-            var newCustomer = new Customer
-            {
-                BusinessId = businessId,
-                Name = customerName.Trim(),
-                Phone = null,
-                Email = null
-            };
-
-            _context.Customers.Add(newCustomer);
-            await _context.SaveChangesAsync();
-
-            return newCustomer.Id;
-        }
-
-        // No hay ni ID ni nombre, devolver null
-        return null;
-    }
-
-    /// <summary>
-    /// Resuelve o crea un Service basado en ServiceId o ServiceName
-    /// </summary>
-    private async Task<int?> ResolveOrCreateServiceAsync(int businessId, int? serviceId, string? serviceName, DateTime startTime, DateTime endTime)
-    {
-        // Si hay un ID, usarlo directamente
-        if (serviceId.HasValue)
-        {
-            return serviceId.Value;
-        }
-
-        // Si hay nombre pero no ID, crear nuevo Service
-        if (!string.IsNullOrWhiteSpace(serviceName))
-        {
-            // Calcular duración en minutos desde el rango de tiempo
-            var defaultDuration = (int)(endTime - startTime).TotalMinutes;
-
-            var newService = new Service
-            {
-                BusinessId = businessId,
-                Name = serviceName.Trim(),
-                DefaultDuration = defaultDuration,
-                Price = null
-            };
-
-            _context.Services.Add(newService);
-            await _context.SaveChangesAsync();
-
-            return newService.Id;
-        }
-
-        // No hay ni ID ni nombre, devolver null
-        return null;
-    }
 
     private static AppointmentResponseDto MapToResponseDto(Appointment appointment)
     {

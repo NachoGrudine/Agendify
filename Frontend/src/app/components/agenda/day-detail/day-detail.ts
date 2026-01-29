@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, ArrowLeft, Calendar, Clock, Users, Filter, Plus, Eye, X, CheckCircle, XCircle, AlertCircle } from 'lucide-angular';
-import { CalendarService } from '../../services/calendar.service';
-import { ProviderService } from '../../services/provider.service';
-import { DayDetailsDto } from '../../models/calendar.model';
-import { ProviderResponse } from '../../models/appointment.model';
+import { CalendarService } from '../../../services/calendar.service';
+import { ProviderService } from '../../../services/provider.service';
+import { DayDetailsDto } from '../../../models/calendar.model';
+import { ProviderResponse } from '../../../models/appointment.model';
 
 @Component({
   selector: 'app-day-detail',
