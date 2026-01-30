@@ -15,6 +15,7 @@ import { TimeRangePickerComponent, TimeRange } from '../time-range-picker/time-r
 import { DateTimeHelper } from '../../../../helpers/date-time.helper';
 import { ScheduleValidator } from '../../../../validators/schedule.validator';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { ButtonComponent, CardComponent, LoadingSpinnerComponent, DropdownComponent, TextareaComponent, InputComponent } from '../../../../shared/components';
 
 /**
  * Componente para EDITAR appointments existentes
@@ -23,7 +24,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 @Component({
   selector: 'app-edit-appointment',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, TimeRangePickerComponent],
+  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, TimeRangePickerComponent, ButtonComponent, CardComponent, LoadingSpinnerComponent, DropdownComponent, TextareaComponent, InputComponent],
   templateUrl: './edit-appointment.component.html',
   styleUrls: ['./edit-appointment.component.css']
 })

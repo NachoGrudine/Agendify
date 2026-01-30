@@ -1,6 +1,7 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './interceptors/auth.interceptor';
@@ -15,6 +16,7 @@ export const appConfig: ApplicationConfig = {
         caseConverterInterceptor, // Primero convierte snake_case a camelCase
         authInterceptor            // Luego agrega el token de autenticación
       ])
-    )
+    ),
+    MessageService // Para componentes Toast de PrimeNG
   ]
 };

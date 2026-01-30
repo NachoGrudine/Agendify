@@ -1,4 +1,4 @@
-﻿.dashboard-layout {
+﻿﻿.dashboard-layout {
   display: flex;
   min-height: 100vh;
   background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%); /* Fondo azul degradado */
@@ -23,28 +23,26 @@
 /* Botón toggle sidebar - VISIBLE SIEMPRE */
 .sidebar-toggle-btn {
   position: fixed;
-  top: 1.5rem;
+  top: 1.25rem;
   left: 1rem;
   z-index: 1001;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   background: var(--bg-white);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
   color: var(--primary-color);
 }
 
 .sidebar-toggle-btn:hover {
-  background: var(--primary-color);
-  color: white;
-  box-shadow: 0 4px 12px rgba(29, 67, 111, 0.2);
-  transform: translateY(-1px);
+  background: #f8fafc;
+  border-color: var(--primary-color);
 }
 
 /* Cuando sidebar está abierto, mover el botón */

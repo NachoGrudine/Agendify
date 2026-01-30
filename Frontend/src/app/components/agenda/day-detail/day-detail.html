@@ -1,26 +1,100 @@
 <div class="day-detail-container">
   <!-- Header -->
   <div class="header">
-    <button class="back-button" (click)="goBack()">
-      <i-lucide [img]="ArrowLeftIcon" [size]="20"></i-lucide>
-      <span>Volver al Calendario</span>
-    </button>
+    <app-button
+      label="Volver al Calendario"
+      severity="outlined"
+      [iconStart]="ArrowLeftIcon"
+      [iconSize]="18"
+      (onClick)="goBack()"
+    />
 
     <h1 class="page-title">{{ getFormattedDate() }}</h1>
 
     <div class="header-actions">
-      <button class="btn-filter" (click)="toggleFilters()" [class.active]="showFilters()">
-        <i-lucide [img]="FilterIcon" [size]="20"></i-lucide>
-        <span>Filtros</span>
-      </button>
-      <button class="btn-primary" (click)="newAppointment()">
-        <i-lucide [img]="PlusIcon" [size]="20"></i-lucide>
-        <span>Nuevo Turno</span>
-      </button>
+      <app-button
+        label="Nuevo Turno"
+        severity="primary"
+        [iconStart]="PlusIcon"
+        [iconSize]="18"
+        (onClick)="newAppointment()"
+      />
     </div>
   </div>
 
-  <!-- Filters Panel -->
+  <!-- Summary Cards -->
+  <div class="summary-cards" *ngIf="dayDetails()">
+    <!-- Card 1: Total Turnos -->
+    <div class="summary-card card-blue">
+      <div class="card-content-left">
+        <div class="card-label">Total Turnos</div>
+        <div class="card-value-row">
+          <span class="card-value">{{ dayDetails()?.totalAppointments || 0 }}</span>
+          <span
+            class="card-change"
+            [class.positive]="(dayDetails()?.appointmentsTrend || 0) > 0"
+            [class.negative]="(dayDetails()?.appointmentsTrend || 0) < 0"
+            *ngIf="dayDetails()?.appointmentsTrend !== 0">
+            {{ (dayDetails()?.appointmentsTrend || 0) > 0 ? '+' : '' }}{{ dayDetails()?.appointmentsTrend }} vs ayer
+          </span>
+        </div>
+      </div>
+      <div class="card-icon-circle icon-blue">
+        <i-lucide [img]="CalendarIcon" [size]="28"></i-lucide>
+      </div>
+    </div>
+
+    <!-- Card 2: Tiempo Programado -->
+    <div class="summary-card card-purple">
+      <div class="card-content-left">
+        <div class="card-label">Tiempo Programado</div>
+        <div class="card-value">{{ formatMinutesToHours(dayDetails()?.totalScheduledMinutes || 0) }}</div>
+      </div>
+      <div class="card-icon-circle icon-purple">
+        <i-lucide [img]="ClockIcon" [size]="28"></i-lucide>
+      </div>
+    </div>
+
+    <!-- Card 3: Tiempo Ocupado con Progress Bar AZUL -->
+    <div class="summary-card card-green">
+      <div class="card-content-left">
+        <div class="card-label">Tiempo Ocupado</div>
+        <div class="card-value">{{ formatMinutesToHours(dayDetails()?.totalOccupiedMinutes || 0) }}</div>
+        <app-progress-bar
+          [progress]="(dayDetails()?.totalScheduledMinutes || 0) > 0
+            ? ((dayDetails()?.totalOccupiedMinutes || 0) / (dayDetails()?.totalScheduledMinutes || 1)) * 100
+            : 0"
+          [showPercentage]="false"
+          color="primary"
+          height="8px"
+        />
+      </div>
+      <div class="card-icon-circle icon-green">
+        <i-lucide [img]="CheckCircleIcon" [size]="28"></i-lucide>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter Bar -->
+  <div class="search-filter-bar">
+    <app-input
+      inputId="search-appointments"
+      placeholder="Buscar cliente, servicio o profesional..."
+      [iconStart]="Users"
+      [(ngModel)]="searchText"
+      (valueChange)="onSearchChange()"
+    />
+
+    <app-button
+      label="Filtros"
+      severity="outlined"
+      [iconStart]="FilterIcon"
+      [iconSize]="18"
+      (onClick)="toggleFilters()"
+    />
+  </div>
+
+  <!-- Filters Panel - MOVIDO AQUÍ -->
   <div class="filters-panel" *ngIf="showFilters()">
     <div class="filters-content">
       <div class="filter-group">
@@ -43,75 +117,14 @@
       </div>
 
       <div class="filter-actions">
-        <button class="btn-clear" (click)="clearFilters()">
-          <i-lucide [img]="XIcon" [size]="16"></i-lucide>
-          <span>Limpiar Filtros</span>
-        </button>
+        <app-button
+          label="Limpiar Filtros"
+          severity="outlined"
+          [iconStart]="XIcon"
+          [iconSize]="16"
+          (onClick)="clearFilters()"
+        />
       </div>
-    </div>
-  </div>
-
-  <!-- Summary Cards -->
-  <div class="summary-cards" *ngIf="dayDetails()">
-    <div class="summary-card">
-      <div class="card-icon">
-        <i-lucide [img]="CalendarIcon" [size]="24"></i-lucide>
-      </div>
-      <div class="card-content">
-        <div class="card-label">Total Turnos</div>
-        <div class="card-value">{{ dayDetails()?.totalAppointments || 0 }}</div>
-        <div
-          class="card-change"
-          [class.positive]="(dayDetails()?.appointmentsTrend || 0) > 0"
-          [class.negative]="(dayDetails()?.appointmentsTrend || 0) < 0"
-          *ngIf="dayDetails()?.appointmentsTrend !== 0">
-          {{ (dayDetails()?.appointmentsTrend || 0) > 0 ? '+' : '' }}{{ dayDetails()?.appointmentsTrend }} vs ayer
-        </div>
-        <div class="card-change neutral" *ngIf="dayDetails()?.appointmentsTrend === 0">
-          = vs ayer
-        </div>
-      </div>
-    </div>
-
-    <div class="summary-card">
-      <div class="card-icon">
-        <i-lucide [img]="ClockIcon" [size]="24"></i-lucide>
-      </div>
-      <div class="card-content">
-        <div class="card-label">Tiempo Programado</div>
-        <div class="card-value">{{ formatMinutesToHours(dayDetails()?.totalScheduledMinutes || 0) }}</div>
-      </div>
-    </div>
-
-    <div class="summary-card">
-      <div class="card-icon">
-        <i-lucide [img]="ClockIcon" [size]="24"></i-lucide>
-      </div>
-      <div class="card-content">
-        <div class="card-label">Tiempo Ocupado</div>
-        <div class="card-value">{{ formatMinutesToHours(dayDetails()?.totalOccupiedMinutes || 0) }}</div>
-        <div class="progress-bar">
-          <div
-            class="progress-fill"
-            [style.width.%]="(dayDetails()?.totalScheduledMinutes || 0) > 0
-              ? ((dayDetails()?.totalOccupiedMinutes || 0) / (dayDetails()?.totalScheduledMinutes || 1)) * 100
-              : 0"
-          ></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Search and Filter Bar -->
-  <div class="search-filter-bar">
-    <div class="search-box">
-      <i-lucide [img]="Users" [size]="20"></i-lucide>
-      <input
-        type="text"
-        placeholder="Buscar cliente, servicio o profesional..."
-        [(ngModel)]="searchText"
-        (ngModelChange)="onSearchChange()"
-      />
     </div>
   </div>
 
@@ -132,8 +145,7 @@
         <tbody>
           <tr *ngIf="isLoading()">
             <td colspan="6" class="loading-row">
-              <div class="spinner"></div>
-              Cargando turnos...
+              <app-loading-spinner message="Cargando turnos..." />
             </td>
           </tr>
 
@@ -178,12 +190,20 @@
             </td>
 
             <td class="actions-cell">
-              <button class="btn-action btn-edit" (click)="editAppointment(appointment.id)" title="Editar turno">
-                <i-lucide [img]="EditIcon" [size]="18"></i-lucide>
-              </button>
-              <button class="btn-action btn-delete" (click)="deleteAppointment(appointment.id, appointment.customerName)" title="Eliminar turno">
-                <i-lucide [img]="TrashIcon" [size]="18"></i-lucide>
-              </button>
+              <app-button
+                severity="outlined"
+                [iconStart]="EditIcon"
+                [iconSize]="18"
+                customClass="btn-action btn-edit"
+                (onClick)="editAppointment(appointment.id)"
+              />
+              <app-button
+                severity="danger"
+                [iconStart]="TrashIcon"
+                [iconSize]="18"
+                customClass="btn-action btn-delete"
+                (onClick)="deleteAppointment(appointment.id, appointment.customerName)"
+              />
             </td>
           </tr>
         </tbody>

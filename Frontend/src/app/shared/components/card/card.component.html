@@ -1,0 +1,15 @@
+﻿<p-card
+  [header]="header"
+  [subheader]="subheader"
+  [styleClass]="'agendify-card ' + customClass"
+>
+  <ng-template pTemplate="header" *ngIf="headerTemplate">
+    <ng-content select="[cardHeader]"></ng-content>
+  </ng-template>
+
+  <ng-content></ng-content>
+
+  <ng-template pTemplate="footer" *ngIf="footerTemplate">
+    <ng-content select="[cardFooter]"></ng-content>
+  </ng-template>
+</p-card>

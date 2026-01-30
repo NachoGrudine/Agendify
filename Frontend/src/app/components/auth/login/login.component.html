@@ -1,4 +1,4 @@
-﻿﻿<div class="login-container">
+﻿<div class="login-container">
   <div class="login-card">
     <div class="login-header">
       <h1>Agendify</h1>
@@ -6,27 +6,25 @@
     </div>
 
     <form (ngSubmit)="onSubmit()" class="login-form">
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          type="text"
-          id="email"
-          [(ngModel)]="email"
-          name="email"
-          placeholder="tu@email.com"
-        />
-      </div>
+      <app-input
+        inputId="email"
+        label="Email"
+        type="email"
+        placeholder="tu@email.com"
+        [(ngModel)]="email"
+        name="email"
+        [required]="true"
+      />
 
-      <div class="form-group">
-        <label for="password">Contraseña</label>
-        <input
-          type="password"
-          id="password"
-          [(ngModel)]="password"
-          name="password"
-          placeholder="••••••••"
-        />
-      </div>
+      <app-password-input
+        inputId="password"
+        label="Contraseña"
+        [(ngModel)]="password"
+        name="password"
+        [required]="true"
+        [feedback]="false"
+        [toggleMask]="true"
+      />
 
       @if (errorMessage) {
         <div class="alert alert-error">
@@ -34,9 +32,12 @@
         </div>
       }
 
-      <button type="submit" class="btn-login">
-        Iniciar Sesión
-      </button>
+      <app-button
+        type="submit"
+        label="Iniciar Sesión"
+        [fullWidth]="true"
+        customClass="btn-login"
+      />
     </form>
 
     <div class="register-link">

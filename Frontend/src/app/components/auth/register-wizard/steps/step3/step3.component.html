@@ -1,4 +1,4 @@
-﻿﻿<div class="step-container">
+﻿<div class="step-container">
   <!-- Título -->
   <div class="step-header">
     <div class="step-badge">Paso 3 de 3</div>
@@ -37,44 +37,27 @@
   <!-- Formulario -->
   <form class="step-form" (ngSubmit)="onSubmit()">
     <!-- Nombre Profesional -->
-    <div class="form-group">
-      <label for="providerName" class="form-label">
-        Nombre Profesional
-      </label>
-      <input
-        id="providerName"
-        type="text"
-        [(ngModel)]="providerName"
-        name="providerName"
-        placeholder="Ej. Juan Pérez"
-        class="form-input"
-        [class.input-error]="errors().providerName"
-        autocomplete="name"
-      />
-      @if (errors().providerName) {
-        <span class="error-message">{{ errors().providerName }}</span>
-      }
-    </div>
+    <app-input
+      inputId="providerName"
+      label="Nombre Profesional"
+      type="text"
+      placeholder="Ej. Juan Pérez"
+      [(ngModel)]="providerName"
+      name="providerName"
+      [required]="true"
+      [error]="errors().providerName"
+    />
 
     <!-- Especialidad (Opcional) -->
-    <div class="form-group">
-      <label for="providerSpecialty" class="form-label">
-        Especialidad <span class="optional-label">(Opcional)</span>
-      </label>
-      <input
-        id="providerSpecialty"
-        type="text"
-        [(ngModel)]="providerSpecialty"
-        name="providerSpecialty"
-        placeholder="Ej. Estilista Senior"
-        class="form-input"
-        [class.input-error]="errors().providerSpecialty"
-        autocomplete="off"
-      />
-      @if (errors().providerSpecialty) {
-        <span class="error-message">{{ errors().providerSpecialty }}</span>
-      }
-    </div>
+    <app-input
+      inputId="providerSpecialty"
+      label="Especialidad (Opcional)"
+      type="text"
+      placeholder="Ej. Estilista Senior"
+      [(ngModel)]="providerSpecialty"
+      name="providerSpecialty"
+      [error]="errors().providerSpecialty"
+    />
 
     <!-- Info Box -->
     <div class="info-box">
@@ -88,22 +71,20 @@
 
     <!-- Botones de navegación -->
     <div class="button-row">
-      <button type="button" class="btn-secondary" (click)="onBack()" [disabled]="isSubmitting()">
-        Volver
-      </button>
-      <button type="submit" class="btn-primary" [disabled]="isSubmitting()">
-        @if (isSubmitting()) {
-          <svg class="spinner" viewBox="0 0 24 24">
-            <circle class="spinner-circle" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
-          </svg>
-          Finalizando...
-        } @else {
-          Finalizar registro
-          <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-          </svg>
-        }
-      </button>
+      <app-button
+        type="button"
+        label="Volver"
+        severity="outlined"
+        [disabled]="isSubmitting()"
+        (onClick)="onBack()"
+      />
+      <app-button
+        type="submit"
+        [label]="isSubmitting() ? 'Finalizando...' : 'Finalizar registro'"
+        severity="primary"
+        [disabled]="isSubmitting()"
+        [loading]="isSubmitting()"
+      />
     </div>
   </form>
 

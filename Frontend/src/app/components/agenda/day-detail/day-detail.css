@@ -7,92 +7,29 @@
   min-height: 100vh;
 }
 
-/* Header */
+/* Header - Diseño ShiftManager */
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
-  gap: 20px;
+  margin-bottom: 32px;
+  gap: 24px;
   flex-wrap: wrap;
 }
 
-.back-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  background: white;
-  border: 1px solid #e8eaed;
-  border-radius: 8px;
-  color: var(--primary-color);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-fast);
-}
-
-.back-button:hover {
-  background-color: #fafbfc;
-  border-color: var(--primary-color);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
 .page-title {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #111827;
   margin: 0;
   flex: 1;
+  letter-spacing: -0.02em;
 }
 
 .header-actions {
   display: flex;
   gap: 12px;
-}
-
-.btn-filter {
-  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  background: white;
-  border: 1px solid #e8eaed;
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-fast);
-}
-
-.btn-filter:hover,
-.btn-filter.active {
-  background-color: var(--primary-light);
-  border-color: var(--primary-color);
-  color: var(--primary-color);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.btn-primary {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  background: var(--primary-color);
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition-fast);
-}
-
-.btn-primary:hover {
-  background: var(--primary-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(29, 67, 111, 0.3);
 }
 
 /* Filters Panel */
@@ -178,150 +115,140 @@
   color: white;
 }
 
-/* Summary Cards */
+/* Summary Cards - Diseño ShiftManager */
 .summary-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
 }
 
 .summary-card {
   background: white;
-  border: 1px solid #e8eaed;
-  border-radius: 12px;
-  padding: 24px;
+  border-radius: 16px;
+  padding: 28px 24px;
   display: flex;
-  gap: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-}
-
-.card-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: var(--primary-light);
-  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  color: var(--primary-color);
-  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 3px solid rgba(29, 67, 111, 0.1);
+  min-height: 140px;
 }
 
-.card-content {
+/* Sin hover - las cards son estáticas */
+
+/* Todas las cards usan el mismo borde azul oscuro */
+.summary-card.card-blue,
+.summary-card.card-purple,
+.summary-card.card-green {
+  border-color: rgba(29, 67, 111, 0.19);
+}
+
+.card-content-left {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .card-label {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.card-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
 }
 
 .card-value {
-  font-size: 28px;
+  font-size: 36px;
   font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 4px;
+  color: #111827;
+  margin: 0;
+  line-height: 1;
 }
 
 .card-change {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-light);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
 .card-change.positive {
-  color: #10b981;
+  color: #059669;
+  background: #d1fae5;
 }
 
 .card-change.negative {
-  color: #ef4444;
+  color: #dc2626;
+  background: #fee2e2;
 }
 
 .card-change.neutral {
   color: #6b7280;
+  background: #f3f4f6;
 }
 
-.progress-bar {
-  width: 100%;
-  height: 6px;
-  background: #e5e7eb;
-  border-radius: 3px;
-  overflow: hidden;
-  margin-top: 8px;
+/* Iconos circulares a la derecha */
+.card-icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: white;
+  color: #1d436f;
+  box-shadow: 0 2px 8px rgba(29, 67, 111, 0.12);
 }
 
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary-color), #3b82f6);
-  border-radius: 3px;
-  transition: width 0.5s ease;
+.card-icon-circle.icon-blue,
+.card-icon-circle.icon-purple,
+.card-icon-circle.icon-green {
+  background: white;
+  color: #1d436f;
 }
 
-/* Search and Filter Bar */
+/* Estilos de progress-bar ahora manejados por el componente genérico ProgressBarComponent */
+
+/* Search and Filter Bar - Diseño ShiftManager */
 .search-filter-bar {
   display: flex;
-  gap: 16px;
-  margin-bottom: 20px;
-  align-items: center;
-}
-
-.search-box {
-  flex: 1;
-  display: flex;
-  align-items: center;
   gap: 12px;
-  background: white;
-  border: 1px solid #e8eaed;
-  border-radius: 10px;
-  padding: 12px 16px;
-  transition: var(--transition-fast);
-}
-
-.search-box:focus-within {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.1);
-}
-
-.search-box lucide-icon {
-  color: var(--text-light);
-  flex-shrink: 0;
-}
-
-.search-box input {
-  flex: 1;
-  border: none;
-  outline: none;
-  font-size: 14px;
-  color: var(--text-primary);
-}
-
-.search-box input::placeholder {
-  color: var(--text-light);
-}
-
-.status-filter-dropdown {
-  display: flex;
+  margin-bottom: 24px;
   align-items: center;
-  gap: 8px;
-  background: white;
+}
+
+/* El input ocupa todo el espacio disponible */
+.search-filter-bar app-input {
+  flex: 1;
+}
+
+/* Hacer el input más grande y más visible */
+.search-filter-bar :host ::ng-deep app-input .input-wrapper .input-field,
+.search-filter-bar ::ng-deep .input-field {
+  height: 46px;
+  font-size: 15px;
+  padding: 12px 16px 12px 42px;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
-  padding: 12px 16px;
-  font-size: 14px;
-  color: var(--text-primary);
-  cursor: pointer;
 }
 
-.filter-toggle {
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  color: var(--text-secondary);
+.search-filter-bar ::ng-deep .input-icon-start {
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.search-filter-bar ::ng-deep .input-field:focus {
+  border-color: #1d436f;
+  box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.1);
 }
 
 /* Appointments Section */
@@ -616,15 +543,13 @@
   font-weight: 500;
   color: #5f6368;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
   padding: 0 12px;
 }
 
 .btn-page:hover:not(:disabled):not(.active) {
   background: #f8f9fa;
-  border-color: #dadce0;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-color: #94a3b8;
 }
 
 .btn-page.active {
@@ -632,7 +557,6 @@
   border-color: var(--primary-color);
   color: white;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(29, 67, 111, 0.2);
 }
 
 .btn-page:disabled {

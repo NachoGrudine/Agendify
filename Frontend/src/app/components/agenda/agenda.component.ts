@@ -8,7 +8,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import { CalendarService } from '../../services/calendar/calendar.service';
 import { CalendarDaySummaryDto } from '../../models/calendar.model';
-import { LucideAngularModule, ChevronLeft, ChevronRight, Bell } from 'lucide-angular';
+import { LucideAngularModule, ChevronLeft, ChevronRight, Bell, Calendar } from 'lucide-angular';
 
 @Component({
   selector: 'app-agenda',
@@ -23,6 +23,7 @@ export class AgendaComponent implements OnInit {
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
 
   // Iconos Lucide
+  readonly CalendarIcon = Calendar;
   readonly ChevronLeftIcon = ChevronLeft;
   readonly ChevronRightIcon = ChevronRight;
   readonly BellIcon = Bell;

@@ -1,0 +1,190 @@
+﻿/* ============================================
+   INPUT COMPONENT - DISEÑO COMPACTO
+   ============================================ */
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  width: 100%;
+}
+
+.input-label {
+  color: #374151;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+}
+
+.required-mark {
+  color: #dc2626;
+  margin-left: 0.125rem;
+  font-weight: 600;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #1f2937;
+  background-color: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  font-family: inherit;
+  height: 38px;
+}
+
+.input-field::placeholder {
+  color: #9ca3af;
+}
+
+.input-field.with-icon-start {
+  padding-left: 2.5rem;
+}
+
+.input-field.with-icon-end {
+  padding-right: 2.5rem;
+}
+
+.input-field:hover:not(:disabled) {
+  border-color: #94a3b8;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #1d436f;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(29, 67, 111, 0.1);
+}
+
+.input-field:disabled {
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.input-container.has-error .input-field {
+  border-color: #dc2626;
+  background-color: #fef2f2;
+}
+
+.input-container.has-error .input-field:focus {
+  border-color: #b91c1c;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+}
+
+.input-icon-start {
+  position: absolute;
+  left: 0.75rem;
+  color: #9ca3af;
+  pointer-events: none;
+  transition: color 0.15s ease;
+}
+
+.input-container:focus-within .input-icon-start {
+  color: #1d436f;
+}
+
+.input-icon-end {
+  position: absolute;
+  right: 0.75rem;
+  color: #9ca3af;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.error-message {
+  color: #dc2626;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.125rem;
+}
+
+.error-message::before {
+  content: "⚠";
+  font-size: 0.75rem;
+}
+
+.hint-message {
+  color: #6b7280;
+  font-size: 0.75rem;
+  margin-top: 0.125rem;
+  line-height: 1.4;
+}
+
+/* ============================================
+   PRIMENG INPUT OVERRIDES
+   ============================================ */
+:host ::ng-deep .p-inputtext {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #1f2937;
+  background-color: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  height: 38px;
+}
+
+:host ::ng-deep .p-inputtext::placeholder {
+  color: #9ca3af;
+}
+
+:host ::ng-deep .p-inputtext:enabled:hover {
+  border-color: #94a3b8;
+}
+
+:host ::ng-deep .p-inputtext:enabled:focus {
+  outline: none;
+  border-color: #1d436f;
+  box-shadow: 0 0 0 2px rgba(29, 67, 111, 0.1);
+}
+
+:host ::ng-deep .p-inputtext:disabled {
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Error state */
+:host ::ng-deep .p-inputtext.ng-invalid.ng-dirty {
+  border-color: #dc2626;
+  background-color: #fef2f2;
+}
+
+:host ::ng-deep .p-inputtext.ng-invalid.ng-dirty:focus {
+  border-color: #b91c1c;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 640px) {
+  .input-field,
+  :host ::ng-deep .p-inputtext {
+    font-size: 16px; /* Previene zoom en iOS */
+    padding: 0.625rem 0.875rem;
+  }
+
+  .input-field.with-icon-start {
+    padding-left: 2.5rem;
+  }
+
+  .input-icon-start {
+    left: 0.75rem;
+  }
+}

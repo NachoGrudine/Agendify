@@ -1,0 +1,36 @@
+<div class="dropdown-wrapper">
+  <label *ngIf="label" [for]="inputId" class="dropdown-label">
+    {{ label }}
+    <span *ngIf="required" class="required-mark">*</span>
+  </label>
+
+  <div class="dropdown-container" [class.has-error]="error">
+    <lucide-angular
+      *ngIf="iconStart"
+      [img]="iconStart"
+      [size]="iconSize"
+      class="dropdown-icon-start"
+    />
+
+    <p-select
+      [inputId]="inputId"
+      [options]="options"
+      [optionLabel]="optionLabel"
+      [optionValue]="optionValue"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [filter]="filter"
+      [filterPlaceholder]="filterPlaceholder"
+      [showClear]="showClear"
+      [(ngModel)]="value"
+      (ngModelChange)="onDropdownChange($event)"
+      (onBlur)="onTouched()"
+      [class]="'agendify-dropdown' + (iconStart ? ' with-icon' : '')"
+      [style]="{'width': '100%'}"
+    >
+    </p-select>
+  </div>
+
+  <small *ngIf="error" class="error-message">{{ error }}</small>
+  <small *ngIf="hint && !error" class="hint-message">{{ hint }}</small>
+</div>

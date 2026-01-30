@@ -1,17 +1,30 @@
 ﻿import { Component, signal, inject, computed, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LucideAngularModule, Save, X, Trash2, Plus, Copy, Clock, Info, CheckCircle, XCircle } from 'lucide-angular';
 import { DaySchedule, TimeRange, DayOfWeek } from '../../models/schedule.model';
 import { ScheduleService } from '../../services/schedule/schedule.service';
+import { ButtonComponent, LoadingSpinnerComponent, CardComponent } from '../../shared/components';
 
 @Component({
   selector: 'app-weekly-schedule',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule, ButtonComponent, LoadingSpinnerComponent, CardComponent],
   templateUrl: './weekly-schedule.component.html',
   styleUrls: ['./weekly-schedule.component.css']
 })
 export class WeeklyScheduleComponent implements OnInit {
+  // Icons
+  readonly SaveIcon = Save;
+  readonly XIcon = X;
+  readonly TrashIcon = Trash2;
+  readonly PlusIcon = Plus;
+  readonly CopyIcon = Copy;
+  readonly ClockIcon = Clock;
+  readonly InfoIcon = Info;
+  readonly CheckCircleIcon = CheckCircle;
+  readonly XCircleIcon = XCircle;
+
   // Services
   private readonly scheduleService = inject(ScheduleService);
   private readonly STORAGE_KEY = 'agendify_temp_schedule';
@@ -77,6 +90,29 @@ export class WeeklyScheduleComponent implements OnInit {
     const day = schedule[dayIndex];
 
     const newSlot: TimeRange = { start: '09:00', end: '18:00' };
+
+    // Validar que no exista ya un slot con el mismo rango horario
+    const isDuplicate = day.slots.some(slot =>
+      slot.start === newSlot.start && slot.end === newSlot.end
+    );
+
+    if (isDuplicate) {
+      this.errorMessage.set('⚠️ Ya existe un horario con ese rango. Por favor, modifica los horarios.');
+      setTimeout(() => this.clearMessages(), 3000);
+      return;
+    }
+
+    // Validar que no se solape con otros horarios existentes
+    const hasOverlap = day.slots.some(slot =>
+      this.hasOverlap(newSlot, slot)
+    );
+
+    if (hasOverlap) {
+      this.errorMessage.set('⚠️ El nuevo horario se solapa con uno existente. Ajusta los rangos.');
+      setTimeout(() => this.clearMessages(), 3000);
+      return;
+    }
+
     day.slots.push(newSlot);
 
     this.weekSchedule.set(schedule);
@@ -101,6 +137,38 @@ export class WeeklyScheduleComponent implements OnInit {
 
   updateSlot(dayIndex: number, slotIndex: number, field: 'start' | 'end', value: string): void {
     const schedule = [...this.weekSchedule()];
+    const day = schedule[dayIndex];
+
+    // Actualizar temporalmente el slot
+    const updatedSlot = { ...day.slots[slotIndex] };
+    updatedSlot[field] = value;
+
+    // Validar que no se cree un duplicado
+    const isDuplicate = day.slots.some((slot, index) =>
+      index !== slotIndex &&
+      slot.start === updatedSlot.start &&
+      slot.end === updatedSlot.end
+    );
+
+    if (isDuplicate) {
+      this.errorMessage.set('⚠️ Ya existe un horario idéntico.');
+      setTimeout(() => this.clearMessages(), 3000);
+      return;
+    }
+
+    // Validar que no se solape con otros horarios
+    const hasOverlap = day.slots.some((slot, index) =>
+      index !== slotIndex &&
+      this.hasOverlap(updatedSlot, slot)
+    );
+
+    if (hasOverlap) {
+      this.errorMessage.set('⚠️ El horario se solapa con otro existente.');
+      setTimeout(() => this.clearMessages(), 3000);
+      return;
+    }
+
+    // Aplicar el cambio
     schedule[dayIndex].slots[slotIndex][field] = value;
     this.weekSchedule.set(schedule);
     this.saveToLocalStorage();
@@ -146,11 +214,22 @@ export class WeeklyScheduleComponent implements OnInit {
 
     this.scheduleService.bulkUpdateMySchedules(dto).subscribe({
       next: () => {
+        // CRÍTICO: Actualizar originalSchedule ANTES de mostrar éxito
+        // Esto hace que hasUnsavedChanges() retorne false inmediatamente
+        this.originalSchedule = JSON.stringify(this.weekSchedule());
+
+        // Limpiar localStorage
+        this.clearLocalStorage();
+
+        // Forzar actualización del signal para que el computed se reevalúe
+        this.weekSchedule.set([...this.weekSchedule()]);
+
+        // Mostrar éxito
         this.successMessage.set('¡Cambios guardados exitosamente!');
         this.isSaving.set(false);
-        this.originalSchedule = JSON.stringify(this.weekSchedule());
-        this.clearLocalStorage();
-        setTimeout(() => this.clearMessages(), 3000);
+
+        // Limpiar mensaje después de 2 segundos
+        setTimeout(() => this.clearMessages(), 2000);
       },
       error: (error: any) => {
         this.errorMessage.set(error?.error?.message || 'Error al guardar los cambios');
@@ -160,11 +239,28 @@ export class WeeklyScheduleComponent implements OnInit {
   }
 
   discardChanges(): void {
-    if (confirm('¿Estás seguro de que deseas descartar los cambios no guardados?')) {
+    if (confirm('¿Descartar los cambios no guardados?')) {
+      // Limpiar localStorage inmediatamente
       this.clearLocalStorage();
-      this.loadSchedules();
-      this.successMessage.set('Cambios descartados');
-      setTimeout(() => this.clearMessages(), 3000);
+      this.clearMessages();
+
+      // Cargar desde el backend
+      this.isLoading.set(true);
+      this.scheduleService.getMySchedules().subscribe({
+        next: (schedules: any[]) => {
+          this.mapBackendToFrontend(schedules);
+          this.originalSchedule = JSON.stringify(this.weekSchedule());
+          this.isLoading.set(false);
+
+          // Mensaje breve
+          this.successMessage.set('Cambios descartados');
+          setTimeout(() => this.clearMessages(), 1500);
+        },
+        error: (err) => {
+          this.errorMessage.set('Error al cargar los horarios');
+          this.isLoading.set(false);
+        }
+      });
     }
   }
 
@@ -178,14 +274,19 @@ export class WeeklyScheduleComponent implements OnInit {
     );
   }
 
+  // Validar si dos rangos horarios se solapan
+  private hasOverlap(slot1: TimeRange, slot2: TimeRange): boolean {
+    return (slot1.start < slot2.end && slot1.end > slot2.start);
+  }
+
+
   // Private methods - Data handling
   private loadSchedules(): void {
     const tempSchedule = this.loadFromLocalStorage();
     if (tempSchedule) {
       this.weekSchedule.set(tempSchedule);
       this.originalSchedule = JSON.stringify(tempSchedule);
-      this.successMessage.set('Se cargó un borrador guardado localmente');
-      setTimeout(() => this.clearMessages(), 3000);
+      // NO mostrar mensaje de borrador cargado automáticamente
       return;
     }
 
@@ -196,7 +297,7 @@ export class WeeklyScheduleComponent implements OnInit {
         this.originalSchedule = JSON.stringify(this.weekSchedule());
         this.isLoading.set(false);
       },
-      error: (err) => {
+      error: () => {
         this.errorMessage.set('Error al cargar los horarios');
         this.isLoading.set(false);
       }
@@ -217,7 +318,7 @@ export class WeeklyScheduleComponent implements OnInit {
       'Saturday': DayOfWeek.Saturday
     };
 
-    schedules.forEach((schedule, index) => {
+    schedules.forEach((schedule) => {
       // El backend puede enviar dayOfWeek como número o como string ("Monday", "Tuesday", etc.)
       let rawDayOfWeek = schedule.day_of_week ?? schedule.dayOfWeek;
       let dayOfWeek: DayOfWeek;

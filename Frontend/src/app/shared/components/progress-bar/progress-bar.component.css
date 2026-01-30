@@ -1,0 +1,62 @@
+﻿/* ============================================
+   PROGRESS BAR COMPONENT - DISEÑO COMPACTO
+   ============================================ */
+
+.progress-wrapper {
+  width: 100%;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.progress-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.progress-percentage {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.progress-bar {
+  width: 100%;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+.progress-fill.animated {
+  transition: width 0.3s ease;
+}
+
+/* Colores según el tipo */
+.progress-fill.color-primary {
+  background: #1d436f;
+}
+
+.progress-fill.color-success {
+  background: #16a34a;
+}
+
+.progress-fill.color-warning {
+  background: #d97706;
+}
+
+.progress-fill.color-danger {
+  background: #dc2626;
+}

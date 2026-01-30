@@ -6,6 +6,7 @@ import { RegisterStep2Component } from './steps/step2/step2.component';
 import { RegisterStep3Component } from './steps/step3/step3.component';
 import { AuthService } from '../../../services/auth/auth.service';
 import { RegisterDto } from '../../../models/auth.model';
+import { ProgressBarComponent } from '../../../shared/components';
 
 interface RegisterFormData {
   email: string;
@@ -24,7 +25,8 @@ interface RegisterFormData {
     CommonModule,
     RegisterStep1Component,
     RegisterStep2Component,
-    RegisterStep3Component
+    RegisterStep3Component,
+    ProgressBarComponent
   ],
   templateUrl: './register-wizard.component.html',
   styleUrls: ['./register-wizard.component.css']

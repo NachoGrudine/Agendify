@@ -1,0 +1,20 @@
+﻿<div class="progress-wrapper">
+  <!-- Header con label y porcentaje -->
+  <div *ngIf="label || showPercentage" class="progress-header">
+    <span *ngIf="label" class="progress-label">{{ label }}</span>
+    <span *ngIf="showPercentage" class="progress-percentage">{{ progress }}% completado</span>
+  </div>
+
+  <!-- Barra de progreso -->
+  <div class="progress-bar" [style.height]="height">
+    <div
+      class="progress-fill"
+      [class.animated]="animated"
+      [class.color-primary]="color === 'primary'"
+      [class.color-success]="color === 'success'"
+      [class.color-warning]="color === 'warning'"
+      [class.color-danger]="color === 'danger'"
+      [style.width.%]="progress"
+    ></div>
+  </div>
+</div>

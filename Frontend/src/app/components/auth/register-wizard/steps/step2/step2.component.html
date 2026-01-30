@@ -9,84 +9,45 @@
   <!-- Formulario -->
   <form class="step-form" (ngSubmit)="onContinue()">
     <!-- Nombre del Negocio -->
-    <div class="form-group">
-      <label for="businessName" class="form-label">
-        Nombre del negocio
-        <svg class="info-icon" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-        </svg>
-      </label>
-      <input
-        id="businessName"
-        type="text"
-        [(ngModel)]="businessName"
-        name="businessName"
-        placeholder="Ej. Peluquería Estilo & Color"
-        class="form-input"
-        [class.input-error]="errors().businessName"
-        autocomplete="organization"
-      />
-      @if (errors().businessName) {
-        <span class="error-message">{{ errors().businessName }}</span>
-      }
-    </div>
+    <app-input
+      inputId="businessName"
+      label="Nombre del negocio"
+      type="text"
+      placeholder="Ej. Peluquería Estilo & Color"
+      [(ngModel)]="businessName"
+      name="businessName"
+      [required]="true"
+      [error]="errors().businessName"
+    />
 
     <!-- Categoría / Industria -->
-    <div class="form-group">
-      <label for="industry" class="form-label">
-        Categoría / Industria
-        <svg class="info-icon" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-        </svg>
-      </label>
-      <div class="select-wrapper">
-        <select
-          id="industry"
-          [(ngModel)]="industry"
-          name="industry"
-          class="form-select"
-          [class.input-error]="errors().industry"
-        >
-          @for (ind of industries; track ind.value) {
-            <option [value]="ind.value">{{ ind.label }}</option>
-          }
-        </select>
-        <svg class="select-icon" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
-        </svg>
-      </div>
-      @if (errors().industry) {
-        <span class="error-message">{{ errors().industry }}</span>
-      }
-    </div>
-
-    <!-- Info Box -->
-    <div class="info-box">
-      <svg class="info-box-icon" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-      </svg>
-      <div class="info-box-content">
-        <p class="info-box-title">Tip:</p>
-        <p class="info-box-text">
-          Al elegir tu categoría, Agendify configurará automáticamente horarios y tipos de servicios comunes para ahorrarte tiempo.
-        </p>
-      </div>
-    </div>
+    <app-dropdown
+      inputId="industry"
+      label="Categoría / Industria"
+      [(ngModel)]="industry"
+      name="industry"
+      [options]="industries"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="Selecciona tu industria"
+      [required]="true"
+      [error]="errors().industry"
+      hint="Al elegir tu categoría, Agendify configurará automáticamente horarios y servicios comunes"
+    />
 
     <!-- Botones de navegación -->
     <div class="button-row">
-      <button type="button" class="btn-secondary" (click)="onBack()">
-        <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
-        </svg>
-        Atrás
-      </button>
-      <button type="submit" class="btn-primary">
-        Continuar
-        <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
-        </svg>
-      </button>
+      <app-button
+        type="button"
+        label="Atrás"
+        severity="outlined"
+        (onClick)="onBack()"
+      />
+      <app-button
+        type="submit"
+        label="Continuar"
+        severity="primary"
+      />
     </div>
   </form>
 </div>

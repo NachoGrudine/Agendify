@@ -1,0 +1,47 @@
+﻿.demo-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-actions {
+  margin-top: 1rem;
+}
+
+.loading-demo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  text-align: center;
+}
+
+.loading-demo h4 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+h1 {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}

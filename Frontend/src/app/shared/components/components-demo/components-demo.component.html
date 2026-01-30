@@ -1,0 +1,137 @@
+﻿<!-- Toast global -->
+<app-toast />
+
+<div class="demo-container">
+  <!-- Header de la demo -->
+  <app-card>
+    <h1>🎨 Demo de Componentes Compartidos</h1>
+    <p>Ejemplos de uso de todos los componentes genéricos de Agendify</p>
+  </app-card>
+
+  <!-- Sección de Botones -->
+  <app-card header="Botones" subheader="Diferentes variantes y estados">
+    <div class="buttons-grid">
+      <app-button label="Primario" severity="primary" (onClick)="mostrarInfo()" />
+      <app-button label="Secundario" severity="secondary" (onClick)="mostrarInfo()" />
+      <app-button label="Success" severity="success" (onClick)="mostrarInfo()" />
+      <app-button label="Danger" severity="danger" (onClick)="mostrarError()" />
+      <app-button label="Outlined" severity="outlined" (onClick)="mostrarInfo()" />
+    </div>
+
+    <div class="buttons-grid">
+      <app-button label="Con Icono" [iconStart]="Plus" (onClick)="mostrarInfo()" />
+      <app-button label="Eliminar" [iconStart]="Trash2" severity="danger" (onClick)="eliminar()" />
+      <app-button label="Cargando..." [loading]="true" />
+      <app-button label="Deshabilitado" [disabled]="true" />
+    </div>
+  </app-card>
+
+  <!-- Sección de Formulario -->
+  <app-card header="Formulario de Ejemplo" subheader="Inputs con validación e iconos">
+    <form class="form-container">
+      <app-input
+        label="Nombre completo"
+        placeholder="Ingresa tu nombre"
+        [iconStart]="User"
+        [required]="true"
+        [(ngModel)]="nombre"
+        name="nombre"
+        [error]="errorNombre"
+        hint="Tu nombre como aparece en tu documento"
+      />
+
+      <app-input
+        label="Correo electrónico"
+        type="email"
+        placeholder="tu@email.com"
+        [iconStart]="Mail"
+        [required]="true"
+        [(ngModel)]="email"
+        name="email"
+        [error]="errorEmail"
+        hint="Usaremos este email para contactarte"
+      />
+
+      <div class="form-actions">
+        <app-button
+          label="Guardar Usuario"
+          [iconStart]="Save"
+          [loading]="guardando"
+          [fullWidth]="true"
+          (onClick)="guardar()"
+        />
+      </div>
+    </form>
+  </app-card>
+
+  <!-- Sección de Dialog -->
+  <app-card header="Modal / Dialog" subheader="Ventanas emergentes">
+    <app-button
+      label="Abrir Modal"
+      [iconStart]="Plus"
+      (onClick)="openDialog()"
+    />
+
+    <app-dialog
+      [(visible)]="showDialog"
+      header="Ejemplo de Modal"
+      width="30vw"
+      [footerTemplate]="true"
+    >
+      <p>Este es el contenido del modal. Aquí puedes agregar cualquier cosa.</p>
+      <p>Puedes usar formularios, listas, o cualquier otro componente.</p>
+
+      <div dialogFooter>
+        <app-button
+          label="Cancelar"
+          severity="outlined"
+          (onClick)="closeDialog()"
+        />
+        <app-button
+          label="Aceptar"
+          (onClick)="closeDialog()"
+        />
+      </div>
+    </app-dialog>
+  </app-card>
+
+  <!-- Sección de Toast -->
+  <app-card header="Notificaciones Toast" subheader="Mensajes emergentes">
+    <div class="buttons-grid">
+      <app-button label="Success" severity="success" (onClick)="guardar()" />
+      <app-button label="Error" severity="danger" (onClick)="mostrarError()" />
+      <app-button label="Info" (onClick)="mostrarInfo()" />
+      <app-button label="Warning" severity="secondary" (onClick)="eliminar()" />
+    </div>
+  </app-card>
+
+  <!-- Sección de Loading -->
+  <app-card header="Loading Spinner" subheader="Indicador de carga">
+    <div class="loading-demo">
+      <div>
+        <h4>Spinner Simple</h4>
+        <app-loading-spinner />
+      </div>
+
+      <div>
+        <h4>Con Mensaje</h4>
+        <app-loading-spinner message="Cargando datos..." size="40px" />
+      </div>
+
+      <div>
+        <app-button
+          label="Simular Carga Overlay"
+          (onClick)="simularCarga()"
+        />
+      </div>
+    </div>
+  </app-card>
+
+  <!-- Loading Overlay -->
+  <app-loading-spinner
+    *ngIf="cargandoPagina"
+    [overlay]="true"
+    message="Procesando solicitud..."
+    size="60px"
+  />
+</div>

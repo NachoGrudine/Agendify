@@ -1,0 +1,28 @@
+﻿:host ::ng-deep .agendify-toast .p-toast-message {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+:host ::ng-deep .agendify-toast .p-toast-message-success {
+  background-color: var(--success-bg);
+  border-left: 4px solid var(--success-text);
+  color: var(--success-text);
+}
+
+:host ::ng-deep .agendify-toast .p-toast-message-error {
+  background-color: var(--error-bg);
+  border-left: 4px solid var(--error-text);
+  color: var(--error-text);
+}
+
+:host ::ng-deep .agendify-toast .p-toast-message-info {
+  background-color: var(--primary-light);
+  border-left: 4px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+:host ::ng-deep .agendify-toast .p-toast-message-warn {
+  background-color: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  color: #92400e;
+}

@@ -1,0 +1,30 @@
+﻿<button
+  pButton
+  [type]="type"
+  [disabled]="disabled || loading"
+  [class]="'p-button-' + severity + ' ' + customClass"
+  (click)="handleClick($event)"
+  [style.width]="fullWidth ? '100%' : 'auto'"
+>
+  <!-- Icono Lucide al inicio -->
+  <lucide-angular
+    *ngIf="iconStart && !loading"
+    [img]="iconStart"
+    [size]="iconSize"
+    class="button-icon-start"
+  />
+
+  <!-- Spinner cuando está cargando -->
+  <i *ngIf="loading" class="pi pi-spin pi-spinner button-icon-start"></i>
+
+  <!-- Texto del botón -->
+  <span *ngIf="label">{{ label }}</span>
+
+  <!-- Icono Lucide al final -->
+  <lucide-angular
+    *ngIf="iconEnd && !loading"
+    [img]="iconEnd"
+    [size]="iconSize"
+    class="button-icon-end"
+  />
+</button>

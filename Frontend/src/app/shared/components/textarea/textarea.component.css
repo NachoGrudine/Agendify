@@ -1,0 +1,143 @@
+/* ============================================
+   TEXTAREA COMPONENT - ESTILOS MEJORADOS
+   ============================================ */
+
+.textarea-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.textarea-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.textarea-label {
+  color: #1f2937;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
+}
+
+.required-mark {
+  color: #ef4444;
+  margin-left: 0.25rem;
+  font-weight: 700;
+}
+
+.character-count {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.textarea-container {
+  position: relative;
+  display: flex;
+}
+
+.textarea-icon-start {
+  position: absolute;
+  left: 0.875rem;
+  top: 0.875rem;
+  color: #6b7280;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.textarea-container:focus-within .textarea-icon-start {
+  color: #1d436f;
+}
+
+/* Estilos PrimeNG Textarea */
+:host ::ng-deep .textarea-field {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #1f2937;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+}
+
+:host ::ng-deep .textarea-field.with-icon-start {
+  padding-left: 2.75rem;
+}
+
+:host ::ng-deep .textarea-field::placeholder {
+  color: #9ca3af;
+}
+
+:host ::ng-deep .textarea-field:hover:not(:disabled) {
+  border-color: #d1d5db;
+}
+
+:host ::ng-deep .textarea-field:focus {
+  outline: none;
+  border-color: #1d436f;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.1);
+}
+
+:host ::ng-deep .textarea-field:disabled {
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Auto-resize */
+:host ::ng-deep .textarea-field[autoResize] {
+  resize: none;
+}
+
+/* Error State */
+.textarea-container.has-error :host ::ng-deep .textarea-field {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.textarea-container.has-error :host ::ng-deep .textarea-field:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.hint-message {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Scrollbar personalizado */
+:host ::ng-deep .textarea-field::-webkit-scrollbar {
+  width: 8px;
+}
+
+:host ::ng-deep .textarea-field::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+:host ::ng-deep .textarea-field::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+:host ::ng-deep .textarea-field::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

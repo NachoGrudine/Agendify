@@ -1,0 +1,40 @@
+﻿<div class="input-wrapper">
+  <label *ngIf="label" [for]="inputId" class="input-label">
+    {{ label }}
+    <span *ngIf="required" class="required-mark">*</span>
+  </label>
+
+  <div class="input-container" [class.has-error]="error">
+    <lucide-angular
+      *ngIf="iconStart"
+      [img]="iconStart"
+      [size]="iconSize"
+      class="input-icon-start"
+    />
+
+    <input
+      [id]="inputId"
+      pInputText
+      [type]="type"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [required]="required"
+      [(ngModel)]="value"
+      (ngModelChange)="onInputChange($event)"
+      (blur)="onTouched()"
+      class="input-field"
+      [class.with-icon-start]="iconStart"
+      [class.with-icon-end]="iconEnd"
+    />
+
+    <lucide-angular
+      *ngIf="iconEnd"
+      [img]="iconEnd"
+      [size]="iconSize"
+      class="input-icon-end"
+    />
+  </div>
+
+  <small *ngIf="error" class="error-message">{{ error }}</small>
+  <small *ngIf="hint && !error" class="hint-message">{{ hint }}</small>
+</div>

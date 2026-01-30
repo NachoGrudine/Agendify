@@ -1,0 +1,68 @@
+﻿/* ============================================
+   DIALOG COMPONENT - ESTILOS MEJORADOS
+   ============================================ */
+
+:host ::ng-deep .agendify-dialog {
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e5e7eb;
+}
+
+:host ::ng-deep .agendify-dialog .p-dialog-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1.5rem;
+  border-radius: 12px 12px 0 0;
+}
+
+:host ::ng-deep .agendify-dialog .p-dialog-title {
+  color: #1d436f;
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+:host ::ng-deep .agendify-dialog .p-dialog-content {
+  padding: 1.5rem;
+  background-color: #ffffff;
+  color: #374151;
+}
+
+:host ::ng-deep .agendify-dialog .p-dialog-footer {
+  border-top: 1px solid #e5e7eb;
+  padding: 1rem 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  background-color: #f9fafb;
+  border-radius: 0 0 12px 12px;
+}
+
+/* Botón de cerrar */
+:host ::ng-deep .agendify-dialog .p-dialog-header-close {
+  color: #6b7280;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  border-radius: 6px;
+}
+
+:host ::ng-deep .agendify-dialog .p-dialog-header-close:hover {
+  color: #1f2937;
+  background-color: #f3f4f6;
+}
+
+/* Overlay */
+:host ::ng-deep .p-dialog-mask {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  :host ::ng-deep .agendify-dialog .p-dialog-header,
+  :host ::ng-deep .agendify-dialog .p-dialog-content,
+  :host ::ng-deep .agendify-dialog .p-dialog-footer {
+    padding: 1.25rem;
+  }
+}
+
+

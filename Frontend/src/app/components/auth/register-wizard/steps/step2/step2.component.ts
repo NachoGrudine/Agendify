@@ -1,11 +1,12 @@
 ﻿import { Component, input, output, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { InputComponent, ButtonComponent, DropdownComponent } from '../../../../../shared/components';
 
 @Component({
   selector: 'app-register-step2',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, InputComponent, ButtonComponent, DropdownComponent],
   templateUrl: './step2.component.html',
   styleUrls: ['./step2.component.css']
 })

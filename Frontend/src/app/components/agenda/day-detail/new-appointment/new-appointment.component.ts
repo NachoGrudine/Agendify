@@ -17,6 +17,7 @@ import { DateTimeHelper } from '../../../../helpers/date-time.helper';
 import { ScheduleValidator } from '../../../../validators/schedule.validator';
 import { AppointmentDTOBuilder } from '../../../../builders/appointment-dto.builder';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { ButtonComponent, CardComponent, LoadingSpinnerComponent, DropdownComponent, TextareaComponent, InputComponent } from '../../../../shared/components';
 
 /**
  * Componente para CREAR nuevos appointments
@@ -25,7 +26,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 @Component({
   selector: 'app-new-appointment',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, TimeRangePickerComponent],
+  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, TimeRangePickerComponent, ButtonComponent, CardComponent, LoadingSpinnerComponent, DropdownComponent, TextareaComponent, InputComponent],
   templateUrl: './new-appointment.component.html',
   styleUrls: ['./new-appointment.component.css']
 })

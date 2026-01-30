@@ -50,7 +50,7 @@
 
 .content-wrapper {
   width: 100%;
-  max-width: 480px;
+  max-width: 600px;
 }
 
 /* Tabs */
@@ -90,7 +90,7 @@
 .auth-content {
   background: white;
   border-radius: 0 0 12px 12px;
-  padding: 2rem;
+  padding: 2.5rem;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.3s ease-out;
 }

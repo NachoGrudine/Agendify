@@ -1,32 +1,44 @@
-﻿<div class="modal-overlay">
-  <div class="modal-card">
+﻿﻿<div class="modal-overlay">
+  <app-card customClass="modal-card">
     <div class="modal-header">
       <div>
         <h2 class="modal-title">Editar Turno</h2>
         <p class="modal-subtitle">{{ formattedSelectedDate }}</p>
       </div>
-      <button class="btn-icon-close" (click)="onCancel()" type="button">
-        <i-lucide [img]="XIcon" [size]="20"></i-lucide>
-      </button>
+      <app-button
+        severity="outlined"
+        [iconStart]="XIcon"
+        [iconSize]="20"
+        customClass="btn-icon-close"
+        (onClick)="onCancel()"
+      />
     </div>
 
     <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()" class="modal-body">
-      <div class="form-field">
-        <label class="field-label">PROFESIONAL</label>
-        <select formControlName="providerId" class="field-select" (change)="onProviderChange($event)">
-          <option value="">Seleccionar profesional...</option>
-          @for (provider of providers(); track provider.id) {
-            <option [value]="provider.id">{{ provider.name }} - {{ provider.specialty }}</option>
-          }
-        </select>
-      </div>
+      <app-dropdown
+        label="PROFESIONAL"
+        formControlName="providerId"
+        [options]="providers()"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Seleccionar profesional..."
+        [filter]="true"
+        filterPlaceholder="Buscar profesional..."
+        (onChange)="onProviderChange($event)"
+      >
+        <ng-template let-provider pTemplate="item">
+          {{ provider.name }} - {{ provider.specialty }}
+        </ng-template>
+      </app-dropdown>
 
       <div class="form-field">
-        <label class="field-label">CLIENTE</label>
-        <div class="field-input-wrapper">
-          <i-lucide [img]="UserIcon" [size]="18" class="field-icon"></i-lucide>
-          <input type="text" formControlName="customerSearch" class="field-input with-icon" placeholder="Buscar cliente..." autocomplete="off">
-        </div>
+        <app-input
+          label="CLIENTE"
+          formControlName="customerSearch"
+          placeholder="Buscar cliente..."
+          [iconStart]="UserIcon"
+          [iconSize]="18"
+        />
         @if (showCustomerDropdown() && filteredCustomers().length > 0) {
           <div class="dropdown-results">
             @for (customer of filteredCustomers(); track customer.id) {
@@ -42,11 +54,13 @@
       </div>
 
       <div class="form-field">
-        <label class="field-label">SERVICIO</label>
-        <div class="field-input-wrapper">
-          <i-lucide [img]="BriefcaseIcon" [size]="18" class="field-icon"></i-lucide>
-          <input type="text" formControlName="serviceSearch" class="field-input with-icon" placeholder="Buscar servicio..." autocomplete="off">
-        </div>
+        <app-input
+          label="SERVICIO"
+          formControlName="serviceSearch"
+          placeholder="Buscar servicio..."
+          [iconStart]="BriefcaseIcon"
+          [iconSize]="18"
+        />
         @if (showServiceDropdown() && filteredServices().length > 0) {
           <div class="dropdown-results">
             @for (service of filteredServices(); track service.id) {
@@ -68,10 +82,12 @@
         </app-time-range-picker>
       </div>
 
-      <div class="form-field">
-        <label class="field-label">NOTAS INTERNAS</label>
-        <textarea formControlName="notes" class="field-textarea" rows="3" placeholder="Detalles adicionales..."></textarea>
-      </div>
+      <app-textarea
+        label="NOTAS INTERNAS"
+        formControlName="notes"
+        [rows]="3"
+        placeholder="Detalles adicionales..."
+      />
 
       @if (errorMessage()) {
         <div class="alert alert-danger">{{ errorMessage() }}</div>
@@ -82,17 +98,31 @@
     </form>
 
     <div class="modal-footer">
-      <button type="button" class="btn-text" (click)="appointmentForm.reset()">Limpiar</button>
+      <app-button
+        label="Limpiar"
+        severity="outlined"
+        customClass="btn-text"
+        (onClick)="appointmentForm.reset()"
+      />
       <div class="footer-actions">
-        <button type="button" class="btn-secondary" (click)="onCancel()">Cancelar</button>
-        <button type="submit" class="btn-primary" (click)="onSubmit()" [disabled]="isSaving()">Actualizar Turno</button>
+        <app-button
+          label="Cancelar"
+          severity="outlined"
+          (onClick)="onCancel()"
+        />
+        <app-button
+          type="submit"
+          label="Actualizar Turno"
+          severity="primary"
+          [loading]="isSaving()"
+          [disabled]="isSaving()"
+          (onClick)="onSubmit()"
+        />
       </div>
     </div>
 
     @if (isLoading()) {
-      <div class="loading-overlay">
-        <div class="spinner"></div>
-      </div>
+      <app-loading-spinner [overlay]="true" message="Cargando..." />
     }
-  </div>
+  </app-card>
 </div>

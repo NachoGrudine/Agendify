@@ -1,6 +1,43 @@
 ﻿.agenda-container {
   max-width: 1400px;
   margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Page Header con Icono */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  border-radius: 12px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  flex-shrink: 0;
+}
+
+.header-content-text h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.25rem 0;
+}
+
+.header-content-text p {
+  color: #6b7280;
+  font-size: 1rem;
+  margin: 0;
 }
 
 /* ============================================
@@ -30,14 +67,14 @@
 
 .header-content h1 {
   color: var(--text-primary);
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 600;
   margin: 0;
 }
 
 .subtitle {
   color: var(--text-secondary);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   margin: 0;
   font-weight: 400;
 }

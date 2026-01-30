@@ -1,13 +1,13 @@
-﻿<div class="wizard-container">
+﻿﻿<div class="wizard-container">
   <!-- Barra de progreso -->
   <div class="progress-section">
-    <div class="progress-header">
-      <span class="progress-label">Paso {{ currentStep() }} de 3</span>
-      <span class="progress-percentage">{{ progressPercentage() }}% completado</span>
-    </div>
-    <div class="progress-bar">
-      <div class="progress-fill" [style.width.%]="progressPercentage()"></div>
-    </div>
+    <app-progress-bar
+      [progress]="progressPercentage()"
+      [label]="'Paso ' + currentStep() + ' de 3'"
+      [showPercentage]="true"
+      color="primary"
+      height="6px"
+    />
   </div>
 
   <!-- Mensaje de error global -->

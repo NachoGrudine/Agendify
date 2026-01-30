@@ -28,13 +28,11 @@
   border-radius: var(--radius-md);
   font-weight: 600;
   cursor: pointer;
-  transition: var(--transition-normal);
+  transition: background-color 0.15s ease;
 }
 
 .btn-primary:hover {
   background: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
 }
 
 .content-card {

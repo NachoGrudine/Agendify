@@ -11,10 +11,11 @@ import { DayDetailsDto } from '../../../models/calendar.model';
 import { ProviderResponse } from '../../../models/appointment.model';
 import { DateTimeHelper } from '../../../helpers/date-time.helper';
 import { AppointmentStatusHelper } from '../../../helpers/appointment-status.helper';
+import { ButtonComponent, CardComponent, InputComponent, LoadingSpinnerComponent, ProgressBarComponent } from '../../../shared/components';
 
 @Component({
   selector: 'app-day-detail',
-  imports: [CommonModule, FormsModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule, ButtonComponent, InputComponent, LoadingSpinnerComponent, ProgressBarComponent],
   templateUrl: './day-detail.html',
   styleUrl: './day-detail.css',
 })

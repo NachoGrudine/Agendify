@@ -1,0 +1,37 @@
+<div class="textarea-wrapper">
+  <div class="textarea-header">
+    <label *ngIf="label" [for]="inputId" class="textarea-label">
+      {{ label }}
+      <span *ngIf="required" class="required-mark">*</span>
+    </label>
+    <span *ngIf="showCount && maxLength" class="character-count">{{ characterCount }}</span>
+  </div>
+
+  <div class="textarea-container" [class.has-error]="error">
+    <lucide-angular
+      *ngIf="iconStart"
+      [img]="iconStart"
+      [size]="iconSize"
+      class="textarea-icon-start"
+    />
+
+    <textarea
+      [id]="inputId"
+      pTextarea
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [required]="required"
+      [rows]="rows"
+      [autoResize]="autoResize"
+      [maxlength]="maxLength || null"
+      [(ngModel)]="value"
+      (ngModelChange)="onTextareaChange($event)"
+      (blur)="onTouched()"
+      class="textarea-field"
+      [class.with-icon-start]="iconStart"
+    ></textarea>
+  </div>
+
+  <small *ngIf="error" class="error-message">{{ error }}</small>
+  <small *ngIf="hint && !error" class="hint-message">{{ hint }}</small>
+</div>

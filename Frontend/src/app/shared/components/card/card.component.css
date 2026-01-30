@@ -1,0 +1,128 @@
+﻿/* ============================================
+   CARD COMPONENT - ESTILOS MEJORADOS
+   ============================================ */
+
+:host ::ng-deep .agendify-card {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  overflow: hidden;
+}
+
+:host ::ng-deep .agendify-card:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* Card Header */
+:host ::ng-deep .agendify-card .p-card-header {
+  padding: 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+:host ::ng-deep .agendify-card .p-card-title {
+  color: #1d436f;
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.01em;
+}
+
+:host ::ng-deep .agendify-card .p-card-subtitle {
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+/* Card Body */
+:host ::ng-deep .agendify-card .p-card-body {
+  padding: 1.5rem;
+}
+
+:host ::ng-deep .agendify-card .p-card-content {
+  padding: 0;
+  color: #374151;
+  line-height: 1.6;
+}
+
+/* Card Footer */
+:host ::ng-deep .agendify-card .p-card-footer {
+  padding: 1rem 1.5rem;
+  background-color: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* ============================================
+   VARIANTES DE CARD
+   ============================================ */
+
+/* Card con borde destacado */
+:host ::ng-deep .agendify-card.card-bordered {
+  border: 2px solid #1d436f;
+}
+
+/* Card interactivo */
+:host ::ng-deep .agendify-card.card-interactive {
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+:host ::ng-deep .agendify-card.card-interactive:hover {
+  border-color: #1d436f;
+  box-shadow: 0 8px 20px rgba(29, 67, 111, 0.12), 0 4px 8px rgba(29, 67, 111, 0.06);
+}
+
+/* Card con acento superior */
+:host ::ng-deep .agendify-card.card-accent {
+  border-top: 4px solid #1d436f;
+}
+
+/* Card compacto */
+:host ::ng-deep .agendify-card.card-compact .p-card-body {
+  padding: 1rem;
+}
+
+/* Card con fondo de color */
+:host ::ng-deep .agendify-card.card-primary {
+  background: linear-gradient(135deg, #1d436f 0%, #2563a8 100%);
+  border-color: #1d436f;
+}
+
+:host ::ng-deep .agendify-card.card-primary .p-card-title,
+:host ::ng-deep .agendify-card.card-primary .p-card-subtitle,
+:host ::ng-deep .agendify-card.card-primary .p-card-content {
+  color: #ffffff;
+}
+
+/* Resetear transformaciones */
+:host ::ng-deep .agendify-card {
+  transform: none !important;
+}
+
+:host ::ng-deep .agendify-card:hover {
+  transform: none !important;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  :host ::ng-deep .agendify-card .p-card-body {
+    padding: 1.25rem;
+  }
+
+  :host ::ng-deep .agendify-card .p-card-title {
+    font-size: 1.125rem;
+  }
+
+  :host ::ng-deep .agendify-card .p-card-footer {
+    padding: 0.875rem 1.25rem;
+  }
+}
+
+
+
+

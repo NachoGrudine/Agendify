@@ -1,37 +1,37 @@
-﻿/* Contenedor del paso */
+﻿﻿/* Contenedor del paso */
 .step-container {
   max-width: 100%;
 }
 
 /* Header del paso */
 .step-header {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   text-align: center;
 }
 
 .step-badge {
   display: inline-block;
-  padding: 0.375rem 0.75rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 0.1875rem 0.5rem;
+  background: #2563eb;
   color: white;
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.625rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-radius: 6px;
-  margin-bottom: 1rem;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
 }
 
 .step-title {
-  font-size: 1.875rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 600;
   color: #111827;
-  margin: 0 0 0.5rem 0;
-  letter-spacing: -0.02em;
+  margin: 0 0 0.375rem 0;
+  letter-spacing: -0.01em;
 }
 
 .step-description {
-  font-size: 1rem;
+  font-size: 0.875rem;
   color: #6b7280;
   margin: 0;
   line-height: 1.5;
@@ -41,30 +41,30 @@
 .avatar-section {
   display: flex;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .avatar-wrapper {
   position: relative;
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
 }
 
 .avatar-placeholder {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%);
+  background: #f1f5f9;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 3px dashed #c7d2fe;
+  border: 2px dashed #cbd5e1;
 }
 
 .avatar-icon {
-  width: 48px;
-  height: 48px;
-  color: #667eea;
+  width: 40px;
+  height: 40px;
+  color: #1d436f;
 }
 
 .avatar-image {
@@ -72,34 +72,33 @@
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #667eea;
+  border: 2px solid #1d436f;
 }
 
 .avatar-upload-btn {
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  width: 32px;
+  height: 32px;
+  background: var(--primary-color, #1d436f);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
-  transition: all 0.2s;
-  border: 3px solid white;
+  box-shadow: 0 2px 6px rgba(29, 67, 111, 0.3);
+  transition: background-color 0.15s ease;
+  border: 2px solid white;
 }
 
 .avatar-upload-btn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
+  background: #234d7e;
 }
 
 .upload-icon {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   color: white;
 }
 
@@ -111,18 +110,18 @@
 .step-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.375rem;
 }
 
 .form-label {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.8125rem;
+  font-weight: 500;
   color: #374151;
 }
 
@@ -134,18 +133,19 @@
 
 .form-input {
   width: 100%;
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
   border: 1px solid #d1d5db;
-  border-radius: 8px;
-  transition: all 0.2s;
+  border-radius: 6px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
   background: white;
+  height: 38px;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #1d436f;
+  box-shadow: 0 0 0 2px rgba(29, 67, 111, 0.1);
 }
 
 .form-input::placeholder {
@@ -153,42 +153,42 @@
 }
 
 .input-error {
-  border-color: #ef4444 !important;
+  border-color: #dc2626 !important;
 }
 
 .input-error:focus {
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1) !important;
 }
 
 /* Mensajes de error */
 .error-message {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: #dc2626;
   font-weight: 500;
 }
 
 /* Info Box */
 .info-box {
-  background: linear-gradient(135deg, #f0f4ff 0%, #f5f0ff 100%);
-  border: 1px solid #c7d2fe;
-  border-radius: 10px;
-  padding: 1rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.75rem;
   display: flex;
-  gap: 0.75rem;
+  gap: 0.5rem;
   align-items: flex-start;
 }
 
 .info-box-icon {
-  width: 20px;
-  height: 20px;
-  color: #667eea;
+  width: 16px;
+  height: 16px;
+  color: #1d436f;
   flex-shrink: 0;
-  margin-top: 0.125rem;
+  margin-top: 0.0625rem;
 }
 
 .info-box-text {
-  font-size: 0.875rem;
-  color: #4b5563;
+  font-size: 0.8125rem;
+  color: #64748b;
   margin: 0;
   line-height: 1.5;
 }
@@ -196,39 +196,37 @@
 /* Botones */
 .button-row {
   display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
 }
 
 .btn-primary,
 .btn-secondary {
   flex: 1;
-  padding: 0.875rem 1.5rem;
-  font-weight: 600;
-  font-size: 1rem;
+  padding: 0.625rem 1rem;
+  font-weight: 500;
+  font-size: 0.875rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.375rem;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-color, #1d436f);
   color: white;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-primary:hover:not(:disabled) {
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-  transform: translateY(-1px);
+  background: #234d7e;
 }
 
 .btn-primary:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -239,8 +237,8 @@
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #f9fafb;
-  border-color: #9ca3af;
+  background: #f8fafc;
+  border-color: #94a3b8;
 }
 
 .btn-secondary:disabled {
@@ -249,14 +247,14 @@
 }
 
 .btn-icon {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
 }
 
 /* Spinner */
 .spinner {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   animation: spin 1s linear infinite;
 }
 
@@ -287,60 +285,60 @@
 
 /* Footer */
 .step-footer {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
   border-top: 1px solid #e5e7eb;
   text-align: center;
 }
 
 .footer-text {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: #6b7280;
   margin: 0;
   line-height: 1.6;
 }
 
 .footer-link {
-  color: #667eea;
+  color: var(--primary-color, #1d436f);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 500;
   display: block;
-  margin-top: 0.25rem;
+  margin-top: 0.125rem;
 }
 
 .footer-link:hover {
-  color: #764ba2;
+  color: #234d7e;
   text-decoration: underline;
 }
 
 /* Responsive */
 @media (max-width: 640px) {
   .step-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 
   .step-description {
-    font-size: 0.9375rem;
+    font-size: 0.8125rem;
   }
 
   .avatar-wrapper {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
   }
 
   .avatar-icon {
-    width: 40px;
-    height: 40px;
-  }
-
-  .avatar-upload-btn {
     width: 32px;
     height: 32px;
   }
 
+  .avatar-upload-btn {
+    width: 28px;
+    height: 28px;
+  }
+
   .upload-icon {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
   }
 
   .button-row {

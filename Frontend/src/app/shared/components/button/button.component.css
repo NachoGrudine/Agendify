@@ -1,0 +1,258 @@
+﻿/* ============================================
+   BUTTON COMPONENT - DISEÑO COMPACTO Y PROFESIONAL
+   ============================================ */
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: 6px;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button-icon-start {
+  margin-right: 0.125rem;
+  display: flex;
+  align-items: center;
+}
+
+.button-icon-end {
+  margin-left: 0.125rem;
+  display: flex;
+  align-items: center;
+}
+
+/* ============================================
+   BOTÓN PRIMARIO - Azul Agendify
+   ============================================ */
+:host ::ng-deep .p-button-primary {
+  background-color: #1d436f;
+  border-color: #1d436f;
+  color: white;
+}
+
+:host ::ng-deep .p-button-primary:hover:not(:disabled) {
+  background-color: #234d7e;
+  border-color: #234d7e;
+}
+
+:host ::ng-deep .p-button-primary:active:not(:disabled) {
+  background-color: #152f4d;
+}
+
+/* ============================================
+   BOTÓN SECONDARY - Gris moderno
+   ============================================ */
+:host ::ng-deep .p-button-secondary {
+  background-color: #64748b;
+  border-color: #64748b;
+  color: white;
+}
+
+:host ::ng-deep .p-button-secondary:hover:not(:disabled) {
+  background-color: #475569;
+  border-color: #475569;
+}
+
+:host ::ng-deep .p-button-secondary:active:not(:disabled) {
+  background-color: #334155;
+}
+
+/* ============================================
+   BOTÓN SUCCESS - Verde bonito
+   ============================================ */
+:host ::ng-deep .p-button-success {
+  background-color: #16a34a;
+  border-color: #16a34a;
+  color: white;
+}
+
+:host ::ng-deep .p-button-success:hover:not(:disabled) {
+  background-color: #15803d;
+  border-color: #15803d;
+}
+
+:host ::ng-deep .p-button-success:active:not(:disabled) {
+  background-color: #166534;
+}
+
+/* ============================================
+   BOTÓN DANGER - Rojo elegante
+   ============================================ */
+:host ::ng-deep .p-button-danger {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  color: white;
+}
+
+:host ::ng-deep .p-button-danger:hover:not(:disabled) {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+}
+
+:host ::ng-deep .p-button-danger:active:not(:disabled) {
+  background-color: #991b1b;
+}
+
+/* ============================================
+   BOTÓN OUTLINED - Borde con hover suave
+   ============================================ */
+:host ::ng-deep .p-button-outlined {
+  background-color: transparent;
+  color: #1d436f;
+  border: 1px solid #d1d5db;
+}
+
+:host ::ng-deep .p-button-outlined:hover:not(:disabled) {
+  background-color: #f8fafc;
+  border-color: #1d436f;
+  color: #1d436f;
+}
+
+:host ::ng-deep .p-button-outlined:active:not(:disabled) {
+  background-color: #f1f5f9;
+}
+
+:host ::ng-deep .p-button-outlined.p-button-secondary {
+  color: #64748b;
+  border-color: #d1d5db;
+}
+
+:host ::ng-deep .p-button-outlined.p-button-secondary:hover:not(:disabled) {
+  background-color: #f8fafc;
+  color: #475569;
+  border-color: #64748b;
+}
+
+:host ::ng-deep .p-button-outlined.p-button-danger {
+  color: #dc2626;
+  border-color: #d1d5db;
+}
+
+:host ::ng-deep .p-button-outlined.p-button-danger:hover:not(:disabled) {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border-color: #dc2626;
+}
+
+/* ============================================
+   SPINNER DE CARGA
+   ============================================ */
+:host ::ng-deep .pi-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ============================================
+   ESTADOS ESPECIALES
+   ============================================ */
+:host ::ng-deep .p-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(29, 67, 111, 0.2);
+}
+
+:host ::ng-deep .p-button-outlined:focus {
+  box-shadow: 0 0 0 2px rgba(29, 67, 111, 0.15);
+}
+
+:host ::ng-deep .p-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   TAMAÑOS Y RESPONSIVE
+   ============================================ */
+:host ::ng-deep .p-button {
+  min-height: 34px;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  transform: none !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease !important;
+}
+
+/* Botones pequeños */
+:host ::ng-deep .p-button.p-button-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  min-height: 28px;
+}
+
+/* Botones grandes */
+:host ::ng-deep .p-button.p-button-lg {
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9375rem;
+  min-height: 40px;
+}
+
+/* ============================================
+   ELIMINAR TODAS LAS TRANSFORMACIONES Y EFECTOS
+   ============================================ */
+:host ::ng-deep .p-button,
+:host ::ng-deep .p-button:hover,
+:host ::ng-deep .p-button:active,
+:host ::ng-deep .p-button:focus,
+:host ::ng-deep button,
+:host ::ng-deep button:hover,
+:host ::ng-deep button:active,
+:host ::ng-deep button:focus {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Asegurar que el color de texto se mantenga en hover */
+:host ::ng-deep .p-button-primary,
+:host ::ng-deep .p-button-primary:hover,
+:host ::ng-deep .p-button-primary:active,
+:host ::ng-deep .p-button-primary:focus {
+  color: white !important;
+}
+
+:host ::ng-deep .p-button-secondary,
+:host ::ng-deep .p-button-secondary:hover,
+:host ::ng-deep .p-button-secondary:active,
+:host ::ng-deep .p-button-secondary:focus {
+  color: white !important;
+}
+
+:host ::ng-deep .p-button-success,
+:host ::ng-deep .p-button-success:hover,
+:host ::ng-deep .p-button-success:active,
+:host ::ng-deep .p-button-success:focus {
+  color: white !important;
+}
+
+:host ::ng-deep .p-button-danger,
+:host ::ng-deep .p-button-danger:hover,
+:host ::ng-deep .p-button-danger:active,
+:host ::ng-deep .p-button-danger:focus {
+  color: white !important;
+}
+
+:host ::ng-deep .p-button-outlined,
+:host ::ng-deep .p-button-outlined:hover,
+:host ::ng-deep .p-button-outlined:active,
+:host ::ng-deep .p-button-outlined:focus {
+  color: #1d436f !important;
+}
+
+
+

@@ -1,13 +1,14 @@
 ﻿<div class="empleados-container">
   <div class="page-header">
     <h1>Empleados</h1>
-    <button class="btn-primary">
-      <i-lucide [img]="UserPlusIcon" [size]="20"></i-lucide>
-      <span>Nuevo Empleado</span>
-    </button>
+    <app-button
+      label="Nuevo Empleado"
+      [iconStart]="UserPlusIcon"
+      (onClick)="nuevoEmpleado()"
+    />
   </div>
 
-  <div class="content-card">
+  <app-card>
     <div class="empty-state">
       <span class="empty-icon">
         <i-lucide [img]="BriefcaseIcon" [size]="64" [strokeWidth]="1.5"></i-lucide>
@@ -15,5 +16,5 @@
       <h3>Gestión de Empleados (Providers)</h3>
       <p>Aquí podrás ver y administrar tus empleados y sus horarios</p>
     </div>
-  </div>
+  </app-card>
 </div>

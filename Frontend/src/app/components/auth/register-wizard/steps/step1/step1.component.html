@@ -8,110 +8,52 @@
   <!-- Formulario -->
   <form class="step-form" (ngSubmit)="onContinue()">
     <!-- Email -->
-    <div class="form-group">
-      <label for="email" class="form-label">Correo electrónico</label>
-      <input
-        id="email"
-        type="email"
-        [(ngModel)]="email"
-        name="email"
-        placeholder="ejemplo@empresa.com"
-        class="form-input"
-        [class.input-error]="errors().email"
-        autocomplete="email"
-      />
-      @if (errors().email) {
-        <span class="error-message">{{ errors().email }}</span>
-      }
-    </div>
+    <app-input
+      inputId="email"
+      label="Correo electrónico"
+      type="email"
+      placeholder="ejemplo@empresa.com"
+      [(ngModel)]="email"
+      name="email"
+      [required]="true"
+      [error]="errors().email"
+    />
 
     <!-- Contraseña -->
-    <div class="form-group">
-      <label for="password" class="form-label">Contraseña</label>
-      <div class="input-with-icon">
-        <input
-          id="password"
-          [type]="showPassword() ? 'text' : 'password'"
-          [(ngModel)]="password"
-          name="password"
-          placeholder="••••••••"
-          class="form-input"
-          [class.input-error]="errors().password"
-          autocomplete="new-password"
-        />
-        <button
-          type="button"
-          class="icon-button"
-          (click)="togglePasswordVisibility()"
-          aria-label="Toggle password visibility"
-        >
-          @if (showPassword()) {
-            <svg class="icon" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clip-rule="evenodd"/>
-              <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z"/>
-            </svg>
-          } @else {
-            <svg class="icon" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-              <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-            </svg>
-          }
-        </button>
-      </div>
-      @if (errors().password) {
-        <span class="error-message">{{ errors().password }}</span>
-      }
-      @if (password() && !errors().password) {
-        <div class="password-strength">
-          <span class="strength-label">Fuerza de contraseña:
-            <span [class]="'strength-' + getPasswordStrength()">{{ getPasswordStrengthLabel() }}</span>
-          </span>
-        </div>
-      }
-    </div>
+    <app-password-input
+      inputId="password"
+      label="Contraseña"
+      [(ngModel)]="password"
+      name="password"
+      [required]="true"
+      [error]="errors().password"
+      [feedback]="true"
+      [toggleMask]="true"
+      weakLabel="Débil"
+      mediumLabel="Media"
+      strongLabel="Fuerte"
+      promptLabel="Ingresa una contraseña"
+    />
 
     <!-- Confirmar Contraseña -->
-    <div class="form-group">
-      <label for="confirmPassword" class="form-label">Confirmar contraseña</label>
-      <div class="input-with-icon">
-        <input
-          id="confirmPassword"
-          [type]="showConfirmPassword() ? 'text' : 'password'"
-          [(ngModel)]="confirmPassword"
-          name="confirmPassword"
-          placeholder="••••••••"
-          class="form-input"
-          [class.input-error]="errors().confirmPassword"
-          autocomplete="new-password"
-        />
-        <button
-          type="button"
-          class="icon-button"
-          (click)="toggleConfirmPasswordVisibility()"
-          aria-label="Toggle confirm password visibility"
-        >
-          @if (showConfirmPassword()) {
-            <svg class="icon" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clip-rule="evenodd"/>
-              <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z"/>
-            </svg>
-          } @else {
-            <svg class="icon" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-              <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-            </svg>
-          }
-        </button>
-      </div>
-      @if (errors().confirmPassword) {
-        <span class="error-message">{{ errors().confirmPassword }}</span>
-      }
-    </div>
+    <app-password-input
+      inputId="confirmPassword"
+      label="Confirmar contraseña"
+      [(ngModel)]="confirmPassword"
+      name="confirmPassword"
+      [required]="true"
+      [error]="errors().confirmPassword"
+      [feedback]="false"
+      [toggleMask]="true"
+    />
 
     <!-- Botón Continuar -->
-    <button type="submit" class="btn-primary btn-full">
-      Continuar
-    </button>
+    <app-button
+      type="submit"
+      label="Continuar"
+      [fullWidth]="true"
+      customClass="btn-primary btn-full"
+    />
   </form>
 
   <!-- Footer -->

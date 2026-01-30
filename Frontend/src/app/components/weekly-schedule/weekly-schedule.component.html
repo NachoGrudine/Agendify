@@ -1,198 +1,150 @@
 ﻿<div class="schedule-container">
+  <!-- Page Header con Icono -->
+  <div class="page-header">
+    <div class="header-icon">
+      <i-lucide [img]="ClockIcon" [size]="32"></i-lucide>
+    </div>
+    <div class="header-content-main">
+      <h1>Mis Horarios</h1>
+      <p>Configura tu disponibilidad semanal</p>
+    </div>
+  </div>
+
   <!-- Header -->
   <div class="schedule-header">
     <div class="header-content">
       <div class="title-wrapper">
-        <h1 class="header-title">Mi Disponibilidad Semanal</h1>
         @if (hasUnsavedChanges()) {
           <span class="unsaved-badge">Cambios sin guardar</span>
         }
       </div>
-      <p class="header-subtitle">Configura tus horarios de trabajo para la semana. Estos horarios se reflejarán en tu calendario público.</p>
+      <p class="header-subtitle">Estos horarios se reflejarán en tu calendario público.</p>
     </div>
     <div class="header-actions">
       @if (hasUnsavedChanges()) {
-        <button
-          type="button"
-          class="btn-discard"
-          (click)="discardChanges()"
-        >
-          <svg class="icon-discard" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
-          </svg>
-          Descartar
-        </button>
+        <app-button
+          label="Descartar"
+          severity="outlined"
+          [iconStart]="XIcon"
+          customClass="btn-discard"
+          (onClick)="discardChanges()"
+        />
       }
-      <button
-        type="button"
-        class="btn-save"
+      <app-button
+        label="Guardar Cambios"
+        severity="primary"
+        [iconStart]="SaveIcon"
+        [loading]="isSaving()"
         [disabled]="isSaving() || hasValidationErrors() || !hasUnsavedChanges()"
-        (click)="saveChanges()"
-      >
-        @if (isSaving()) {
-          <svg class="spinner" viewBox="0 0 24 24">
-            <circle class="spinner-circle" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
-          </svg>
-          Guardando...
-        } @else {
-          <svg class="icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <polyline points="17 21 17 13 7 13 7 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <polyline points="7 3 7 8 15 8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Guardar Cambios
-        }
-      </button>
+        (onClick)="saveChanges()"
+      />
     </div>
   </div>
 
   <!-- Messages -->
   @if (successMessage()) {
     <div class="alert alert-success">
-      <svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-      </svg>
+      <i-lucide [img]="CheckCircleIcon" [size]="20"></i-lucide>
       <span>{{ successMessage() }}</span>
     </div>
   }
 
   @if (errorMessage()) {
     <div class="alert alert-error">
-      <svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-      </svg>
+      <i-lucide [img]="XCircleIcon" [size]="20"></i-lucide>
       <span>{{ errorMessage() }}</span>
     </div>
   }
 
   <!-- Loading State -->
   @if (isLoading()) {
-    <div class="loading-container">
-      <svg class="loading-spinner" viewBox="0 0 24 24">
-        <circle class="spinner-circle" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
-      </svg>
-      <p>Cargando horarios...</p>
-    </div>
+    <app-loading-spinner message="Cargando horarios..." />
   } @else {
-    <!-- Schedule Card -->
-    <div class="schedule-card">
-      <!-- Days List -->
-      <div class="days-list">
-        @for (day of weekSchedule(); track day.dayOfWeek; let dayIndex = $index) {
-          <div class="day-row" [class.day-closed]="!day.isOpen">
-            <!-- Column 1: Toggle & Day Name -->
-            <div class="day-control">
-              <label class="toggle-switch">
+    <!-- Schedule Grid - 2 Columnas Compactas -->
+    <div class="schedule-grid">
+      @for (day of weekSchedule(); track day.dayOfWeek; let dayIndex = $index) {
+        <app-card>
+          <!-- Card Header Compacto con Toggle Inline -->
+          <div class="day-header" (click)="toggleDay(dayIndex)">
+            <div class="day-header-left">
+              <label class="toggle-switch-compact">
                 <input
                   type="checkbox"
                   [checked]="day.isOpen"
                   (change)="toggleDay(dayIndex)"
                   class="toggle-input"
                 />
-                <span class="toggle-slider"></span>
+                <span class="toggle-slider-compact"></span>
               </label>
               <span class="day-name">{{ day.dayName }}</span>
             </div>
 
-            <!-- Column 2: Time Ranges -->
-            <div class="time-ranges">
-              @if (!day.isOpen) {
-                <span class="closed-label">Cerrado</span>
-              } @else {
-                <div class="slots-container">
-                  @for (slot of day.slots; track $index; let slotIndex = $index) {
-                    <div class="slot-row">
-                      <!-- Start Time -->
-                      <div class="time-input-wrapper">
-                        <input
-                          type="time"
-                          [value]="slot.start"
-                          (change)="updateSlot(dayIndex, slotIndex, 'start', $any($event.target).value)"
-                          class="time-input"
-                          [class.input-error]="!isValidTimeRange(slot)"
-                        />
-                        <svg class="time-icon" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                        </svg>
-                      </div>
+            <button
+              type="button"
+              class="btn-copy-compact"
+              (click)="$event.stopPropagation(); copyToAll(dayIndex)"
+              [disabled]="!day.isOpen"
+              title="Copiar al resto"
+            >
+              <i-lucide [img]="CopyIcon" [size]="14"></i-lucide>
+            </button>
+          </div>
 
-                      <span class="time-separator">-</span>
-
-                      <!-- End Time -->
-                      <div class="time-input-wrapper">
-                        <input
-                          type="time"
-                          [value]="slot.end"
-                          (change)="updateSlot(dayIndex, slotIndex, 'end', $any($event.target).value)"
-                          class="time-input"
-                          [class.input-error]="!isValidTimeRange(slot)"
-                        />
-                        <svg class="time-icon" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                        </svg>
-                      </div>
-
-                      <!-- Delete Button -->
-                      <button
-                        type="button"
-                        class="btn-delete-slot"
-                        (click)="removeSlot(dayIndex, slotIndex)"
-                        title="Eliminar este rango horario"
-                      >
-                        <svg class="icon-trash" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                        </svg>
-                      </button>
-                    </div>
-
-                    @if (!isValidTimeRange(slot)) {
-                      <span class="error-message">La hora de inicio debe ser menor a la hora de fin</span>
-                    }
-                  }
-
-                  <!-- Add Slot Button -->
+          <!-- Card Content Compacto -->
+          @if (day.isOpen) {
+            <div class="day-content">
+              @for (slot of day.slots; track $index; let slotIndex = $index) {
+                <div class="slot-inline">
+                  <input
+                    type="time"
+                    [value]="slot.start"
+                    (change)="updateSlot(dayIndex, slotIndex, 'start', $any($event.target).value)"
+                    class="time-input-compact"
+                    [class.input-error]="!isValidTimeRange(slot)"
+                  />
+                  <span class="separator">-</span>
+                  <input
+                    type="time"
+                    [value]="slot.end"
+                    (change)="updateSlot(dayIndex, slotIndex, 'end', $any($event.target).value)"
+                    class="time-input-compact"
+                    [class.input-error]="!isValidTimeRange(slot)"
+                  />
                   <button
                     type="button"
-                    class="btn-add-slot"
-                    (click)="addSlot(dayIndex)"
+                    class="btn-icon-compact"
+                    (click)="removeSlot(dayIndex, slotIndex)"
+                    title="Eliminar"
                   >
-                    <svg class="icon-plus" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/>
-                    </svg>
-                    Agregar corte
+                    <i-lucide [img]="TrashIcon" [size]="14"></i-lucide>
                   </button>
                 </div>
+                @if (!isValidTimeRange(slot)) {
+                  <span class="error-mini">⚠️ Hora inválida</span>
+                }
               }
-            </div>
 
-            <!-- Column 3: Copy Button -->
-            <div class="day-actions">
               <button
                 type="button"
-                class="btn-copy"
-                (click)="copyToAll(dayIndex)"
-                title="Copiar esta configuración a todos los días"
-                [disabled]="!day.isOpen"
+                class="btn-add-compact"
+                (click)="addSlot(dayIndex)"
               >
-                <svg class="icon-copy" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"/>
-                  <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"/>
-                </svg>
-                Copiar al resto
+                <i-lucide [img]="PlusIcon" [size]="12"></i-lucide>
+                Agregar corte
               </button>
             </div>
-          </div>
-        }
-      </div>
+          } @else {
+            <div class="day-closed-label">Cerrado</div>
+          }
+        </app-card>
+      }
+    </div>
 
-      <!-- Footer Info -->
-      <div class="schedule-footer">
-        <div class="footer-note">
-          <svg class="note-icon" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-          </svg>
-          <p>Los cambios no se aplicarán hasta que presiones "Guardar Cambios". Estos horarios se mostrarán en tu zona horaria local (GMT -3).</p>
-        </div>
+    <!-- Footer Info -->
+    <div class="schedule-footer">
+      <div class="footer-note">
+        <i-lucide [img]="InfoIcon" [size]="18" class="note-icon"></i-lucide>
+        <p>Los cambios no se aplicarán hasta que presiones "Guardar Cambios".</p>
       </div>
     </div>
   }
