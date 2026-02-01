@@ -549,6 +549,12 @@
   animation: fadeIn 0.3s ease-out;
 }
 
+/* Ocultar headers duplicados dentro del modal */
+.modal-forms .login-header,
+.modal-forms .wizard-header {
+  display: none;
+}
+
 /* ============================================
    ANIMATIONS
    ============================================ */

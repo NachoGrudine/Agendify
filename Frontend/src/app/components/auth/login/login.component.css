@@ -1,20 +1,9 @@
-﻿﻿﻿.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: var(--bg-primary);
-  padding: 1rem;
+﻿.login-container {
+  width: 100%;
 }
 
 .login-card {
-  background: var(--bg-white);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  padding: 3rem 2.5rem;
   width: 100%;
-  max-width: 480px;
-  animation: fadeInUp 0.4s ease-out;
 }
 
 @keyframes fadeInUp {
@@ -34,14 +23,14 @@
 }
 
 .login-header h1 {
-  font-size: 2.25rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: var(--primary-color);
   margin: 0 0 0.5rem 0;
 }
 
 .login-header p {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.9375rem;
   margin: 0;
 }
@@ -122,15 +111,13 @@
 
 .register-link {
   text-align: center;
-  margin-top: 1.25rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid #e5e7eb;
+  margin-top: 1.5rem;
 }
 
 .register-link p {
   margin: 0;
-  color: #6b7280;
-  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
 }
 
 .link-btn {
