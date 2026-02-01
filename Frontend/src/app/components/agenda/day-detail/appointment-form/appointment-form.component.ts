@@ -1,8 +1,7 @@
-﻿import { Component, OnInit, Input, Output, EventEmitter, signal, inject } from '@angular/core';
+﻿import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { LucideAngularModule, User, Briefcase, X, CalendarPlus, Clock, AlertCircle, CheckCircle } from 'lucide-angular';
+import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { LucideAngularModule, User, Briefcase, X, CalendarCheck, CalendarPlus, Clock, AlertCircle, CheckCircle } from 'lucide-angular';
 import { AppointmentService } from '../../../../services/appointment/appointment.service';
 import { ProviderService } from '../../../../services/provider/provider.service';
 import { CustomerService } from '../../../../services/customer/customer.service';
@@ -10,29 +9,30 @@ import { ServiceService } from '../../../../services/service-catalog/service.ser
 import { ScheduleService } from '../../../../services/schedule/schedule.service';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { AppointmentFormService } from '../../../../services/appointment/appointment-form.service';
-import { ProviderResponse, CustomerResponse, ServiceResponse } from '../../../../models/appointment.model';
+import { ProviderResponse, CustomerResponse, ServiceResponse, AppointmentResponse } from '../../../../models/appointment.model';
 import { ProviderScheduleResponse } from '../../../../models/schedule.model';
 import { DateTimeHelper } from '../../../../helpers/date-time.helper';
+import { ErrorHelper } from '../../../../helpers/error.helper';
 import { ScheduleValidator } from '../../../../validators/schedule.validator';
 import { AppointmentDTOBuilder } from '../../../../builders/appointment-dto.builder';
-import { ErrorHelper } from '../../../../helpers/error.helper';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ButtonComponent, LoadingSpinnerComponent, DropdownComponent, TextareaComponent, InputComponent, SectionIconComponent } from '../../../../shared/components';
 
 /**
- * Componente para CREAR nuevos appointments
- * Para editar, ver EditAppointmentComponent
- * Actualizado: 2026-01-30 - Time picker simplificado
+ * Componente unificado para crear y editar appointments
+ * Usa el @Input mode para determinar el comportamiento
  */
 @Component({
-  selector: 'app-new-appointment',
+  selector: 'app-appointment-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, ButtonComponent, LoadingSpinnerComponent, DropdownComponent, TextareaComponent, InputComponent, SectionIconComponent],
-  templateUrl: './new-appointment.component.html',
-  styleUrls: ['./new-appointment.component.css']
+  templateUrl: './appointment-form.component.html',
+  styleUrls: ['./appointment-form.component.css']
 })
-export class NewAppointmentComponent implements OnInit {
-  @Input() selectedDate: Date | null = null;
+export class AppointmentFormComponent implements OnInit, OnChanges {
+  @Input() mode: 'create' | 'edit' = 'create';
+  @Input() appointmentId: number | null = null; // Solo para modo edit
+  @Input() selectedDate: Date | null = null; // Solo para modo create
   @Output() cancel = new EventEmitter<void>();
   @Output() success = new EventEmitter<void>();
 
@@ -44,11 +44,11 @@ export class NewAppointmentComponent implements OnInit {
   private readonly scheduleService = inject(ScheduleService);
   private readonly authService = inject(AuthService);
   private readonly formService = inject(AppointmentFormService);
-  private readonly route = inject(ActivatedRoute);
 
   // Icons
   readonly UserIcon = User;
   readonly CalendarPlusIcon = CalendarPlus;
+  readonly CalendarCheckIcon = CalendarCheck;
   readonly BriefcaseIcon = Briefcase;
   readonly XIcon = X;
   readonly ClockIcon = Clock;
@@ -59,6 +59,7 @@ export class NewAppointmentComponent implements OnInit {
   appointmentForm!: FormGroup;
 
   // Data
+  originalAppointment: AppointmentResponse | null = null;
   providers = signal<ProviderResponse[]>([]);
   customers = signal<CustomerResponse[]>([]);
   services = signal<ServiceResponse[]>([]);
@@ -71,32 +72,122 @@ export class NewAppointmentComponent implements OnInit {
   successMessage = signal('');
   showProviderField = signal(true);
 
+  // Computed
+  readonly isEditMode = computed(() => this.mode === 'edit');
+  readonly modalTitle = computed(() => this.isEditMode() ? 'Editar Turno' : 'Nuevo Turno');
+  readonly modalIcon = computed(() => this.isEditMode() ? this.CalendarCheckIcon : this.CalendarPlusIcon);
+  readonly submitButtonLabel = computed(() => this.isEditMode() ? 'Actualizar Turno' : 'Crear Turno');
+
   // Delegated to formService
   get filteredCustomers() { return this.formService.filteredCustomers; }
   get filteredServices() { return this.formService.filteredServices; }
   get showCustomerDropdown() { return this.formService.showCustomerDropdown; }
   get showServiceDropdown() { return this.formService.showServiceDropdown; }
 
-
   ngOnInit(): void {
-    // Limpiar mensajes al iniciar
     this.clearMessages();
-
-    // Leer fecha de query params si existe
-    this.route.queryParams.subscribe(params => {
-      if (params['date']) {
-        this.selectedDate = DateTimeHelper.parseDate(params['date']);
-        if (!DateTimeHelper.isValidDate(this.selectedDate)) {
-          this.selectedDate = new Date();
-        }
-      }
-    });
-
     this.initForm();
-    this.loadProviders();
-    this.loadCustomers();
-    this.loadServices();
     this.setupSearchListeners();
+
+    if (this.isEditMode()) {
+      // Modo edición: cargar datos
+      if (this.appointmentId) {
+        this.loadInitialData();
+      }
+    } else {
+      // Modo creación: cargar listas
+      this.loadProviders();
+      this.loadCustomers();
+      this.loadServices();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.isEditMode() && changes['appointmentId'] && changes['appointmentId'].currentValue) {
+      this.clearMessages();
+      if (this.appointmentForm) {
+        this.loadInitialData();
+      }
+    }
+  }
+
+  private initForm(): void {
+    const date = this.isEditMode() && this.originalAppointment
+      ? new Date(this.originalAppointment.startTime)
+      : (this.selectedDate || new Date());
+    this.appointmentForm = this.formService.createForm(date);
+  }
+
+  private setupSearchListeners(): void {
+    // Customer search
+    this.appointmentForm.get('customerSearch')?.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe(value => {
+        this.formService.filterCustomers(value, this.customers());
+      });
+
+    // Service search
+    this.appointmentForm.get('serviceSearch')?.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe(value => {
+        this.formService.filterServices(value, this.services());
+      });
+  }
+
+  private loadInitialData(): void {
+    if (!this.appointmentId) {
+      this.errorMessage.set('ID de turno no válido');
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.errorMessage.set('');
+
+    Promise.all([
+      this.providerService.getAll().toPromise(),
+      this.customerService.getAll().toPromise(),
+      this.serviceService.getAll().toPromise()
+    ]).then(([providers, customers, services]) => {
+      this.providers.set((providers || []).filter(p => p.isActive));
+      this.customers.set(customers || []);
+      this.services.set(services || []);
+
+      if (this.providers().length === 1) {
+        this.showProviderField.set(false);
+      }
+
+      return this.appointmentService.getById(this.appointmentId!).toPromise();
+    }).then((appointment) => {
+      if (appointment) {
+        this.originalAppointment = appointment;
+        this.populateForm(appointment);
+        this.loadProviderSchedules(appointment.providerId);
+      }
+      this.isLoading.set(false);
+    }).catch((error) => {
+      const errorMsg = ErrorHelper.extractErrorMessage(error, 'Error al cargar el turno');
+      this.errorMessage.set(errorMsg);
+      this.isLoading.set(false);
+    });
+  }
+
+  private populateForm(appointment: AppointmentResponse): void {
+    const startDate = new Date(appointment.startTime);
+    const endDate = new Date(appointment.endTime);
+
+    const startTime = DateTimeHelper.formatTime(startDate);
+    const endTime = DateTimeHelper.formatTime(endDate);
+
+    this.appointmentForm.patchValue({
+      providerId: appointment.providerId,
+      customerId: appointment.customerId || null,
+      customerSearch: appointment.customerName || '',
+      serviceId: appointment.serviceId || null,
+      serviceSearch: appointment.serviceName || '',
+      startTime: startTime,
+      endTime: endTime,
+      notes: appointment.notes || ''
+    });
   }
 
   private loadProviders(): void {
@@ -105,7 +196,6 @@ export class NewAppointmentComponent implements OnInit {
       next: (data) => {
         this.providers.set(data.filter(p => p.isActive));
 
-        // Si hay solo 1 provider, autoseleccionarlo y ocultar el campo
         if (this.providers().length === 1) {
           this.appointmentForm.patchValue({ providerId: this.providers()[0].id });
           this.showProviderField.set(false);
@@ -122,11 +212,9 @@ export class NewAppointmentComponent implements OnInit {
             }
           }
         }
-
         this.isLoading.set(false);
       },
       error: () => {
-        this.errorMessage.set('Error al cargar providers');
         this.isLoading.set(false);
       }
     });
@@ -146,76 +234,18 @@ export class NewAppointmentComponent implements OnInit {
     });
   }
 
-  private initForm(): void {
-    this.appointmentForm = this.formService.createForm(this.selectedDate);
-  }
-
-
   private loadProviderSchedules(providerId: number): void {
     this.scheduleService.getProviderSchedules(providerId).subscribe({
-      next: (schedules) => {
-        this.providerSchedules.set(schedules);
-      },
+      next: (schedules) => this.providerSchedules.set(schedules),
       error: () => {}
     });
   }
 
-  onProviderChange(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    const providerId = parseInt(select.value);
+  onProviderChange(event: any): void {
+    const providerId = event.value;
     if (providerId) {
       this.loadProviderSchedules(providerId);
     }
-  }
-
-  private setupSearchListeners(): void {
-    // Customer search - SOLO MOSTRAR DROPDOWN CON MÍNIMO 3 CARACTERES
-    this.appointmentForm.get('customerSearch')?.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(searchText => {
-      // Si el usuario está escribiendo manualmente, limpiar el customerId
-      const currentCustomerId = this.appointmentForm.get('customerId')?.value;
-      if (currentCustomerId) {
-        const customer = this.customers().find(c => c.id === currentCustomerId);
-        // Si el texto no coincide con el customer actual, limpiar el ID
-        if (!customer || customer.name !== searchText) {
-          this.appointmentForm.patchValue({ customerId: null }, { emitEvent: false });
-        }
-      }
-
-      // SOLO filtrar si hay al menos 3 caracteres
-      if (searchText && searchText.length >= 3) {
-        this.formService.filterCustomers(searchText, this.customers());
-      } else {
-        // Ocultar dropdown si hay menos de 3 caracteres
-        this.formService.hideCustomerDropdown();
-      }
-    });
-
-    // Service search - SOLO MOSTRAR DROPDOWN CON MÍNIMO 3 CARACTERES
-    this.appointmentForm.get('serviceSearch')?.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(searchText => {
-      // Si el usuario está escribiendo manualmente, limpiar el serviceId
-      const currentServiceId = this.appointmentForm.get('serviceId')?.value;
-      if (currentServiceId) {
-        const service = this.services().find(s => s.id === currentServiceId);
-        // Si el texto no coincide con el service actual, limpiar el ID
-        if (!service || service.name !== searchText) {
-          this.appointmentForm.patchValue({ serviceId: null }, { emitEvent: false });
-        }
-      }
-
-      // SOLO filtrar si hay al menos 3 caracteres
-      if (searchText && searchText.length >= 3) {
-        this.formService.filterServices(searchText, this.services());
-      } else {
-        // Ocultar dropdown si hay menos de 3 caracteres
-        this.formService.hideServiceDropdown();
-      }
-    });
   }
 
   selectCustomer(customer: CustomerResponse): void {
@@ -226,33 +256,28 @@ export class NewAppointmentComponent implements OnInit {
     this.formService.selectService(this.appointmentForm, service);
   }
 
-  /**
-   * Crear un nuevo appointment
-   */
   onSubmit(): void {
-    // Validar formulario
     if (!this.formService.validateForm(this.appointmentForm)) {
       return;
     }
 
     const formValue = this.appointmentForm.value;
-    const baseDate = this.selectedDate || new Date();
+    const baseDate = this.isEditMode() && this.originalAppointment
+      ? new Date(this.originalAppointment.startTime)
+      : (this.selectedDate || new Date());
 
-    // Parsear tiempos para validación
     const { hours: startHour, minutes: startMinute } = DateTimeHelper.parseTime(formValue.startTime);
     const { hours: endHour, minutes: endMinute } = DateTimeHelper.parseTime(formValue.endTime);
 
     const startDateTime = DateTimeHelper.createDateTime(baseDate, startHour, startMinute);
     const endDateTime = DateTimeHelper.createDateTime(baseDate, endHour, endMinute);
 
-    // Validar tiempos
     const timeValidation = AppointmentDTOBuilder.validateTimes(startDateTime, endDateTime);
     if (!timeValidation.valid) {
       this.errorMessage.set(timeValidation.error!);
       return;
     }
 
-    // Validar que esté dentro del horario del provider
     if (!ScheduleValidator.isWithinProviderSchedule(startDateTime, endDateTime, this.providerSchedules())) {
       this.errorMessage.set('El horario seleccionado está fuera del horario laboral del provider');
       return;
@@ -261,7 +286,14 @@ export class NewAppointmentComponent implements OnInit {
     this.isSaving.set(true);
     this.errorMessage.set('');
 
-    // Construir DTO y crear
+    if (this.isEditMode()) {
+      this.updateAppointment(formValue, baseDate);
+    } else {
+      this.createAppointment(formValue, baseDate);
+    }
+  }
+
+  private createAppointment(formValue: any, baseDate: Date): void {
     const dto = AppointmentDTOBuilder.buildCreateDTO(formValue, baseDate);
 
     this.appointmentService.create(dto).subscribe({
@@ -270,17 +302,37 @@ export class NewAppointmentComponent implements OnInit {
         this.isSaving.set(false);
         setTimeout(() => {
           this.success.emit();
-          // NO navegar - el componente padre maneja esto
         }, 1500);
       },
       error: (error) => {
-        // Usar ErrorHelper para extraer y formatear el mensaje de error
         const errorMsg = ErrorHelper.formatScheduleConflictError(
           error,
           formValue.startTime,
           formValue.endTime
         );
+        this.errorMessage.set(errorMsg);
+        this.isSaving.set(false);
+      }
+    });
+  }
 
+  private updateAppointment(formValue: any, baseDate: Date): void {
+    const dto = AppointmentDTOBuilder.buildUpdateDTO(formValue, baseDate, formValue.status || 'Pending');
+
+    this.appointmentService.update(this.appointmentId!, dto).subscribe({
+      next: () => {
+        this.successMessage.set('¡Turno actualizado exitosamente!');
+        this.isSaving.set(false);
+        setTimeout(() => {
+          this.success.emit();
+        }, 1500);
+      },
+      error: (error) => {
+        const errorMsg = ErrorHelper.formatScheduleConflictError(
+          error,
+          formValue.startTime,
+          formValue.endTime
+        );
         this.errorMessage.set(errorMsg);
         this.isSaving.set(false);
       }
@@ -290,17 +342,12 @@ export class NewAppointmentComponent implements OnInit {
   onCancel(): void {
     this.clearMessages();
     this.cancel.emit();
-    // NO navegar, el componente padre se encarga
   }
 
-  /**
-   * Limpiar mensajes de error y éxito
-   */
   private clearMessages(): void {
     this.errorMessage.set('');
     this.successMessage.set('');
   }
-
 
   getCalculatedDuration(): string {
     const start = this.appointmentForm.get('startTime')?.value;
@@ -328,7 +375,12 @@ export class NewAppointmentComponent implements OnInit {
   }
 
   get formattedSelectedDate(): string {
-    if (!this.selectedDate) return '';
-    return DateTimeHelper.formatDateSpanish(this.selectedDate);
+    if (this.isEditMode() && this.originalAppointment) {
+      const date = new Date(this.originalAppointment.startTime);
+      return DateTimeHelper.formatDateSpanish(date);
+    } else if (this.selectedDate) {
+      return DateTimeHelper.formatDateSpanish(this.selectedDate);
+    }
+    return DateTimeHelper.formatDateSpanish(new Date());
   }
 }

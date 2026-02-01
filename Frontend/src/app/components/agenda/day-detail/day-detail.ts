@@ -13,8 +13,7 @@ import { DateTimeHelper } from '../../../helpers/date-time.helper';
 import { ErrorHelper } from '../../../helpers/error.helper';
 import { AppointmentStatusHelper } from '../../../helpers/appointment-status.helper';
 import { ButtonComponent, InputComponent, LoadingSpinnerComponent, ProgressBarComponent, DialogComponent } from '../../../shared/components';
-import { NewAppointmentComponent } from './new-appointment/new-appointment.component';
-import { EditAppointmentComponent } from './edit-appointment/edit-appointment.component';
+import { AppointmentFormComponent } from './appointment-form/appointment-form.component';
 
 @Component({
   selector: 'app-day-detail',
@@ -28,8 +27,7 @@ import { EditAppointmentComponent } from './edit-appointment/edit-appointment.co
     LoadingSpinnerComponent,
     ProgressBarComponent,
     DialogComponent,
-    NewAppointmentComponent,
-    EditAppointmentComponent
+    AppointmentFormComponent
   ],
   templateUrl: './day-detail.html',
   styleUrl: './day-detail.css',

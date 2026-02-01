@@ -1,9 +1,9 @@
 ﻿<!-- Header con Icono + Fecha -->
 <div class="modal-header">
   <div class="header-left">
-    <app-section-icon [icon]="CalendarPlusIcon" [size]="24" />
+    <app-section-icon [icon]="modalIcon()" [size]="24" />
     <div>
-      <h2 class="modal-title">Nuevo Turno</h2>
+      <h2 class="modal-title">{{ modalTitle() }}</h2>
       <p class="modal-subtitle">{{ formattedSelectedDate }}</p>
     </div>
   </div>
@@ -174,7 +174,7 @@
           />
           <app-button
             type="submit"
-            label="Crear Turno"
+            [label]="submitButtonLabel()"
             severity="primary"
             [loading]="isSaving()"
             [disabled]="isSaving() || !appointmentForm.valid"

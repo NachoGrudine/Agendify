@@ -40,6 +40,45 @@ export class AppointmentDTOBuilder {
   }
 
   /**
+   * Construye un DTO para actualizar un appointment
+   */
+  static buildUpdateDTO(
+    formValue: any,
+    baseDate: Date,
+    status: string
+  ): any {
+    const { startTime, endTime } = this.parseTimes(formValue, baseDate);
+
+    const dto: any = {
+      providerId: formValue.providerId,
+      startTime: startTime.toISOString(),
+      endTime: endTime.toISOString(),
+      status: status,
+      notes: formValue.notes || null
+    };
+
+    // Customer: ID o Name
+    if (formValue.customerId) {
+      dto.customerId = formValue.customerId;
+      dto.customerName = null;
+    } else if (formValue.customerSearch) {
+      dto.customerId = null;
+      dto.customerName = formValue.customerSearch;
+    }
+
+    // Service: ID o Name
+    if (formValue.serviceId) {
+      dto.serviceId = formValue.serviceId;
+      dto.serviceName = null;
+    } else if (formValue.serviceSearch) {
+      dto.serviceId = null;
+      dto.serviceName = formValue.serviceSearch;
+    }
+
+    return dto;
+  }
+
+  /**
    * Parsea los tiempos del formulario y retorna objetos Date
    */
   private static parseTimes(

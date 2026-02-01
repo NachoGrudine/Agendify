@@ -261,7 +261,8 @@
   [draggable]="false"
   customClass="appointment-dialog"
 >
-  <app-new-appointment
+  <app-appointment-form
+    mode="create"
     [selectedDate]="selectedDate()"
     (cancel)="closeNewAppointmentModal()"
     (success)="onAppointmentCreated()"
@@ -277,7 +278,8 @@
   [draggable]="false"
   customClass="appointment-dialog"
 >
-  <app-edit-appointment
+  <app-appointment-form
+    mode="edit"
     [appointmentId]="selectedAppointmentId()"
     (cancel)="closeEditAppointmentModal()"
     (success)="onAppointmentUpdated()"
