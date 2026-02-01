@@ -15,6 +15,7 @@ import { ProviderScheduleResponse } from '../../../../models/schedule.model';
 import { DateTimeHelper } from '../../../../helpers/date-time.helper';
 import { ScheduleValidator } from '../../../../validators/schedule.validator';
 import { AppointmentDTOBuilder } from '../../../../builders/appointment-dto.builder';
+import { ErrorHelper } from '../../../../helpers/error.helper';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ButtonComponent, LoadingSpinnerComponent, DropdownComponent, TextareaComponent, InputComponent, SectionIconComponent } from '../../../../shared/components';
 
@@ -270,17 +271,12 @@ export class NewAppointmentComponent implements OnInit {
         }, 1500);
       },
       error: (error) => {
-        // Manejo mejorado de errores con información específica
-        let errorMsg = error?.error?.message || 'Error al crear el turno';
-
-        // Si es un error de conflicto/solapamiento, agregar info del horario
-        if (errorMsg.toLowerCase().includes('turno asignado') ||
-            errorMsg.toLowerCase().includes('conflicto') ||
-            errorMsg.toLowerCase().includes('solapamiento')) {
-          const startFormatted = formValue.startTime;
-          const endFormatted = formValue.endTime;
-          errorMsg = `${errorMsg}\n\nHorario solicitado: ${startFormatted} - ${endFormatted}\n\nPor favor, selecciona otro horario disponible.`;
-        }
+        // Usar ErrorHelper para extraer y formatear el mensaje de error
+        const errorMsg = ErrorHelper.formatScheduleConflictError(
+          error,
+          formValue.startTime,
+          formValue.endTime
+        );
 
         this.errorMessage.set(errorMsg);
         this.isSaving.set(false);
