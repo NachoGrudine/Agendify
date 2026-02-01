@@ -11,5 +11,15 @@ import { RegisterWizardComponent } from '../register-wizard/register-wizard.comp
   styleUrls: ['./landing.component.css']
 })
 export class LandingComponent {
-  showLogin = signal<boolean>(true);
+  showAuthDialog = signal<boolean>(false);
+  authMode = signal<'login' | 'register'>('login');
+
+  showAuthModal(mode: 'login' | 'register') {
+    this.authMode.set(mode);
+    this.showAuthDialog.set(true);
+  }
+
+  closeAuthModal() {
+    this.showAuthDialog.set(false);
+  }
 }

@@ -1,50 +1,194 @@
-﻿<div class="landing-page">
-  <!-- Header -->
-  <header class="landing-header">
-    <div class="header-content">
+﻿﻿<div class="landing-page">
+  <!-- Header Navigation -->
+  <header class="header">
+    <div class="header-container">
       <div class="logo">
         <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1046 21 21 20.1046 21 19V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V19C3 20.1046 3.89543 21 5 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <span class="logo-text">Agendify</span>
       </div>
+      <nav class="nav">
+        <button class="btn-secondary" (click)="showAuthModal('login')">Ingresar</button>
+        <button class="btn-primary" (click)="showAuthModal('register')">Crear Cuenta Gratis</button>
+      </nav>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="landing-main">
-    <div class="content-wrapper">
-      <!-- Tabs -->
-      <div class="tabs">
-        <button
-          class="tab"
-          [class.active]="showLogin()"
-          (click)="showLogin.set(true)"
-        >
-          Iniciar Sesión
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          Tu negocio, organizado.<br>
+          Tu cabeza, tranquila.
+        </h1>
+        <p class="hero-description">
+          Olvídate del cuaderno y el lápiz. Gestioná turnos, clientes y recordatorios en un solo lugar, diseñado para crecer con vos.
+        </p>
+        <button class="btn-cta" (click)="showAuthModal('register')">
+          Crear mi Agenda Gratis
         </button>
-        <button
-          class="tab"
-          [class.active]="!showLogin()"
-          (click)="showLogin.set(false)"
-        >
-          Registrarse
-        </button>
+        <p class="hero-note">No requiere tarjeta de crédito</p>
       </div>
 
-      <!-- Content Card -->
-      <div class="auth-content">
-        @if (showLogin()) {
-          <app-login (registerClick)="showLogin.set(false)"></app-login>
-        } @else {
-          <app-register-wizard (loginClick)="showLogin.set(true)"></app-register-wizard>
-        }
+      <div class="hero-visual">
+        <div class="calendar-mockup">
+          <div class="mockup-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <div class="mockup-content">
+            <div class="appointment-card blue">
+              <div class="card-time">09:00 - 10:30</div>
+            </div>
+            <div class="appointment-card purple">
+              <div class="card-time">11:00 - 12:00</div>
+            </div>
+            <div class="appointment-card green">
+              <div class="card-time">14:00 - 15:30</div>
+            </div>
+            <button class="add-button">
+              <i class="pi pi-plus"></i>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </main>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="features-container">
+      <h2 class="section-title">Todo lo que necesitás para crecer</h2>
+      <p class="section-subtitle">
+        Herramientas potentes y simples para la gestión diaria de tu negocio, sin complicaciones técnicas.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon calendar">
+            <i class="pi pi-calendar"></i>
+          </div>
+          <h3 class="feature-title">Control Total</h3>
+          <p class="feature-description">
+            Gestioná tus horarios y disponibilidad en tiempo real. Evitá superposiciones y huecos innecesarios.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon chart">
+            <i class="pi pi-chart-line"></i>
+          </div>
+          <h3 class="feature-title">Entendé tu Negocio</h3>
+          <p class="feature-description">
+            Estadísticas simples para saber cuánto crecés mes a mes. Identificá tus mejores servicios.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon users">
+            <i class="pi pi-users"></i>
+          </div>
+          <h3 class="feature-title">Mini CRM Integrado</h3>
+          <p class="feature-description">
+            Historial de clientes y notas personalizadas al instante. Recordá siempre lo que les gusta.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Industries Section -->
+  <section class="industries">
+    <div class="industries-container">
+      <h2 class="section-title">Para todo tipo de rubro</h2>
+      <p class="section-subtitle">
+        Diseñado para adaptarse a tus necesidades. Desde peluquerías hasta consultorios médicos, Agendify se moldea a tu forma de trabajo.
+      </p>
+
+      <div class="industries-tags">
+        <span class="industry-tag">Peluquerías</span>
+        <span class="industry-tag">Barberías</span>
+        <span class="industry-tag">Consultorios</span>
+        <span class="industry-tag">Centros de Estética</span>
+        <span class="industry-tag">Psicólogos</span>
+        <span class="industry-tag">Personal Trainers</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta">
+    <div class="cta-container">
+      <h2 class="cta-title">Comenzá hoy mismo</h2>
+      <p class="cta-description">
+        Prueba gratuita de 14 días. Sin compromisos.
+      </p>
+      <button class="btn-cta-large" (click)="showAuthModal('register')">
+        Crear Cuenta Gratis
+      </button>
+    </div>
+  </section>
 
   <!-- Footer -->
-  <footer class="landing-footer">
-    <p>&copy; 2024 Agendify SaaS. Todos los derechos reservados.</p>
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="logo">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1046 21 21 20.1046 21 19V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V19C3 20.1046 3.89543 21 5 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="logo-text">Agendify</span>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="#" class="footer-link">Términos</a>
+        <a href="#" class="footer-link">Privacidad</a>
+        <a href="#" class="footer-link">Soporte</a>
+      </div>
+      <p class="footer-copyright">&copy; 2024 Agendify Inc. Todos los derechos reservados.</p>
+    </div>
   </footer>
+
+  <!-- Auth Modal -->
+  @if (showAuthDialog()) {
+    <div class="modal-overlay" (click)="closeAuthModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <button class="modal-close" (click)="closeAuthModal()">
+          <i class="pi pi-times"></i>
+        </button>
+
+        <div class="modal-body">
+          <!-- Tabs -->
+          <div class="modal-tabs">
+            <button
+              class="modal-tab"
+              [class.active]="authMode() === 'login'"
+              (click)="authMode.set('login')"
+            >
+              Iniciar Sesión
+            </button>
+            <button
+              class="modal-tab"
+              [class.active]="authMode() === 'register'"
+              (click)="authMode.set('register')"
+            >
+              Registrarse
+            </button>
+          </div>
+
+          <!-- Auth Forms -->
+          <div class="modal-forms">
+            @if (authMode() === 'login') {
+              <app-login (registerClick)="authMode.set('register')"></app-login>
+            } @else {
+              <app-register-wizard (loginClick)="authMode.set('login')"></app-register-wizard>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 </div>
