@@ -6,6 +6,7 @@ import { RegisterStep2Component } from './steps/step2/step2.component';
 import { RegisterStep3Component } from './steps/step3/step3.component';
 import { AuthService } from '../../../services/auth/auth.service';
 import { RegisterDto } from '../../../models/auth.model';
+import { ErrorHelper } from '../../../helpers/error.helper';
 import { ProgressBarComponent } from '../../../shared/components';
 
 interface RegisterFormData {
@@ -109,14 +110,13 @@ export class RegisterWizardComponent {
         if (error.status === 409) {
           this.errorMessage.set('El email ya está registrado. Por favor, usa otro o inicia sesión.');
         } else if (error.status === 400) {
-          const detail = error.error?.detail || error.error?.message;
+          const detail = ErrorHelper.extractErrorMessage(error);
           this.errorMessage.set(detail || 'Hay errores en el formulario. Por favor, revisa los datos ingresados.');
         } else if (error.status === 500) {
           this.errorMessage.set('Ocurrió un error en el servidor. Por favor, intenta de nuevo más tarde.');
         } else {
-          this.errorMessage.set(
-            error?.error?.detail || error?.error?.message || 'Error al registrar. Por favor, intenta de nuevo.'
-          );
+          const detail = ErrorHelper.extractErrorMessage(error, 'Error al registrar. Por favor, intenta de nuevo.');
+          this.errorMessage.set(detail);
         }
       }
     });

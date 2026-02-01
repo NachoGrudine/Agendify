@@ -73,6 +73,7 @@ export class EditAppointmentComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     console.log('🔧 EditAppointment ngOnInit');
+    this.clearMessages();
     this.initForm();
     this.setupSearchListeners();
   }
@@ -82,6 +83,9 @@ export class EditAppointmentComponent implements OnInit, OnChanges {
     if (changes['appointmentId'] && changes['appointmentId'].currentValue) {
       const newId = changes['appointmentId'].currentValue;
       console.log('🔄 EditAppointment ngOnChanges - appointmentId cambió a:', newId);
+
+      // Limpiar mensajes cuando cambia el appointment
+      this.clearMessages();
 
       // Si el formulario ya está inicializado, cargar los datos
       if (this.appointmentForm) {
@@ -402,7 +406,16 @@ export class EditAppointmentComponent implements OnInit, OnChanges {
   }
 
   onCancel(): void {
+    this.clearMessages();
     this.cancel.emit();
+  }
+
+  /**
+   * Limpiar mensajes de error y éxito
+   */
+  private clearMessages(): void {
+    this.errorMessage.set('');
+    this.successMessage.set('');
   }
 
 

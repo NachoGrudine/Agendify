@@ -10,6 +10,7 @@ import { AppointmentService } from '../../../services/appointment/appointment.se
 import { DayDetailsDto } from '../../../models/calendar.model';
 import { ProviderResponse } from '../../../models/appointment.model';
 import { DateTimeHelper } from '../../../helpers/date-time.helper';
+import { ErrorHelper } from '../../../helpers/error.helper';
 import { AppointmentStatusHelper } from '../../../helpers/appointment-status.helper';
 import { ButtonComponent, InputComponent, LoadingSpinnerComponent, ProgressBarComponent, DialogComponent } from '../../../shared/components';
 import { NewAppointmentComponent } from './new-appointment/new-appointment.component';
@@ -285,7 +286,8 @@ export class DayDetailComponent implements OnInit {
           this.loadDayDetails();
         },
         error: (error) => {
-          alert(error?.error?.message || 'Error al eliminar el turno');
+          const errorMsg = ErrorHelper.extractErrorMessage(error, 'Error al eliminar el turno');
+          alert(errorMsg);
           this.isLoading.set(false);
         }
       });

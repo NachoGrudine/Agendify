@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, Save, X, Trash2, Plus, Copy, Clock, Info, CheckCircle, XCircle } from 'lucide-angular';
 import { DaySchedule, TimeRange, DayOfWeek } from '../../models/schedule.model';
 import { ScheduleService } from '../../services/schedule/schedule.service';
+import { ErrorHelper } from '../../helpers/error.helper';
 import { ButtonComponent, LoadingSpinnerComponent, CardComponent } from '../../shared/components';
 
 @Component({
@@ -186,7 +187,8 @@ export class WeeklyScheduleComponent implements OnInit {
         setTimeout(() => this.clearMessages(), 2000);
       },
       error: (error: any) => {
-        this.errorMessage.set(error?.error?.message || 'Error al guardar los cambios');
+        const errorMsg = ErrorHelper.extractErrorMessage(error, 'Error al guardar los cambios');
+        this.errorMessage.set(errorMsg);
         this.isSaving.set(false);
       }
     });

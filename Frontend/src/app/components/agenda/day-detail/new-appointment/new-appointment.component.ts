@@ -79,6 +79,9 @@ export class NewAppointmentComponent implements OnInit {
 
 
   ngOnInit(): void {
+    // Limpiar mensajes al iniciar
+    this.clearMessages();
+
     // Leer fecha de query params si existe
     this.route.queryParams.subscribe(params => {
       if (params['date']) {
@@ -285,8 +288,17 @@ export class NewAppointmentComponent implements OnInit {
   }
 
   onCancel(): void {
+    this.clearMessages();
     this.cancel.emit();
     // NO navegar, el componente padre se encarga
+  }
+
+  /**
+   * Limpiar mensajes de error y éxito
+   */
+  private clearMessages(): void {
+    this.errorMessage.set('');
+    this.successMessage.set('');
   }
 
 
