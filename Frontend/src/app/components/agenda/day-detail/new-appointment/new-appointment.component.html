@@ -1,147 +1,190 @@
-﻿﻿<div class="modal-overlay">
-  <app-card customClass="modal-card">
-    <!-- Header con Fecha -->
-    <div class="modal-header">
-      <div>
-        <h2 class="modal-title">Nuevo Turno</h2>
-        <p class="modal-subtitle">{{ formattedSelectedDate }}</p>
-      </div>
-      <app-button
-        severity="outlined"
-        [iconStart]="XIcon"
-        [iconSize]="20"
-        customClass="btn-icon-close"
-        (onClick)="onCancel()"
-      />
+﻿<!-- Header con Icono + Fecha -->
+<div class="modal-header">
+  <div class="header-left">
+    <app-section-icon [icon]="CalendarPlusIcon" [size]="24" />
+    <div>
+      <h2 class="modal-title">Nuevo Turno</h2>
+      <p class="modal-subtitle">{{ formattedSelectedDate }}</p>
     </div>
+  </div>
+  <app-button
+    severity="outlined"
+    [iconStart]="XIcon"
+    [iconSize]="20"
+    customClass="btn-icon-close"
+    (onClick)="onCancel()"
+  />
+</div>
 
-    <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()" class="modal-body">
+<form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()" class="modal-body">
 
-      <!-- Provider (si hay múltiples) -->
+      <!-- PROFESIONAL (si hay múltiples) -->
       @if (showProviderField()) {
-        <app-dropdown
-          label="PROFESIONAL"
-          formControlName="providerId"
-          [options]="providers()"
-          optionLabel="name"
-          optionValue="id"
-          placeholder="Seleccionar profesional..."
-          [filter]="true"
-          filterPlaceholder="Buscar profesional..."
-          (onChange)="onProviderChange($event)"
-        >
-          <ng-template let-provider pTemplate="item">
-            {{ provider.name }} - {{ provider.specialty }}
-          </ng-template>
-        </app-dropdown>
+        <div class="form-section">
+          <app-dropdown
+            label="PROFESIONAL"
+            formControlName="providerId"
+            [options]="providers()"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Seleccionar profesional..."
+            [filter]="true"
+            filterPlaceholder="Buscar profesional..."
+            (onChange)="onProviderChange($event)"
+          >
+            <ng-template let-provider pTemplate="item">
+              {{ provider.name }} - {{ provider.specialty }}
+            </ng-template>
+          </app-dropdown>
+        </div>
       }
 
-      <!-- Cliente -->
-      <div class="form-field">
-        <app-input
-          label="CLIENTE"
-          formControlName="customerSearch"
-          placeholder="Buscar cliente..."
-          [iconStart]="UserIcon"
-          [iconSize]="18"
-        />
+      <!-- CLIENTE -->
+      <div class="form-section">
+        <div class="form-field">
+          <app-input
+            label="CLIENTE"
+            formControlName="customerSearch"
+            placeholder="Buscar cliente..."
+            [iconStart]="UserIcon"
+            [iconSize]="18"
+          />
+          @if (showCustomerDropdown() && filteredCustomers().length > 0) {
+            <div class="dropdown-results">
+              @for (customer of filteredCustomers(); track customer.id) {
+                <button type="button" class="dropdown-item" (click)="selectCustomer(customer)">
+                  <strong>{{ customer.name }}</strong>
+                  @if (customer.phone || customer.email) {
+                    <span class="item-meta">{{ customer.phone || customer.email }}</span>
+                  }
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
 
-        @if (showCustomerDropdown() && filteredCustomers().length > 0) {
-          <div class="dropdown-results">
-            @for (customer of filteredCustomers(); track customer.id) {
-              <button type="button" class="dropdown-item" (click)="selectCustomer(customer)">
-                <strong>{{ customer.name }}</strong>
-                @if (customer.phone || customer.email) {
-                  <span class="item-meta">{{ customer.phone || customer.email }}</span>
-                }
-              </button>
-            }
+      <!-- SERVICIO -->
+      <div class="form-section">
+        <div class="form-field">
+          <app-input
+            label="SERVICIO"
+            formControlName="serviceSearch"
+            placeholder="Buscar servicio..."
+            [iconStart]="BriefcaseIcon"
+            [iconSize]="18"
+          />
+          @if (showServiceDropdown() && filteredServices().length > 0) {
+            <div class="dropdown-results">
+              @for (service of filteredServices(); track service.id) {
+                <button type="button" class="dropdown-item" (click)="selectService(service)">
+                  <strong>{{ service.name }}</strong>
+                  <span class="item-meta">{{ service.defaultDuration }} min @if (service.price) {· ${{ service.price }}}</span>
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- HORARIO - SIMPLIFICADO -->
+      <div class="form-section">
+        <label class="section-label">
+          <i-lucide [img]="ClockIcon" [size]="18" class="label-icon"></i-lucide>
+          HORARIO DEL TURNO
+        </label>
+
+        <div class="time-inputs-row">
+          <div class="time-input-group">
+            <label class="input-label">Desde</label>
+            <input
+              type="time"
+              formControlName="startTime"
+              class="time-input"
+              step="900"
+            />
+          </div>
+
+          <div class="time-separator">→</div>
+
+          <div class="time-input-group">
+            <label class="input-label">Hasta</label>
+            <input
+              type="time"
+              formControlName="endTime"
+              class="time-input"
+              step="900"
+            />
+          </div>
+        </div>
+
+        <!-- Duración calculada -->
+        @if (appointmentForm.get('startTime')?.value && appointmentForm.get('endTime')?.value) {
+          <div class="duration-display">
+            <span class="duration-label">Duración:</span>
+            <span class="duration-value">{{ getCalculatedDuration() }}</span>
           </div>
         }
       </div>
 
-      <!-- Servicio -->
-      <div class="form-field">
-        <app-input
-          label="SERVICIO"
-          formControlName="serviceSearch"
-          placeholder="Buscar servicio..."
-          [iconStart]="BriefcaseIcon"
-          [iconSize]="18"
+      <!-- NOTAS -->
+      <div class="form-section">
+        <app-textarea
+          label="NOTAS INTERNAS"
+          formControlName="notes"
+          [rows]="3"
+          placeholder="Detalles adicionales del turno..."
         />
-
-        @if (showServiceDropdown() && filteredServices().length > 0) {
-          <div class="dropdown-results">
-            @for (service of filteredServices(); track service.id) {
-              <button type="button" class="dropdown-item" (click)="selectService(service)">
-                <strong>{{ service.name }}</strong>
-                <span class="item-meta">{{ service.defaultDuration }} min @if (service.price) {· ${{ service.price }}}</span>
-              </button>
-            }
-          </div>
-        }
       </div>
 
-      <!-- Horarios con Time Range Picker -->
-      <div class="form-field full-width">
-        <app-time-range-picker
-          [startTime]="appointmentForm.get('startTime')?.value || '09:00'"
-          [endTime]="appointmentForm.get('endTime')?.value || '10:00'"
-          [step]="15"
-          (timeRangeChange)="onTimeRangeChange($event)">
-        </app-time-range-picker>
-      </div>
-
-      <!-- Notas Internas -->
-      <app-textarea
-        label="NOTAS INTERNAS"
-        formControlName="notes"
-        [rows]="3"
-        placeholder="Detalles adicionales..."
-      />
-
-      <!-- Alertas -->
+      <!-- ALERTAS -->
       @if (errorMessage()) {
-        <div class="alert alert-danger">
-          {{ errorMessage() }}
+        <div class="alert alert-error">
+          <i-lucide [img]="AlertCircleIcon" [size]="20"></i-lucide>
+          <div class="alert-content">
+            <strong>Error</strong>
+            <p>{{ errorMessage() }}</p>
+          </div>
         </div>
       }
       @if (successMessage()) {
         <div class="alert alert-success">
-          {{ successMessage() }}
+          <i-lucide [img]="CheckCircleIcon" [size]="20"></i-lucide>
+          <div class="alert-content">
+            <strong>¡Éxito!</strong>
+            <p>{{ successMessage() }}</p>
+          </div>
         </div>
       }
 
-    </form>
-
-    <!-- Footer -->
-    <div class="modal-footer">
-      <app-button
-        label="Limpiar"
-        severity="outlined"
-        customClass="btn-text"
-        (onClick)="appointmentForm.reset()"
-      />
-      <div class="footer-actions">
+      <!-- FOOTER DENTRO DEL FORM -->
+      <div class="modal-footer">
         <app-button
+          type="button"
           label="Cancelar"
           severity="outlined"
           (onClick)="onCancel()"
         />
-        <app-button
-          type="submit"
-          label="Crear Turno"
-          severity="primary"
-          [loading]="isSaving()"
-          [disabled]="isSaving()"
-          (onClick)="onSubmit()"
-        />
-      </div>
+        <div class="footer-actions">
+          <app-button
+            type="button"
+            label="Limpiar"
+            severity="secondary"
+            (onClick)="appointmentForm.reset()"
+          />
+          <app-button
+            type="submit"
+            label="Crear Turno"
+            severity="primary"
+            [loading]="isSaving()"
+            [disabled]="isSaving() || !appointmentForm.valid"
+          />
+        </div>
     </div>
 
-    <!-- Loading -->
-    @if (isLoading()) {
-      <app-loading-spinner [overlay]="true" message="Cargando..." />
-    }
-  </app-card>
-</div>
+  </form>
+
+  <!-- Loading Overlay -->
+  @if (isLoading()) {
+    <app-loading-spinner [overlay]="true" message="Cargando datos..." />
+  }

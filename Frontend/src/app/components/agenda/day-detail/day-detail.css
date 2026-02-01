@@ -2,23 +2,23 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 1.5rem;
   background-color: #ffffff;
   min-height: 100vh;
 }
 
-/* Header - Diseño ShiftManager */
+/* Header - MÁS PROFESIONAL Y PROLIJO */
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 32px;
-  gap: 24px;
+  margin-bottom: 1.75rem;
+  gap: 1.5rem;
   flex-wrap: wrap;
 }
 
 .page-title {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 700;
   color: #111827;
   margin: 0;
@@ -28,7 +28,7 @@
 
 .header-actions {
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   align-items: center;
 }
 
@@ -115,33 +115,31 @@
   color: white;
 }
 
-/* Summary Cards - Diseño ShiftManager */
+/* Summary Cards - MÁS PROFESIONAL */
 .summary-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
-  margin-bottom: 32px;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .summary-card {
   background: white;
-  border-radius: 16px;
-  padding: 28px 24px;
+  border-radius: 12px;
+  padding: 1.75rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  border: 3px solid rgba(29, 67, 111, 0.1);
-  min-height: 140px;
+  border: 2px solid rgba(29, 67, 111, 0.12);
+  min-height: 130px;
 }
-
-/* Sin hover - las cards son estáticas */
 
 /* Todas las cards usan el mismo borde azul oscuro */
 .summary-card.card-blue,
 .summary-card.card-purple,
 .summary-card.card-green {
-  border-color: rgba(29, 67, 111, 0.19);
+  border-color: rgba(29, 67, 111, 0.15);
 }
 
 .card-content-left {
@@ -217,12 +215,12 @@
 
 /* Estilos de progress-bar ahora manejados por el componente genérico ProgressBarComponent */
 
-/* Search and Filter Bar - Diseño ShiftManager */
+/* Search and Filter Bar - MÁS PROFESIONAL */
 .search-filter-bar {
   display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  align-items: stretch;
 }
 
 /* El input ocupa todo el espacio disponible */
@@ -230,38 +228,77 @@
   flex: 1;
 }
 
-/* Hacer el input más grande y más visible */
-.search-filter-bar :host ::ng-deep app-input .input-wrapper .input-field,
-.search-filter-bar ::ng-deep .input-field {
-  height: 46px;
-  font-size: 15px;
-  padding: 12px 16px 12px 42px;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+/* Botón de filtros con MISMO ALTO que el input */
+.search-filter-bar app-button {
+  flex-shrink: 0;
 }
 
+/* Asegurar altura exacta del botón igual al input */
+.search-filter-bar ::ng-deep app-button button {
+  height: 48px !important;
+  min-height: 48px !important;
+  padding: 0 1.25rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Input más profesional y prolijo */
+.search-filter-bar ::ng-deep .input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.search-filter-bar ::ng-deep .input-field {
+  height: 48px !important;
+  font-size: 0.9375rem;
+  padding: 0.75rem 1rem 0.75rem 3.25rem !important;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+/* Icono BIEN CENTRADO verticalmente y más separado del texto */
 .search-filter-bar ::ng-deep .input-icon-start {
-  left: 14px;
+  position: absolute;
+  left: 1.125rem;
   top: 50%;
   transform: translateY(-50%);
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .search-filter-bar ::ng-deep .input-field:focus {
   border-color: #1d436f;
-  box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.1);
+  box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.08);
+  outline: none;
 }
 
-/* Appointments Section */
+.search-filter-bar ::ng-deep .input-field:focus + .input-icon-start {
+  color: #1d436f;
+}
+
+/* ============================================
+   APPOINTMENTS SECTION - TODO EN UNO
+   ============================================ */
 .appointments-section {
   background: white;
-  border: 1px solid #e8eaed;
+  border: 1px solid #e5e7eb;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
+/* ============================================
+   TABLE - PARTE DE LA SECCIÓN
+   ============================================ */
 .table-container {
   overflow-x: auto;
+  background: white;
 }
 
 .appointments-table {
@@ -270,27 +307,32 @@
 }
 
 .appointments-table thead {
-  background: #fafbfc;
-  border-bottom: 2px solid #f3f4f6;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .appointments-table th {
-  padding: 16px;
+  padding: 14px 20px;
   text-align: left;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 0.75rem;
+  font-weight: 600;
   text-transform: uppercase;
-  color: var(--text-secondary);
+  color: #6b7280;
   letter-spacing: 0.5px;
 }
 
+/* Header de Acciones centrado */
+.appointments-table th:last-child {
+  text-align: center;
+}
+
 .appointments-table tbody tr {
-  border-bottom: 1px solid #f7f8f9;
-  transition: var(--transition-fast);
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.15s ease;
 }
 
 .appointments-table tbody tr:hover {
-  background-color: #fafbfc;
+  background-color: #f9fafb;
 }
 
 .appointments-table tbody tr:last-child {
@@ -298,176 +340,176 @@
 }
 
 .appointments-table td {
-  padding: 16px;
-  font-size: 14px;
-  color: var(--text-primary);
+  padding: 16px 20px;
+  font-size: 0.875rem;
+  color: #111827;
   vertical-align: middle;
 }
 
-/* Table Cells */
+/* ============================================
+   TIME CELL - DISEÑO COMPACTO
+   ============================================ */
 .time-cell {
-  min-width: 150px;
+  min-width: 140px;
 }
 
 .time-range {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #111827;
+  font-size: 0.9375rem;
+}
+
+.time-start {
+  color: #1d436f;
+}
+
+.time-end {
+  color: #374151;
 }
 
 .time-separator {
-  color: var(--text-light);
+  color: #9ca3af;
   font-weight: 400;
 }
 
 .duration {
-  font-size: 12px;
-  color: var(--text-light);
-  margin-top: 2px;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 4px;
+  font-weight: 500;
 }
 
+/* ============================================
+   CUSTOMER CELL - CON AVATAR MEJORADO
+   ============================================ */
 .customer-cell {
+  min-width: 200px;
+}
+
+.customer-info {
   display: flex;
   align-items: center;
   gap: 12px;
-  min-width: 180px;
 }
 
 .customer-avatar {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary-color), #3b82f6);
+  background: linear-gradient(135deg, #1d436f, #3b82f6);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 0.875rem;
+  font-weight: 600;
   flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(29, 67, 111, 0.15);
 }
 
 .customer-name {
   font-weight: 500;
+  color: #111827;
 }
 
+/* ============================================
+   SERVICE CELL - LIMPIO
+   ============================================ */
 .service-cell {
   min-width: 180px;
 }
 
 .service-name {
   font-weight: 500;
+  color: #374151;
 }
 
-.service-duration {
-  font-size: 12px;
-  color: var(--text-light);
-  margin-left: 6px;
-}
-
+/* ============================================
+   PROVIDER CELL - SIMPLE
+   ============================================ */
 .provider-cell {
   min-width: 150px;
 }
 
 .provider-name {
   font-weight: 500;
+  color: #374151;
 }
 
-/* Status Badge */
-.status-cell {
-  min-width: 140px;
-}
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.status-confirmed {
-  background: #d1fae5;
-  color: #065f46;
-  border: 1px solid #6ee7b7;
-}
-
-.status-pending {
-  background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fcd34d;
-}
-
-.status-completed {
-  background: #dbeafe;
-  color: #1e40af;
-  border: 1px solid #93c5fd;
-}
-
-.status-cancelled {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fca5a5;
-}
-
-.status-default {
-  background: #f3f4f6;
-  color: var(--text-secondary);
-  border: 1px solid #e5e7eb;
-}
-
-/* Actions */
+/* ============================================
+   ACTIONS CELL - BOTONES VISIBLES Y BIEN ESTILIZADOS
+   ============================================ */
 .actions-cell {
   text-align: center;
+  min-width: 120px;
+  vertical-align: middle;
 }
 
-.btn-action {
+.actions-group {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: var(--transition-fast);
-  margin-right: 8px;
-}
-
-.btn-action:last-child {
-  margin-right: 0;
-}
-
-.btn-action:hover {
-  background: var(--primary-light);
-  border-color: var(--primary-color);
-  color: var(--primary-color);
-}
-
-.btn-action.btn-edit:hover {
-  background: #dbeafe;
-  border-color: #3b82f6;
-  color: #3b82f6;
-}
-
-.btn-action.btn-delete:hover {
-  background: #fee2e2;
-  border-color: #ef4444;
-  color: #ef4444;
-}
-
-.actions-cell {
-  display: flex;
   gap: 8px;
-  justify-content: flex-end;
+  justify-content: center;
+  align-items: center;
 }
+
+/* Estilos para los botones - FORZAR VISIBILIDAD */
+.actions-group ::ng-deep app-button {
+  display: inline-block;
+}
+
+.actions-group ::ng-deep app-button button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+}
+
+/* Botón de EDITAR - Azul claro */
+.actions-group ::ng-deep app-button.btn-edit button,
+.actions-group ::ng-deep app-button.btn-action.btn-edit button {
+  background-color: #eff6ff !important;
+  border-color: #bfdbfe !important;
+  color: #3b82f6 !important;
+}
+
+.actions-group ::ng-deep app-button.btn-edit button:hover,
+.actions-group ::ng-deep app-button.btn-action.btn-edit button:hover {
+  background-color: #dbeafe !important;
+  border-color: #3b82f6 !important;
+  color: #2563eb !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Botón de ELIMINAR - Rojo claro MUY VISIBLE */
+.actions-group ::ng-deep app-button.btn-delete button,
+.actions-group ::ng-deep app-button.btn-action.btn-delete button {
+  background-color: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+  color: #dc2626 !important;
+}
+
+.actions-group ::ng-deep app-button.btn-delete button:hover,
+.actions-group ::ng-deep app-button.btn-action.btn-delete button:hover {
+  background-color: #fecaca !important;
+  border-color: #ef4444 !important;
+  color: #b91c1c !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2) !important;
+}
+
 
 /* Loading and Empty States */
 .loading-row,
@@ -508,20 +550,60 @@
   }
 }
 
-/* Pagination */
+/* ============================================
+   PAGINATION - INTEGRADO CON LA TABLA
+   ============================================ */
 .pagination {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px;
+  padding: 20px 24px;
   border-top: 1px solid #f3f4f6;
   background: #fafbfc;
+  gap: 20px;
 }
 
 .pagination-info {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
-  color: #5f6368;
+  color: #6b7280;
+}
+
+.page-size-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.page-size-selector select {
+  padding: 8px 32px 8px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  background: white;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 10px center;
+  background-repeat: no-repeat;
+  background-size: 18px;
+}
+
+.page-size-selector select:hover {
+  border-color: #9ca3af;
+  background-color: #f9fafb;
+}
+
+.page-size-selector select:focus {
+  outline: none;
+  border-color: #1d436f;
+  box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.1);
 }
 
 .pagination-controls {
@@ -533,65 +615,38 @@
 .btn-page {
   min-width: 40px;
   height: 40px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   background: white;
-  border: 1px solid #e8eaed;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
-  color: #5f6368;
+  color: #374151;
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition: all 0.15s ease;
   padding: 0 12px;
 }
 
 .btn-page:hover:not(:disabled):not(.active) {
-  background: #f8f9fa;
-  border-color: #94a3b8;
+  background: white;
+  border-color: #1d436f;
+  color: #1d436f;
 }
 
 .btn-page.active {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
+  background: #1d436f;
+  border-color: #1d436f;
   color: white;
   font-weight: 600;
 }
 
 .btn-page:disabled {
-  opacity: 0.3;
+  opacity: 0.4;
   cursor: not-allowed;
   background: white;
-}
-
-.page-size-selector {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #5f6368;
-}
-
-.page-size-selector select {
-  padding: 8px 12px;
-  border: 1px solid #e8eaed;
-  border-radius: 8px;
-  font-size: 14px;
-  color: #5f6368;
-  background: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.page-size-selector select:hover {
-  border-color: #dadce0;
-}
-
-.page-size-selector select:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.1);
+  color: #d1d5db;
 }
 
 .btn-nav {
@@ -654,3 +709,39 @@
     justify-content: center;
   }
 }
+
+/* ============================================
+   ESTILOS PERSONALIZADOS PARA DIALOG DE APPOINTMENTS
+   ============================================ */
+:host ::ng-deep .appointment-dialog.agendify-dialog {
+  max-width: 650px;
+  width: 85vw;
+}
+
+:host ::ng-deep .appointment-dialog .p-dialog-content {
+  padding: 0;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+:host ::ng-deep .appointment-dialog .p-dialog-header {
+  display: none;
+}
+
+/* Responsive para modales de appointments */
+@media (max-width: 768px) {
+  :host ::ng-deep .appointment-dialog.agendify-dialog {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  :host ::ng-deep .appointment-dialog .p-dialog-content {
+    max-height: none;
+    height: 100%;
+  }
+}
+

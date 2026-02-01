@@ -1,53 +1,37 @@
 ﻿<div class="agenda-container">
-  <!-- Page Header con Icono -->
-  <div class="page-header">
-    <div class="header-icon">
-      <i-lucide [img]="CalendarIcon" [size]="32"></i-lucide>
-    </div>
-    <div class="header-content-text">
-      <h1>Agenda</h1>
-      <p>Vista mensual de rendimiento y turnos</p>
-    </div>
-  </div>
-
-  <!-- Header superior con selector de mes, notificaciones y usuario -->
+  <!-- Header ÚNICO - 3 columnas balanceadas -->
   <div class="top-header">
     <div class="header-content">
-      <div class="header-title-section">
-        <h1>{{ currentMonthYear }}</h1>
-        <p class="subtitle">Vista mensual de rendimiento</p>
+      <!-- Izquierda: Icono + Título -->
+      <div class="header-left">
+        <div class="header-icon">
+          <i-lucide [img]="CalendarIcon" [size]="28"></i-lucide>
+        </div>
+        <div class="header-title-section">
+          <h1>Agenda</h1>
+          <p class="subtitle">Vista mensual de rendimiento y turnos</p>
+        </div>
       </div>
 
-      <div class="header-actions">
-        <!-- Selector de mes -->
-        <div class="month-selector">
-          <button class="month-nav-btn" (click)="previousMonth()">
-            <i-lucide [img]="ChevronLeftIcon" [size]="20"></i-lucide>
-          </button>
-          <span class="current-month">{{ currentMonthYear }}</span>
-          <button class="month-nav-btn" (click)="nextMonth()">
-            <i-lucide [img]="ChevronRightIcon" [size]="20"></i-lucide>
-          </button>
-        </div>
+      <!-- Centro: Selector de mes -->
+      <div class="month-selector">
+        <button class="month-nav-btn" (click)="previousMonth()">
+          <i-lucide [img]="ChevronLeftIcon" [size]="20"></i-lucide>
+        </button>
+        <span class="current-month">{{ currentMonthYear }}</span>
+        <button class="month-nav-btn" (click)="nextMonth()">
+          <i-lucide [img]="ChevronRightIcon" [size]="20"></i-lucide>
+        </button>
+      </div>
 
-        <!-- Notificaciones -->
+      <!-- Derecha: Notificaciones -->
+      <div class="header-right">
         <button class="notification-btn" [class.has-notifications]="hasNotifications()">
           <i-lucide [img]="BellIcon" [size]="20"></i-lucide>
           @if (hasNotifications()) {
             <span class="notification-badge">{{ notificationCount() }}</span>
           }
         </button>
-
-        <!-- Usuario logueado -->
-        <div class="user-profile">
-          <div class="user-info">
-            <span class="user-name">{{ userName }}</span>
-            <span class="user-role">{{ userRole }}</span>
-          </div>
-          <div class="user-avatar">
-            {{ userInitials }}
-          </div>
-        </div>
       </div>
     </div>
   </div>

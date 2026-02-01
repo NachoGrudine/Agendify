@@ -6,34 +6,6 @@
     <p class="step-description">Personaliza cómo te verán tus clientes en la plataforma.</p>
   </div>
 
-  <!-- Avatar Section -->
-  <div class="avatar-section">
-    <div class="avatar-wrapper">
-      @if (avatarPreview()) {
-        <img [src]="avatarPreview()" alt="Avatar preview" class="avatar-image" />
-      } @else {
-        <div class="avatar-placeholder">
-          <svg class="avatar-icon" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
-          </svg>
-        </div>
-      }
-      <label for="avatar-upload" class="avatar-upload-btn">
-        <svg class="upload-icon" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z"/>
-          <path d="M9 13h2v5a1 1 0 11-2 0v-5z"/>
-        </svg>
-      </label>
-      <input
-        id="avatar-upload"
-        type="file"
-        accept="image/*"
-        class="avatar-input"
-        (change)="onFileSelected($event)"
-      />
-    </div>
-  </div>
-
   <!-- Formulario -->
   <form class="step-form" (ngSubmit)="onSubmit()">
     <!-- Nombre Profesional -->

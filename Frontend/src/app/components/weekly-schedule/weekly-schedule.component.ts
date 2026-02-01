@@ -91,28 +91,6 @@ export class WeeklyScheduleComponent implements OnInit {
 
     const newSlot: TimeRange = { start: '09:00', end: '18:00' };
 
-    // Validar que no exista ya un slot con el mismo rango horario
-    const isDuplicate = day.slots.some(slot =>
-      slot.start === newSlot.start && slot.end === newSlot.end
-    );
-
-    if (isDuplicate) {
-      this.errorMessage.set('⚠️ Ya existe un horario con ese rango. Por favor, modifica los horarios.');
-      setTimeout(() => this.clearMessages(), 3000);
-      return;
-    }
-
-    // Validar que no se solape con otros horarios existentes
-    const hasOverlap = day.slots.some(slot =>
-      this.hasOverlap(newSlot, slot)
-    );
-
-    if (hasOverlap) {
-      this.errorMessage.set('⚠️ El nuevo horario se solapa con uno existente. Ajusta los rangos.');
-      setTimeout(() => this.clearMessages(), 3000);
-      return;
-    }
-
     day.slots.push(newSlot);
 
     this.weekSchedule.set(schedule);
@@ -137,38 +115,6 @@ export class WeeklyScheduleComponent implements OnInit {
 
   updateSlot(dayIndex: number, slotIndex: number, field: 'start' | 'end', value: string): void {
     const schedule = [...this.weekSchedule()];
-    const day = schedule[dayIndex];
-
-    // Actualizar temporalmente el slot
-    const updatedSlot = { ...day.slots[slotIndex] };
-    updatedSlot[field] = value;
-
-    // Validar que no se cree un duplicado
-    const isDuplicate = day.slots.some((slot, index) =>
-      index !== slotIndex &&
-      slot.start === updatedSlot.start &&
-      slot.end === updatedSlot.end
-    );
-
-    if (isDuplicate) {
-      this.errorMessage.set('⚠️ Ya existe un horario idéntico.');
-      setTimeout(() => this.clearMessages(), 3000);
-      return;
-    }
-
-    // Validar que no se solape con otros horarios
-    const hasOverlap = day.slots.some((slot, index) =>
-      index !== slotIndex &&
-      this.hasOverlap(updatedSlot, slot)
-    );
-
-    if (hasOverlap) {
-      this.errorMessage.set('⚠️ El horario se solapa con otro existente.');
-      setTimeout(() => this.clearMessages(), 3000);
-      return;
-    }
-
-    // Aplicar el cambio
     schedule[dayIndex].slots[slotIndex][field] = value;
     this.weekSchedule.set(schedule);
     this.saveToLocalStorage();
@@ -193,8 +139,16 @@ export class WeeklyScheduleComponent implements OnInit {
   }
 
   async saveChanges(): Promise<void> {
-    this.isSaving.set(true);
     this.clearMessages();
+
+    // VALIDAR antes de enviar al backend
+    const validation = this.validateAllSchedules();
+    if (!validation.isValid) {
+      this.errorMessage.set(validation.errorMessage || 'Error de validación');
+      return; // No permitir guardar si hay errores
+    }
+
+    this.isSaving.set(true);
 
     // IMPORTANTE: Enviamos TODOS los horarios configurados (días abiertos con slots)
     // El backend eliminará TODOS los horarios existentes y los reemplazará con estos
@@ -275,8 +229,64 @@ export class WeeklyScheduleComponent implements OnInit {
   }
 
   // Validar si dos rangos horarios se solapan
+  // Un rango es válido solo si es completamente anterior O completamente posterior
   private hasOverlap(slot1: TimeRange, slot2: TimeRange): boolean {
-    return (slot1.start < slot2.end && slot1.end > slot2.start);
+    // Slot1 debe terminar antes de que Slot2 comience, O
+    // Slot1 debe comenzar después de que Slot2 termine
+    // Si no se cumple ninguna, hay solapamiento
+    return !(slot1.end <= slot2.start || slot1.start >= slot2.end);
+  }
+
+  // Validar todos los horarios y retornar mensajes específicos por día
+  private validateAllSchedules(): { isValid: boolean; errorMessage?: string } {
+    const errors: string[] = [];
+
+    for (const day of this.weekSchedule()) {
+      if (!day.isOpen || day.slots.length === 0) continue;
+
+      // Validar que start < end
+      for (let i = 0; i < day.slots.length; i++) {
+        const slot = day.slots[i];
+        if (!this.isValidTimeRange(slot)) {
+          errors.push(`${day.dayName}: Horario ${i + 1} inválido (${slot.start} - ${slot.end})`);
+        }
+      }
+
+      // Validar duplicados exactos
+      for (let i = 0; i < day.slots.length; i++) {
+        for (let j = i + 1; j < day.slots.length; j++) {
+          const slot1 = day.slots[i];
+          const slot2 = day.slots[j];
+
+          if (slot1.start === slot2.start && slot1.end === slot2.end) {
+            errors.push(`${day.dayName}: Horarios duplicados (${slot1.start} - ${slot1.end})`);
+          }
+        }
+      }
+
+      // Validar solapamientos
+      for (let i = 0; i < day.slots.length; i++) {
+        for (let j = i + 1; j < day.slots.length; j++) {
+          const slot1 = day.slots[i];
+          const slot2 = day.slots[j];
+
+          if (this.hasOverlap(slot1, slot2)) {
+            errors.push(
+              `${day.dayName}: Horarios solapados [${slot1.start}-${slot1.end}] y [${slot2.start}-${slot2.end}]`
+            );
+          }
+        }
+      }
+    }
+
+    if (errors.length > 0) {
+      return {
+        isValid: false,
+        errorMessage: `⚠️ Errores encontrados:\n• ${errors.join('\n• ')}`
+      };
+    }
+
+    return { isValid: true };
   }
 
 

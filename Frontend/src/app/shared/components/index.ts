@@ -13,3 +13,7 @@ export { DropdownComponent } from './dropdown/dropdown.component';
 export { TextareaComponent } from './textarea/textarea.component';
 export { PasswordInputComponent } from './password-input/password-input.component';
 export { ProgressBarComponent } from './progress-bar/progress-bar.component';
+export { SectionIconComponent } from './section-icon/section-icon.component';
+export { TableComponent } from './table/table.component';
+export type { TableColumn, TableAction } from './table/table.component';
+

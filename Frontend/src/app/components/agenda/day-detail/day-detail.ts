@@ -11,11 +11,25 @@ import { DayDetailsDto } from '../../../models/calendar.model';
 import { ProviderResponse } from '../../../models/appointment.model';
 import { DateTimeHelper } from '../../../helpers/date-time.helper';
 import { AppointmentStatusHelper } from '../../../helpers/appointment-status.helper';
-import { ButtonComponent, CardComponent, InputComponent, LoadingSpinnerComponent, ProgressBarComponent } from '../../../shared/components';
+import { ButtonComponent, InputComponent, LoadingSpinnerComponent, ProgressBarComponent, DialogComponent } from '../../../shared/components';
+import { NewAppointmentComponent } from './new-appointment/new-appointment.component';
+import { EditAppointmentComponent } from './edit-appointment/edit-appointment.component';
 
 @Component({
   selector: 'app-day-detail',
-  imports: [CommonModule, FormsModule, LucideAngularModule, ButtonComponent, InputComponent, LoadingSpinnerComponent, ProgressBarComponent],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    LucideAngularModule,
+    ButtonComponent,
+    InputComponent,
+    LoadingSpinnerComponent,
+    ProgressBarComponent,
+    DialogComponent,
+    NewAppointmentComponent,
+    EditAppointmentComponent
+  ],
   templateUrl: './day-detail.html',
   styleUrl: './day-detail.css',
 })
@@ -49,7 +63,18 @@ export class DayDetailComponent implements OnInit {
   dayDetails = signal<DayDetailsDto | null>(null);
   providers = signal<ProviderResponse[]>([]);
   isLoading = signal(false);
-  selectedDate: Date | null = null;
+  selectedDate = signal<Date | null>(null);
+
+  // Modales - usando propiedades normales para compatibilidad con PrimeNG Dialog
+  private _showNewAppointmentModal = false;
+  private _showEditAppointmentModal = false;
+  selectedAppointmentId = signal<number | null>(null);
+
+  get showNewAppointmentModal() { return this._showNewAppointmentModal; }
+  set showNewAppointmentModal(value: boolean) { this._showNewAppointmentModal = value; }
+
+  get showEditAppointmentModal() { return this._showEditAppointmentModal; }
+  set showEditAppointmentModal(value: boolean) { this._showEditAppointmentModal = value; }
 
   // Delegados al filterService
   get currentPage() { return this.filterService.currentPage; }
@@ -65,7 +90,8 @@ export class DayDetailComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       if (params['date']) {
-        this.selectedDate = DateTimeHelper.parseDate(params['date']);
+        const parsedDate = DateTimeHelper.parseDate(params['date']);
+        this.selectedDate.set(parsedDate);
         this.loadProviders();
         this.loadDayDetails();
       } else {
@@ -86,12 +112,13 @@ export class DayDetailComponent implements OnInit {
   }
 
   loadDayDetails(): void {
-    if (!this.selectedDate) return;
+    const date = this.selectedDate();
+    if (!date) return;
 
     this.isLoading.set(true);
 
     this.calendarService.getDayDetails(
-      this.selectedDate,
+      date,
       this.currentPage(),
       this.pageSize(),
       this.filterService.getFilterParams()
@@ -157,28 +184,14 @@ export class DayDetailComponent implements OnInit {
     this.filterService.toggleFilters();
   }
 
-  goBack(): void {
-    this.router.navigate(['/dashboard/agenda']);
-  }
-
-  newAppointment(): void {
-    if (this.selectedDate) {
-      const dateStr = DateTimeHelper.formatDate(this.selectedDate);
-      this.router.navigate(['/dashboard/nuevo-turno'], {
-        queryParams: { date: dateStr }
-      });
-    } else {
-      this.router.navigate(['/dashboard/nuevo-turno']);
-    }
-  }
-
   viewAppointmentDetail(appointmentId: number): void {
     // TODO: Implementar navegación a detalle de turno
   }
 
   getFormattedDate(): string {
-    if (!this.selectedDate) return '';
-    return DateTimeHelper.formatDateSpanish(this.selectedDate);
+    const date = this.selectedDate();
+    if (!date) return '';
+    return DateTimeHelper.formatDateSpanish(date);
   }
 
   getStatusClass(status: string): string {
@@ -201,10 +214,60 @@ export class DayDetailComponent implements OnInit {
   }
 
   /**
-   * Editar un appointment
+   * Volver al calendario
+   */
+  goBack(): void {
+    this.router.navigate(['/dashboard/agenda']);
+  }
+
+  /**
+   * Abrir modal de nuevo turno
+   */
+  newAppointment(): void {
+    this.showNewAppointmentModal = true;
+  }
+
+  /**
+   * Cerrar modal de nuevo turno
+   */
+  closeNewAppointmentModal(): void {
+    this.showNewAppointmentModal = false;
+  }
+
+  /**
+   * Cuando se crea un turno exitosamente
+   */
+  onAppointmentCreated(): void {
+    this.showNewAppointmentModal = false;
+    this.loadDayDetails(); // Recargar datos
+  }
+
+  /**
+   * Editar un appointment - ABRE MODAL
    */
   editAppointment(appointmentId: number): void {
-    this.router.navigate(['/dashboard/editar-turno', appointmentId]);
+    console.log('📝 Editando appointment con ID:', appointmentId);
+    this.selectedAppointmentId.set(appointmentId);
+    console.log('📝 selectedAppointmentId después de set:', this.selectedAppointmentId());
+    this.showEditAppointmentModal = true;
+    console.log('📝 Modal abierto:', this.showEditAppointmentModal);
+  }
+
+  /**
+   * Cerrar modal de editar turno
+   */
+  closeEditAppointmentModal(): void {
+    this.showEditAppointmentModal = false;
+    this.selectedAppointmentId.set(null);
+  }
+
+  /**
+   * Cuando se actualiza un turno exitosamente
+   */
+  onAppointmentUpdated(): void {
+    this.showEditAppointmentModal = false;
+    this.selectedAppointmentId.set(null);
+    this.loadDayDetails(); // Recargar datos
   }
 
   /**

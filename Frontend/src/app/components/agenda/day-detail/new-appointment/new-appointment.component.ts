@@ -1,8 +1,8 @@
 ﻿import { Component, OnInit, Input, Output, EventEmitter, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { LucideAngularModule, User, Briefcase, X } from 'lucide-angular';
+import { ActivatedRoute } from '@angular/router';
+import { LucideAngularModule, User, Briefcase, X, CalendarPlus, Clock, AlertCircle, CheckCircle } from 'lucide-angular';
 import { AppointmentService } from '../../../../services/appointment/appointment.service';
 import { ProviderService } from '../../../../services/provider/provider.service';
 import { CustomerService } from '../../../../services/customer/customer.service';
@@ -12,21 +12,21 @@ import { AuthService } from '../../../../services/auth/auth.service';
 import { AppointmentFormService } from '../../../../services/appointment/appointment-form.service';
 import { ProviderResponse, CustomerResponse, ServiceResponse } from '../../../../models/appointment.model';
 import { ProviderScheduleResponse } from '../../../../models/schedule.model';
-import { TimeRangePickerComponent, TimeRange } from '../time-range-picker/time-range-picker.component';
 import { DateTimeHelper } from '../../../../helpers/date-time.helper';
 import { ScheduleValidator } from '../../../../validators/schedule.validator';
 import { AppointmentDTOBuilder } from '../../../../builders/appointment-dto.builder';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { ButtonComponent, CardComponent, LoadingSpinnerComponent, DropdownComponent, TextareaComponent, InputComponent } from '../../../../shared/components';
+import { ButtonComponent, LoadingSpinnerComponent, DropdownComponent, TextareaComponent, InputComponent, SectionIconComponent } from '../../../../shared/components';
 
 /**
  * Componente para CREAR nuevos appointments
  * Para editar, ver EditAppointmentComponent
+ * Actualizado: 2026-01-30 - Time picker simplificado
  */
 @Component({
   selector: 'app-new-appointment',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, TimeRangePickerComponent, ButtonComponent, CardComponent, LoadingSpinnerComponent, DropdownComponent, TextareaComponent, InputComponent],
+  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, ButtonComponent, LoadingSpinnerComponent, DropdownComponent, TextareaComponent, InputComponent, SectionIconComponent],
   templateUrl: './new-appointment.component.html',
   styleUrls: ['./new-appointment.component.css']
 })
@@ -43,13 +43,16 @@ export class NewAppointmentComponent implements OnInit {
   private readonly scheduleService = inject(ScheduleService);
   private readonly authService = inject(AuthService);
   private readonly formService = inject(AppointmentFormService);
-  private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
   // Icons
   readonly UserIcon = User;
+  readonly CalendarPlusIcon = CalendarPlus;
   readonly BriefcaseIcon = Briefcase;
   readonly XIcon = X;
+  readonly ClockIcon = Clock;
+  readonly AlertCircleIcon = AlertCircle;
+  readonly CheckCircleIcon = CheckCircle;
 
   // Form
   appointmentForm!: FormGroup;
@@ -162,7 +165,7 @@ export class NewAppointmentComponent implements OnInit {
   }
 
   private setupSearchListeners(): void {
-    // Customer search - LIMPIAR customerId cuando el usuario escribe
+    // Customer search - SOLO MOSTRAR DROPDOWN CON MÍNIMO 3 CARACTERES
     this.appointmentForm.get('customerSearch')?.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -177,10 +180,16 @@ export class NewAppointmentComponent implements OnInit {
         }
       }
 
-      this.formService.filterCustomers(searchText, this.customers());
+      // SOLO filtrar si hay al menos 3 caracteres
+      if (searchText && searchText.length >= 3) {
+        this.formService.filterCustomers(searchText, this.customers());
+      } else {
+        // Ocultar dropdown si hay menos de 3 caracteres
+        this.formService.hideCustomerDropdown();
+      }
     });
 
-    // Service search - LIMPIAR serviceId cuando el usuario escribe
+    // Service search - SOLO MOSTRAR DROPDOWN CON MÍNIMO 3 CARACTERES
     this.appointmentForm.get('serviceSearch')?.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -195,7 +204,13 @@ export class NewAppointmentComponent implements OnInit {
         }
       }
 
-      this.formService.filterServices(searchText, this.services());
+      // SOLO filtrar si hay al menos 3 caracteres
+      if (searchText && searchText.length >= 3) {
+        this.formService.filterServices(searchText, this.services());
+      } else {
+        // Ocultar dropdown si hay menos de 3 caracteres
+        this.formService.hideServiceDropdown();
+      }
     });
   }
 
@@ -205,16 +220,6 @@ export class NewAppointmentComponent implements OnInit {
 
   selectService(service: ServiceResponse): void {
     this.formService.selectService(this.appointmentForm, service);
-  }
-
-  /**
-   * Maneja el cambio de rango de tiempo desde el TimeRangePicker
-   */
-  onTimeRangeChange(timeRange: TimeRange): void {
-    this.appointmentForm.patchValue({
-      startTime: timeRange.startTime,
-      endTime: timeRange.endTime
-    });
   }
 
   /**
@@ -261,11 +266,23 @@ export class NewAppointmentComponent implements OnInit {
         this.isSaving.set(false);
         setTimeout(() => {
           this.success.emit();
-          this.router.navigate(['/dashboard/agenda']);
+          // NO navegar - el componente padre maneja esto
         }, 1500);
       },
       error: (error) => {
-        this.errorMessage.set(error?.error?.message || 'Error al crear el turno');
+        // Manejo mejorado de errores con información específica
+        let errorMsg = error?.error?.message || 'Error al crear el turno';
+
+        // Si es un error de conflicto/solapamiento, agregar info del horario
+        if (errorMsg.toLowerCase().includes('turno asignado') ||
+            errorMsg.toLowerCase().includes('conflicto') ||
+            errorMsg.toLowerCase().includes('solapamiento')) {
+          const startFormatted = formValue.startTime;
+          const endFormatted = formValue.endTime;
+          errorMsg = `${errorMsg}\n\nHorario solicitado: ${startFormatted} - ${endFormatted}\n\nPor favor, selecciona otro horario disponible.`;
+        }
+
+        this.errorMessage.set(errorMsg);
         this.isSaving.set(false);
       }
     });
@@ -273,7 +290,33 @@ export class NewAppointmentComponent implements OnInit {
 
   onCancel(): void {
     this.cancel.emit();
-    this.router.navigate(['/dashboard/agenda']);
+    // NO navegar, el componente padre se encarga
+  }
+
+
+  getCalculatedDuration(): string {
+    const start = this.appointmentForm.get('startTime')?.value;
+    const end = this.appointmentForm.get('endTime')?.value;
+
+    if (!start || !end) return '';
+
+    const [startHour, startMin] = start.split(':').map(Number);
+    const [endHour, endMin] = end.split(':').map(Number);
+
+    const totalMinutes = (endHour * 60 + endMin) - (startHour * 60 + startMin);
+
+    if (totalMinutes <= 0) return 'Hora inválida';
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    if (hours > 0 && minutes > 0) {
+      return `${hours}h ${minutes}min`;
+    } else if (hours > 0) {
+      return `${hours}h`;
+    } else {
+      return `${minutes}min`;
+    }
   }
 
   get formattedSelectedDate(): string {

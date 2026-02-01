@@ -21,10 +21,11 @@
   justify-content: center;
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #1d436f 0%, #2563eb 100%);
+  background: white;
   border-radius: 10px;
-  color: white;
-  box-shadow: 0 2px 8px rgba(29, 67, 111, 0.2);
+  color: #1d436f;
+  box-shadow: 0 2px 8px rgba(29, 67, 111, 0.12);
+  border: 2px solid #e5e7eb;
   flex-shrink: 0;
 }
 
@@ -121,11 +122,17 @@
   border-radius: 6px;
   margin-bottom: 0.75rem;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
   animation: slideDownFade 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 0.75rem;
   transition: all 0.2s ease;
+}
+
+.alert span {
+  white-space: pre-line;
+  line-height: 1.5;
+  flex: 1;
 }
 
 .alert-success {

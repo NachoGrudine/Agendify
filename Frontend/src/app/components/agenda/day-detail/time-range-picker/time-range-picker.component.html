@@ -1,24 +1,11 @@
-﻿<div class="time-range-picker">
+﻿﻿<div class="time-range-picker">
   <!-- Header -->
   <div class="picker-header">
     <i-lucide [img]="ClockIcon" [size]="20"></i-lucide>
     <span class="header-title">Selecciona el Horario</span>
   </div>
 
-  <!-- Quick Duration Buttons -->
-  <div class="quick-durations">
-    <span class="quick-label">Duración rápida:</span>
-    <button
-      *ngFor="let duration of quickDurations"
-      type="button"
-      class="quick-btn"
-      (click)="setQuickDuration(duration)"
-      [class.active]="durationMinutes === duration">
-      {{ duration < 60 ? duration + 'min' : (duration / 60) + 'h' }}
-    </button>
-  </div>
-
-  <!-- Time Inputs with +/- buttons -->
+  <!-- Time Controls - SOLO HORA DE INICIO -->
   <div class="time-controls">
     <!-- Start Time -->
     <div class="time-control-group">
@@ -50,42 +37,32 @@
         </button>
       </div>
     </div>
+  </div>
 
-    <!-- Duration Display -->
-    <div class="duration-display">
-      <div class="duration-icon">→</div>
-      <div class="duration-text">{{ durationFormatted }}</div>
+  <!-- Quick Duration Buttons - MEJORADO -->
+  <div class="quick-durations">
+    <span class="quick-label">Duración del servicio:</span>
+    <div class="quick-buttons">
+      <button
+        *ngFor="let duration of quickDurations"
+        type="button"
+        class="quick-btn"
+        (click)="setQuickDuration(duration)"
+        [class.active]="durationMinutes === duration">
+        {{ duration < 60 ? duration + ' min' : (duration / 60) + 'h' }}
+      </button>
     </div>
+  </div>
 
-    <!-- End Time -->
-    <div class="time-control-group">
-      <label class="time-label">Hora de Fin</label>
-      <div class="time-input-wrapper">
-        <button
-          type="button"
-          class="time-btn"
-          (click)="adjustEndTime(-step)"
-          title="Restar {{step}} minutos">
-          <i-lucide [img]="MinusIcon" [size]="16"></i-lucide>
-        </button>
-
-        <input
-          type="time"
-          class="time-input"
-          [value]="endTime"
-          (input)="onEndTimeChange($any($event.target).value)"
-          [min]="minTime"
-          [max]="maxTime"
-          step="900">
-
-        <button
-          type="button"
-          class="time-btn"
-          (click)="adjustEndTime(step)"
-          title="Sumar {{step}} minutos">
-          <i-lucide [img]="PlusIcon" [size]="16"></i-lucide>
-        </button>
-      </div>
+  <!-- Duration Display - RESULTADO -->
+  <div class="duration-result">
+    <div class="result-row">
+      <span class="result-label">Hora de finalización:</span>
+      <span class="result-value">{{ endTime }}</span>
+    </div>
+    <div class="result-row">
+      <span class="result-label">Duración total:</span>
+      <span class="result-value duration-badge">{{ durationFormatted }}</span>
     </div>
   </div>
 

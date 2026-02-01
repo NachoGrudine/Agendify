@@ -19,7 +19,6 @@ export class RegisterStep3Component {
 
   providerName = signal<string>('');
   providerSpecialty = signal<string>('');
-  avatarPreview = signal<string | null>(null);
 
   // Variable local para prevenir doble submit
   private isProcessing = signal<boolean>(false);
@@ -42,19 +41,6 @@ export class RegisterStep3Component {
     });
   }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        this.avatarPreview.set(e.target?.result as string);
-      };
-
-      reader.readAsDataURL(file);
-    }
-  }
 
   validateForm(): boolean {
     const newErrors: any = {};

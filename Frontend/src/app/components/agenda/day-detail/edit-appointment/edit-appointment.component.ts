@@ -1,8 +1,7 @@
-﻿import { Component, OnInit, signal, inject } from '@angular/core';
+﻿import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { LucideAngularModule, User, Briefcase, X } from 'lucide-angular';
+import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { LucideAngularModule, User, Briefcase, X, CalendarCheck, Clock, AlertCircle, CheckCircle } from 'lucide-angular';
 import { AppointmentService } from '../../../../services/appointment/appointment.service';
 import { ProviderService } from '../../../../services/provider/provider.service';
 import { CustomerService } from '../../../../services/customer/customer.service';
@@ -10,12 +9,10 @@ import { ServiceService } from '../../../../services/service-catalog/service.ser
 import { ScheduleService } from '../../../../services/schedule/schedule.service';
 import { AppointmentFormService } from '../../../../services/appointment/appointment-form.service';
 import { ProviderResponse, CustomerResponse, ServiceResponse, AppointmentResponse } from '../../../../models/appointment.model';
-import { ProviderScheduleResponse } from '../../../../models/schedule.model';
-import { TimeRangePickerComponent, TimeRange } from '../time-range-picker/time-range-picker.component';
-import { DateTimeHelper } from '../../../../helpers/date-time.helper';
+import { ProviderScheduleResponse } from '../../../../models/schedule.model';import { DateTimeHelper } from '../../../../helpers/date-time.helper';
 import { ScheduleValidator } from '../../../../validators/schedule.validator';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { ButtonComponent, CardComponent, LoadingSpinnerComponent, DropdownComponent, TextareaComponent, InputComponent } from '../../../../shared/components';
+import { ButtonComponent, LoadingSpinnerComponent, DropdownComponent, TextareaComponent, InputComponent, SectionIconComponent } from '../../../../shared/components';
 
 /**
  * Componente para EDITAR appointments existentes
@@ -24,11 +21,15 @@ import { ButtonComponent, CardComponent, LoadingSpinnerComponent, DropdownCompon
 @Component({
   selector: 'app-edit-appointment',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, TimeRangePickerComponent, ButtonComponent, CardComponent, LoadingSpinnerComponent, DropdownComponent, TextareaComponent, InputComponent],
+  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, ButtonComponent, LoadingSpinnerComponent, DropdownComponent, TextareaComponent, InputComponent, SectionIconComponent],
   templateUrl: './edit-appointment.component.html',
   styleUrls: ['./edit-appointment.component.css']
 })
-export class EditAppointmentComponent implements OnInit {
+export class EditAppointmentComponent implements OnInit, OnChanges {
+  @Input() appointmentId: number | null = null; // ID del turno a editar
+  @Output() cancel = new EventEmitter<void>();
+  @Output() success = new EventEmitter<void>();
+
   // Services
   private readonly appointmentService = inject(AppointmentService);
   private readonly providerService = inject(ProviderService);
@@ -36,19 +37,20 @@ export class EditAppointmentComponent implements OnInit {
   private readonly serviceService = inject(ServiceService);
   private readonly scheduleService = inject(ScheduleService);
   private readonly formService = inject(AppointmentFormService);
-  private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
 
   // Icons
   readonly UserIcon = User;
   readonly BriefcaseIcon = Briefcase;
   readonly XIcon = X;
+  readonly CalendarCheckIcon = CalendarCheck;
+  readonly ClockIcon = Clock;
+  readonly AlertCircleIcon = AlertCircle;
+  readonly CheckCircleIcon = CheckCircle;
 
   // Form
   appointmentForm!: FormGroup;
 
   // Data
-  appointmentId: number | null = null;
   originalAppointment: AppointmentResponse | null = null;
   providers = signal<ProviderResponse[]>([]);
   customers = signal<CustomerResponse[]>([]);
@@ -60,6 +62,7 @@ export class EditAppointmentComponent implements OnInit {
   isSaving = signal(false);
   errorMessage = signal('');
   successMessage = signal('');
+  showProviderField = signal(true); // Mostrar campo de provider solo si hay múltiples
 
   // Delegated to formService
   get filteredCustomers() { return this.formService.filteredCustomers; }
@@ -68,35 +71,47 @@ export class EditAppointmentComponent implements OnInit {
   get showServiceDropdown() { return this.formService.showServiceDropdown; }
 
   ngOnInit(): void {
+    console.log('🔧 EditAppointment ngOnInit');
     this.initForm();
     this.setupSearchListeners();
+  }
 
-    // Obtener el ID del appointment de los params
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if (id) {
-        this.appointmentId = parseInt(id);
-        // Cargar datos necesarios ANTES del appointment
+  ngOnChanges(changes: SimpleChanges): void {
+    // Detectar cuando cambia el appointmentId
+    if (changes['appointmentId'] && changes['appointmentId'].currentValue) {
+      const newId = changes['appointmentId'].currentValue;
+      console.log('🔄 EditAppointment ngOnChanges - appointmentId cambió a:', newId);
+
+      // Si el formulario ya está inicializado, cargar los datos
+      if (this.appointmentForm) {
+        console.log('✅ Formulario ya inicializado, cargando datos...');
         this.loadInitialData();
-      } else {
-        this.errorMessage.set('ID de turno no válido');
-        setTimeout(() => this.router.navigate(['/dashboard/agenda']), 2000);
       }
-    });
+    }
   }
 
   /**
    * Carga los datos necesarios (providers, customers, services) antes de cargar el appointment
    */
   private loadInitialData(): void {
+    if (!this.appointmentId) {
+      console.error('❌ No se puede cargar datos sin appointmentId');
+      this.errorMessage.set('ID de turno no válido');
+      setTimeout(() => this.cancel.emit(), 2000);
+      return;
+    }
+
+    console.log('📦 Cargando datos iniciales para appointment:', this.appointmentId);
     this.isLoading.set(true);
     let loadedCount = 0;
     const totalLoads = 3;
 
     const checkAllLoaded = () => {
       loadedCount++;
+      console.log(`📦 Cargados ${loadedCount}/${totalLoads} recursos`);
       if (loadedCount === totalLoads) {
         // Todos los datos están cargados, ahora sí cargar el appointment
+        console.log('✅ Todos los recursos cargados, cargando appointment...');
         this.loadAppointment();
       }
     };
@@ -111,20 +126,26 @@ export class EditAppointmentComponent implements OnInit {
   }
 
   private loadAppointment(): void {
-    if (!this.appointmentId) return;
+    if (!this.appointmentId) {
+      console.error('❌ No se puede cargar appointment sin ID');
+      return;
+    }
 
+    console.log('📅 Cargando appointment con ID:', this.appointmentId);
     this.isLoading.set(true);
     this.appointmentService.getById(this.appointmentId).subscribe({
       next: (appointment) => {
+        console.log('✅ Appointment cargado:', appointment);
         this.originalAppointment = appointment;
         this.populateForm(appointment);
         this.loadProviderSchedules(appointment.providerId);
         this.isLoading.set(false);
       },
       error: (error) => {
+        console.error('❌ Error al cargar appointment:', error);
         this.errorMessage.set('Error al cargar el turno');
         this.isLoading.set(false);
-        setTimeout(() => this.router.navigate(['/dashboard/agenda']), 2000);
+        setTimeout(() => this.cancel.emit(), 2000);
       }
     });
   }
@@ -147,7 +168,7 @@ export class EditAppointmentComponent implements OnInit {
       serviceDisplayName = service ? service.name : '';
     }
 
-    // Popular el formulario con TODOS los valores de una vez
+    // Deshabilitar temporalmente los listeners para evitar validaciones prematuras
     this.appointmentForm.patchValue({
       providerId: appointment.providerId,
       customerId: appointment.customerId,
@@ -157,13 +178,31 @@ export class EditAppointmentComponent implements OnInit {
       startTime: DateTimeHelper.formatTime(startDateTime),
       endTime: DateTimeHelper.formatTime(endDateTime),
       notes: appointment.notes || ''
+    }, { emitEvent: false });
+
+    // Marcar los campos como touched y válidos
+    Object.keys(this.appointmentForm.controls).forEach(key => {
+      const control = this.appointmentForm.get(key);
+      if (control) {
+        control.markAsTouched();
+        control.updateValueAndValidity();
+      }
     });
+
+    // Ahora sí emitir los eventos para que los watchers funcionen
+    this.appointmentForm.updateValueAndValidity();
   }
 
   private loadProviders(onComplete?: () => void): void {
     this.providerService.getAll().subscribe({
       next: (data) => {
         this.providers.set(data.filter(p => p.isActive));
+
+        // Si hay solo 1 provider, ocultar el campo
+        if (this.providers().length === 1) {
+          this.showProviderField.set(false);
+        }
+
         if (onComplete) onComplete();
       },
       error: () => {
@@ -215,7 +254,7 @@ export class EditAppointmentComponent implements OnInit {
   }
 
   private setupSearchListeners(): void {
-    // Customer search - LIMPIAR customerId cuando el usuario escribe
+    // Customer search - SOLO MOSTRAR DROPDOWN CON MÍNIMO 3 CARACTERES
     this.appointmentForm.get('customerSearch')?.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -230,10 +269,16 @@ export class EditAppointmentComponent implements OnInit {
         }
       }
 
-      this.formService.filterCustomers(searchText, this.customers());
+      // SOLO filtrar si hay al menos 3 caracteres
+      if (searchText && searchText.length >= 3) {
+        this.formService.filterCustomers(searchText, this.customers());
+      } else {
+        // Ocultar dropdown si hay menos de 3 caracteres
+        this.formService.hideCustomerDropdown();
+      }
     });
 
-    // Service search - LIMPIAR serviceId cuando el usuario escribe
+    // Service search - SOLO MOSTRAR DROPDOWN CON MÍNIMO 3 CARACTERES
     this.appointmentForm.get('serviceSearch')?.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -248,7 +293,13 @@ export class EditAppointmentComponent implements OnInit {
         }
       }
 
-      this.formService.filterServices(searchText, this.services());
+      // SOLO filtrar si hay al menos 3 caracteres
+      if (searchText && searchText.length >= 3) {
+        this.formService.filterServices(searchText, this.services());
+      } else {
+        // Ocultar dropdown si hay menos de 3 caracteres
+        this.formService.hideServiceDropdown();
+      }
     });
   }
 
@@ -260,12 +311,6 @@ export class EditAppointmentComponent implements OnInit {
     this.formService.selectService(this.appointmentForm, service);
   }
 
-  onTimeRangeChange(timeRange: TimeRange): void {
-    this.appointmentForm.patchValue({
-      startTime: timeRange.startTime,
-      endTime: timeRange.endTime
-    });
-  }
 
   /**
    * Actualizar un appointment existente
@@ -338,18 +383,56 @@ export class EditAppointmentComponent implements OnInit {
         this.successMessage.set('¡Turno actualizado exitosamente!');
         this.isSaving.set(false);
         setTimeout(() => {
-          this.router.navigate(['/dashboard/agenda']);
+          this.success.emit(); // Emitir evento en lugar de navegar
         }, 1500);
       },
       error: (error) => {
-        this.errorMessage.set(error?.error?.message || 'Error al actualizar el turno');
+        // Manejo mejorado de errores con información específica
+        let errorMsg = error?.error?.message || 'Error al actualizar el turno';
+
+        // Si es un error de conflicto/solapamiento, agregar info del horario
+        if (errorMsg.toLowerCase().includes('turno asignado') ||
+            errorMsg.toLowerCase().includes('conflicto') ||
+            errorMsg.toLowerCase().includes('solapamiento')) {
+          const startFormatted = formValue.startTime;
+          const endFormatted = formValue.endTime;
+          errorMsg = `${errorMsg}\n\nHorario solicitado: ${startFormatted} - ${endFormatted}\n\nPor favor, selecciona otro horario disponible.`;
+        }
+
+        this.errorMessage.set(errorMsg);
         this.isSaving.set(false);
       }
     });
   }
 
   onCancel(): void {
-    this.router.navigate(['/dashboard/agenda']);
+    this.cancel.emit();
+  }
+
+
+  getCalculatedDuration(): string {
+    const start = this.appointmentForm.get('startTime')?.value;
+    const end = this.appointmentForm.get('endTime')?.value;
+
+    if (!start || !end) return '';
+
+    const [startHour, startMin] = start.split(':').map(Number);
+    const [endHour, endMin] = end.split(':').map(Number);
+
+    const totalMinutes = (endHour * 60 + endMin) - (startHour * 60 + startMin);
+
+    if (totalMinutes <= 0) return 'Hora inválida';
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    if (hours > 0 && minutes > 0) {
+      return `${hours}h ${minutes}min`;
+    } else if (hours > 0) {
+      return `${hours}h`;
+    } else {
+      return `${minutes}min`;
+    }
   }
 
   get formattedSelectedDate(): string {

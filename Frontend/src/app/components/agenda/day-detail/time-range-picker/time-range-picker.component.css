@@ -3,7 +3,7 @@
   background: white;
   border: 1px solid #e8eaed;
   border-radius: 12px;
-  padding: 20px;
+  padding: 1.25rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
@@ -11,9 +11,9 @@
 .picker-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
+  gap: 0.625rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
   border-bottom: 2px solid #f3f4f6;
 }
 
@@ -22,68 +22,24 @@
 }
 
 .header-title {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--text-primary);
 }
 
-/* Quick Durations */
-.quick-durations {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.quick-label {
-  font-size: 13px;
-  font-weight: 500;
-  color: #6b7280;
-}
-
-.quick-btn {
-  padding: 6px 14px;
-  background: white;
-  border: 1.5px solid #e8eaed;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #5f6368;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.quick-btn:hover {
-  border-color: var(--primary-color);
-  background: #f8f9fc;
-  color: var(--primary-color);
-}
-
-.quick-btn.active {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
-  color: white;
-  box-shadow: 0 2px 8px rgba(29, 67, 111, 0.2);
-}
-
-/* Time Controls */
+/* Time Controls - SOLO INICIO */
 .time-controls {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 16px;
-  align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }
 
 .time-control-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .time-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #6b7280;
   text-transform: uppercase;
@@ -93,11 +49,104 @@
 .time-input-wrapper {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.5rem;
   background: #f8f9fa;
   border: 1.5px solid #e8eaed;
   border-radius: 10px;
-  padding: 4px;
+  padding: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+.time-input-wrapper:focus-within {
+  border-color: #1d436f;
+  box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.08);
+}
+
+/* Quick Durations - MEJORADO */
+.quick-durations {
+  margin-bottom: 1.25rem;
+}
+
+.quick-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.quick-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 0.5rem;
+}
+
+.quick-btn {
+  padding: 0.625rem 1rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.quick-btn:hover {
+  border-color: #1d436f;
+  background: rgba(29, 67, 111, 0.05);
+  color: #1d436f;
+  transform: translateY(-1px);
+}
+
+.quick-btn.active {
+  background: #1d436f;
+  border-color: #1d436f;
+  color: white;
+  box-shadow: 0 2px 8px rgba(29, 67, 111, 0.25);
+}
+
+/* Duration Result - NUEVO */
+.duration-result {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid #e5e7eb;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.result-row:not(:last-child) {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.result-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.result-value {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.duration-badge {
+  background: #1d436f;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+
   transition: all 0.2s ease;
 }
 

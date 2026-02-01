@@ -1,6 +1,6 @@
 ﻿import { Injectable, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ProviderResponse, CustomerResponse, ServiceResponse } from '../../models/appointment.model';
+import { CustomerResponse, ServiceResponse } from '../../models/appointment.model';
 
 /**
  * Servicio para manejar la lógica del formulario de appointments
@@ -98,6 +98,22 @@ export class AppointmentFormService {
       serviceName: ''
     });
     this.showServiceDropdown.set(false);
+  }
+
+  /**
+   * Oculta el dropdown de customers
+   */
+  hideCustomerDropdown(): void {
+    this.showCustomerDropdown.set(false);
+    this.filteredCustomers.set([]);
+  }
+
+  /**
+   * Oculta el dropdown de services
+   */
+  hideServiceDropdown(): void {
+    this.showServiceDropdown.set(false);
+    this.filteredServices.set([]);
   }
 
   /**

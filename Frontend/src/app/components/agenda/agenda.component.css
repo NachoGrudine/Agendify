@@ -1,75 +1,65 @@
 ﻿.agenda-container {
-  max-width: 1400px;
+  max-width: 100%;
+  width: 100%;
   margin: 0 auto;
   padding: 0 1.5rem;
+  box-sizing: border-box;
 }
 
-/* Page Header con Icono */
-.page-header {
+/* ============================================
+   HEADER - 3 COLUMNAS BALANCEADAS
+   ============================================ */
+
+.top-header {
+  background: var(--bg-white);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.header-content {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* IZQUIERDA: Icono + Título */
+.header-left {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 2px solid #e5e7eb;
+  gap: 1rem;
+  justify-self: start;
 }
 
 .header-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 64px;
-  height: 64px;
-  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-  border-radius: 12px;
-  color: white;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  width: 48px;
+  height: 48px;
+  background: white;
+  border-radius: 10px;
+  color: #1d436f;
+  box-shadow: 0 2px 8px rgba(29, 67, 111, 0.12);
+  border: 2px solid #e5e7eb;
   flex-shrink: 0;
-}
-
-.header-content-text h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0 0 0.25rem 0;
-}
-
-.header-content-text p {
-  color: #6b7280;
-  font-size: 1rem;
-  margin: 0;
-}
-
-/* ============================================
-   TOP HEADER - Usuario, Notificaciones y Selector de Mes
-   ============================================ */
-
-.top-header {
-  background: var(--bg-white);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 1.5rem;
-  padding: 1rem 1.5rem;
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 2rem;
 }
 
 .header-title-section {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.125rem;
 }
 
-.header-content h1 {
+.header-title-section h1 {
   color: var(--text-primary);
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0;
+  line-height: 1;
 }
 
 .subtitle {
@@ -77,23 +67,19 @@
   font-size: 0.8125rem;
   margin: 0;
   font-weight: 400;
+  line-height: 1.3;
 }
 
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-/* Selector de Mes */
+/* CENTRO: Selector de Mes */
 .month-selector {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   background: #f8f9fa;
-  padding: 0.5rem 0.75rem;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
+  padding: 0.625rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  justify-self: center;
 }
 
 .month-nav-btn {
@@ -103,111 +89,73 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.25rem;
+  padding: 0.375rem;
   color: var(--text-secondary);
-  transition: var(--transition-fast);
-  border-radius: 4px;
+  transition: all 0.2s ease;
+  border-radius: 6px;
 }
 
 .month-nav-btn:hover {
   background: rgba(29, 67, 111, 0.1);
-  color: var(--primary-color);
+  color: #1d436f;
 }
 
 .current-month {
   font-weight: 600;
   color: var(--text-primary);
-  font-size: 0.95rem;
-  min-width: 120px;
+  font-size: 1rem;
+  min-width: 140px;
   text-align: center;
+}
+
+/* DERECHA: Solo Notificaciones */
+.header-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 /* Botón de Notificaciones */
 .notification-btn {
   position: relative;
-  background: transparent;
-  border: 1px solid var(--border-color);
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md);
+  background: white;
+  border: 2px solid #e5e7eb;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-secondary);
-  transition: var(--transition-fast);
+  color: #6b7280;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .notification-btn:hover {
   background: rgba(29, 67, 111, 0.05);
-  color: var(--primary-color);
-  border-color: var(--primary-color);
+  color: #1d436f;
+  border-color: #1d436f;
+  box-shadow: 0 2px 6px rgba(29, 67, 111, 0.15);
 }
 
 .notification-badge {
   position: absolute;
-  top: -4px;
-  right: -4px;
+  top: -6px;
+  right: -6px;
   background: #ef4444;
   color: white;
   font-size: 0.7rem;
   font-weight: 700;
-  min-width: 18px;
-  height: 18px;
+  min-width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 4px;
   border: 2px solid var(--bg-white);
-}
-
-/* Usuario Logueado */
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: var(--transition-fast);
-}
-
-.user-profile:hover {
-  background: rgba(29, 67, 111, 0.05);
-}
-
-.user-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.user-name {
-  font-weight: 600;
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  line-height: 1.2;
-}
-
-.user-role {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  line-height: 1.2;
-}
-
-.user-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.9rem;
-  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .agenda-header {
@@ -274,12 +222,23 @@
   box-shadow: var(--shadow-md);
 }
 
+/* ============================================
+   CALENDARIO - SIN ESPACIOS FEOS
+   ============================================ */
+
 .calendar-section {
-  background: var(--bg-white);
-  border-radius: var(--radius-lg);
-  padding: 2rem;
-  box-shadow: var(--shadow-sm);
-  position: relative; /* Para que el loading-overlay se posicione correctamente */
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+.calendar-wrapper {
+  /* El calendario ocupa todo */
+}
+
+/* Eliminar márgenes del FullCalendar */
+:host ::ng-deep .fc {
+  margin: 0;
 }
 
 /* ============================================
@@ -374,20 +333,32 @@
   border-color: var(--primary-color);
 }
 
-/* Días de la semana */
+/* Días de la semana - COLOR CORRECTO DEL SISTEMA */
 :host ::ng-deep .fc .fc-col-header-cell {
-  padding: 0.75rem 0.5rem; /* Reducido de 1rem */
-  background: rgba(29, 67, 111, 0.05);
-  border-color: var(--border-color);
+  padding: 0.875rem 0.5rem;
+  background: #1d436f;
+  border-color: rgba(255, 255, 255, 0.15);
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
   font-weight: 600;
-  color: var(--text-primary);
+  color: white;
   text-transform: uppercase;
-  font-size: 0.7rem; /* Reducido de 0.75rem */
+  font-size: 0.75rem;
   letter-spacing: 0.5px;
+  text-align: center;
+}
+
+:host ::ng-deep .fc .fc-col-header-cell:last-child {
+  border-right: none;
+}
+
+:host ::ng-deep .fc .fc-col-header-cell-cushion {
+  color: white;
+  font-weight: 600;
 }
 
 /* ============================================
    FIX PRINCIPAL: ALTURA Y ESTRUCTURA DE CELDAS
+   OPTIMIZADO: Sin scroll, celdas prolijas y grandes
    ============================================ */
 
 /* Forzar altura fija en las filas del calendario */
@@ -399,35 +370,117 @@
   height: auto !important;
 }
 
-/* Cada fila de semana debe tener altura fija */
-:host ::ng-deep .fc .fc-daygrid-body tr {
-  height: 95px !important; /* Reducido de 110px a 95px para evitar scroll */
+/* ALTURA DINÁMICA - Se adapta según cantidad de filas del mes */
+/* Cuando hay 5 semanas (Enero, etc) → Celdas más grandes */
+:host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(5):last-child) tr {
+  height: 130px !important;
 }
 
-/* Celdas de días - estructura base */
+/* Cuando hay 6 semanas (Marzo, Mayo, etc) → Celdas normales */
+:host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(6)) tr {
+  height: 110px !important;
+}
+
+/* Fallback para 4 semanas (raro pero posible) → Celdas extra grandes */
+:host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(4):last-child) tr {
+  height: 150px !important;
+}
+
+/* Celdas de días - estructura base MEJORADA Y PROLIJA */
 :host ::ng-deep .fc .fc-daygrid-day {
-  border-color: var(--border-color);
-  transition: var(--transition-fast);
+  border-color: #e5e7eb;
+  border-width: 1px;
+  transition: all 0.2s ease;
   position: relative;
   overflow: visible !important;
   vertical-align: top !important;
 }
 
 :host ::ng-deep .fc .fc-daygrid-day:hover {
-  background: rgba(29, 67, 111, 0.02);
+  background: rgba(29, 67, 111, 0.04);
   cursor: pointer;
+  border-color: rgba(29, 67, 111, 0.25);
+  box-shadow: inset 0 0 0 1px rgba(29, 67, 111, 0.1);
+}
+/* Tabla del calendario - 100% RESPONSIVE Y AJUSTABLE */
+:host ::ng-deep .fc .fc-scrollgrid {
+  border-color: #d1d5db;
+  border-width: 1px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  width: 100% !important;
 }
 
-/* Frame de la celda - contenedor principal */
+/* FORZAR que todo el calendario ocupe el 100% del ancho disponible */
+:host ::ng-deep .fc {
+  width: 100% !important;
+}
+
+:host ::ng-deep .fc-view-harness {
+  width: 100% !important;
+}
+
+:host ::ng-deep .fc .fc-view {
+  width: 100% !important;
+}
+
+:host ::ng-deep .fc-daygrid {
+  width: 100% !important;
+}
+
+/* Forzar que las tablas internas ocupen el 100% */
+:host ::ng-deep .fc .fc-scrollgrid-sync-table {
+  width: 100% !important;
+  table-layout: fixed !important;
+}
+
+:host ::ng-deep .fc .fc-col-header,
+:host ::ng-deep .fc .fc-daygrid-body {
+  width: 100% !important;
+}
+
+/* Las celdas se distribuyen equitativamente (7 columnas) */
+:host ::ng-deep .fc .fc-col-header-cell,
+:host ::ng-deep .fc .fc-daygrid-day {
+  min-width: 0 !important;
+  width: 14.28% !important; /* 100% / 7 días */
+  box-sizing: border-box !important;
+}
+
+/* Texto de días sin cortes y centrado */
+:host ::ng-deep .fc .fc-col-header-cell-cushion {
+  color: white;
+  font-weight: 600;
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 0 4px;
+  box-sizing: border-box;
+}
+/* Frame de la celda - ALTURA DINÁMICA */
+/* Por defecto (6 semanas) */
 :host ::ng-deep .fc .fc-daygrid-day-frame {
   height: 100% !important;
-  min-height: 95px !important; /* Reducido de 110px a 95px */
-  max-height: 95px !important; /* Reducido de 110px a 95px */
+  min-height: 110px !important;
+  max-height: 110px !important;
   position: relative;
   display: flex;
   flex-direction: column;
   padding: 0 !important;
   overflow: hidden !important;
+}
+
+/* 5 semanas → frames más grandes */
+:host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(5):last-child) .fc-daygrid-day-frame {
+  min-height: 130px !important;
+  max-height: 130px !important;
+}
+
+/* 4 semanas → frames extra grandes */
+:host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(4):last-child) .fc-daygrid-day-frame {
+  min-height: 150px !important;
+  max-height: 150px !important;
 }
 
 /* Top de la celda - aquí va TODO el contenido */
@@ -455,7 +508,7 @@
 }
 
 /* ============================================
-   CONTENIDO PERSONALIZADO
+   CONTENIDO PERSONALIZADO - PROLIJO Y ESPACIOSO
    ============================================ */
 
 .custom-day-cell {
@@ -463,8 +516,8 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-  padding: 8px;
-  gap: 6px;
+  padding: 10px;
+  gap: 8px;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -474,64 +527,80 @@
   align-items: center;
   justify-content: flex-end;
   flex-shrink: 0;
-  min-height: 24px;
+  min-height: 28px;
 }
 
 .day-number-wrapper .fc-daygrid-day-number {
-  font-size: 0.875rem !important;
+  font-size: 0.9rem !important;
   font-weight: 700 !important;
   color: var(--text-primary) !important;
-  padding: 4px 8px !important;
+  padding: 5px 9px !important;
   background: transparent !important;
-  border-radius: 4px;
+  border-radius: 6px;
   line-height: 1 !important;
   text-decoration: none !important;
   margin: 0 !important;
+  transition: all 0.2s ease;
 }
 
-/* Contenedor de badges */
+.day-number-wrapper .fc-daygrid-day-number:hover {
+  background: rgba(29, 67, 111, 0.08) !important;
+}
+
+/* Contenedor de badges - ALTURA DINÁMICA */
+/* Por defecto (6 semanas - 110px) */
 .day-badges-container {
   display: flex;
   flex-direction: column;
-  gap: 3px; /* Reducido de 4px a 3px */
+  gap: 5px;
   width: 100%;
   padding: 0;
   box-sizing: border-box;
   flex: 1;
   overflow: hidden;
-  max-height: calc(100px - 32px); /* Ajustado para la nueva altura */
+  max-height: calc(110px - 38px);
+}
+
+/* 5 semanas → más espacio para badges (130px) */
+:host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(5):last-child) .day-badges-container {
+  max-height: calc(130px - 38px) !important;
+}
+
+/* 4 semanas → mucho más espacio (150px) */
+:host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(4):last-child) .day-badges-container {
+  max-height: calc(150px - 38px) !important;
 }
 
 .badge {
-  font-size: 0.65rem; /* Reducido de 0.7rem */
-  padding: 4px 6px; /* Reducido el padding */
+  font-size: 0.7rem;
+  padding: 5px 8px;
   border-radius: 6px;
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 3px; /* Reducido de 4px */
-  line-height: 1.2;
+  gap: 5px;
+  line-height: 1.3;
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
   white-space: nowrap;
   flex-shrink: 0;
-  min-height: 20px; /* Reducido de 24px */
+  min-height: 26px;
 }
 
 .badge-icon {
-  font-size: 0.75rem; /* Reducido de 0.85rem */
+  font-size: 0.8rem;
   flex-shrink: 0;
   line-height: 1;
 }
 
 .badge-text {
-  font-size: 0.65rem; /* Reducido de 0.7rem */
+  font-size: 0.7rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1.3;
   flex: 1;
 }
 
@@ -557,27 +626,34 @@
   color: #065f46 !important;
 }
 
-/* Día actual */
+/* Día actual - COLOR CORRECTO DEL SISTEMA */
 :host ::ng-deep .fc-day-today {
-  background: rgba(29, 67, 111, 0.08) !important;
+  background: rgba(29, 67, 111, 0.06) !important;
+  border: 2px solid rgba(29, 67, 111, 0.2) !important;
 }
 
 :host ::ng-deep .fc-day-today .day-number-wrapper .fc-daygrid-day-number {
-  background: var(--primary-color) !important;
-  color: var(--text-white) !important;
+  background: #1d436f !important;
+  color: white !important;
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   display: flex !important;
   align-items: center;
   justify-content: center;
   padding: 0 !important;
+  box-shadow: 0 2px 8px rgba(29, 67, 111, 0.3);
+  font-weight: 700 !important;
 }
 
-/* Días de otros meses */
+/* Días de otros meses - MÁS SUTILES */
+:host ::ng-deep .fc-day-other {
+  background: #fafbfc !important;
+}
+
 :host ::ng-deep .fc-day-other .fc-daygrid-day-number {
-  color: var(--text-light);
-  opacity: 0.5;
+  color: #9ca3af;
+  opacity: 0.6;
 }
 
 /* Modal */
@@ -696,37 +772,126 @@
 }
 
 /* ============================================
-   RESPONSIVE
+   RESPONSIVE - AJUSTE CON SIDEBAR
    ============================================ */
 
-@media (max-width: 1200px) {
-  :host ::ng-deep .fc .fc-daygrid-body tr {
-    height: 120px !important;
+/* Cuando se abre la sidebar (reduce el ancho disponible) */
+@media (max-width: 1400px) {
+  .agenda-container {
+    padding: 0 1rem;
   }
 
-  :host ::ng-deep .fc .fc-daygrid-day-frame {
-    min-height: 120px !important;
-    max-height: 120px !important;
+  .header-content {
+    gap: 1.5rem;
   }
 
-  .day-badges-container {
-    max-height: calc(120px - 36px);
-    gap: 3px;
+  .current-month {
+    min-width: 110px;
+    font-size: 0.95rem;
+  }
+
+  /* Días de semana más compactos */
+  :host ::ng-deep .fc .fc-col-header-cell {
+    padding: 0.75rem 0.3rem;
+    font-size: 0.7rem;
   }
 
   .badge {
     font-size: 0.65rem;
     padding: 4px 6px;
-    gap: 3px;
-    min-height: 22px;
+  }
+}
+
+/* Sidebar abierta en pantallas medianas */
+@media (max-width: 1300px) {
+  .header-title-section h1 {
+    font-size: 1.35rem;
   }
 
-  .badge-text {
+  .subtitle {
+    font-size: 0.75rem;
+  }
+
+  :host ::ng-deep .fc .fc-col-header-cell {
+    padding: 0.7rem 0.25rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.3px;
+  }
+
+  :host ::ng-deep .fc .fc-daygrid-body tr {
+    height: 105px !important;
+  }
+
+  :host ::ng-deep .fc .fc-daygrid-day-frame {
+    min-height: 105px !important;
+    max-height: 105px !important;
+  }
+
+  .custom-day-cell {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .day-badges-container {
+    max-height: calc(105px - 34px);
+  }
+}
+
+@media (max-width: 1200px) {
+  .header-content {
+    gap: 1rem;
+  }
+
+  .header-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .header-title-section h1 {
+    font-size: 1.3rem;
+  }
+
+  .current-month {
+    min-width: 100px;
+    font-size: 0.9rem;
+  }
+
+  :host ::ng-deep .fc .fc-col-header-cell {
+    padding: 0.65rem 0.2rem;
     font-size: 0.65rem;
   }
 
+  :host ::ng-deep .fc .fc-daygrid-body tr {
+    height: 100px !important;
+  }
+
+  :host ::ng-deep .fc .fc-daygrid-day-frame {
+    min-height: 100px !important;
+    max-height: 100px !important;
+  }
+
+  .custom-day-cell {
+    padding: 7px;
+    gap: 5px;
+  }
+
+  .day-badges-container {
+    max-height: calc(100px - 30px);
+    gap: 4px;
+  }
+
+  .badge {
+    font-size: 0.6rem;
+    padding: 3px 5px;
+    min-height: 20px;
+  }
+
+  .badge-text {
+    font-size: 0.6rem;
+  }
+
   .badge-icon {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
   }
 }
 
@@ -737,37 +902,20 @@
   }
 
   .header-content {
-    flex-direction: column;
-    align-items: flex-start;
+    grid-template-columns: 1fr;
     gap: 1rem;
   }
 
-  .header-content h1 {
-    font-size: 1.5rem;
-  }
-
-  .header-actions {
-    width: 100%;
-    justify-content: space-between;
+  .header-left {
+    justify-self: start;
   }
 
   .month-selector {
-    flex: 1;
+    justify-self: stretch;
   }
 
-  .current-month {
-    font-size: 0.875rem;
-    min-width: auto;
-  }
-
-  .user-info {
-    display: none;
-  }
-
-  .user-avatar {
-    width: 36px;
-    height: 36px;
-    font-size: 0.85rem;
+  .header-right {
+    justify-self: end;
   }
 
   .agenda-header {
@@ -813,30 +961,40 @@
     font-size: 0.875rem;
   }
 
+  :host ::ng-deep .fc .fc-col-header-cell {
+    padding: 0.6rem 0.15rem;
+    font-size: 0.6rem;
+  }
+
   :host ::ng-deep .fc .fc-daygrid-body tr {
-    height: 100px !important;
+    height: 95px !important;
   }
 
   :host ::ng-deep .fc .fc-daygrid-day-frame {
-    min-height: 100px !important;
-    max-height: 100px !important;
+    min-height: 95px !important;
+    max-height: 95px !important;
   }
 
   .custom-day-cell {
-    padding: 4px;
+    padding: 6px;
     gap: 4px;
   }
 
+  .day-number-wrapper .fc-daygrid-day-number {
+    font-size: 0.85rem !important;
+    padding: 4px 7px !important;
+  }
+
   .day-badges-container {
-    max-height: calc(100px - 32px);
-    gap: 2px;
+    max-height: calc(95px - 28px);
+    gap: 3px;
   }
 
   .badge {
     font-size: 0.6rem;
     padding: 3px 5px;
     gap: 2px;
-    min-height: 20px;
+    min-height: 18px;
   }
 
   .badge-text {
@@ -845,16 +1003,6 @@
 
   .badge-icon {
     font-size: 0.7rem;
-  }
-
-  .badge-icon svg {
-    width: 10px;
-    height: 10px;
-  }
-
-  .day-number-wrapper .fc-daygrid-day-number {
-    font-size: 0.8rem !important;
-    padding: 2px 6px !important;
   }
 
   /* Modal responsive */
@@ -887,27 +1035,21 @@
 }
 
 @media (max-width: 480px) {
-  .header-content h1 {
+  .header-title-section h1 {
     font-size: 1.25rem;
   }
 
   .month-selector {
-    padding: 0.4rem 0.6rem;
+    padding: 0.5rem 0.75rem;
   }
 
   .current-month {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     min-width: 90px;
   }
 
   .notification-btn {
-    width: 36px;
-    height: 36px;
-  }
-
-  .user-avatar {
-    width: 32px;
-    height: 32px;
-    font-size: 0.8rem;
+    width: 40px;
+    height: 40px;
   }
 }

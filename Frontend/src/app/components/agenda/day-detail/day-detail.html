@@ -98,15 +98,6 @@
   <div class="filters-panel" *ngIf="showFilters()">
     <div class="filters-content">
       <div class="filter-group">
-        <label for="status-filter">Estado</label>
-        <select id="status-filter" [(ngModel)]="filters.status" (change)="applyFilters()">
-          <option *ngFor="let status of availableStatuses" [value]="status.value">
-            {{ status.label }}
-          </option>
-        </select>
-      </div>
-
-      <div class="filter-group">
         <label for="time-filter">Hora de Inicio</label>
         <input
           type="time"
@@ -138,19 +129,18 @@
             <th>Cliente</th>
             <th>Servicio</th>
             <th>Profesional</th>
-            <th>Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngIf="isLoading()">
-            <td colspan="6" class="loading-row">
+            <td colspan="5" class="loading-row">
               <app-loading-spinner message="Cargando turnos..." />
             </td>
           </tr>
 
           <tr *ngIf="!isLoading() && (!dayDetails()?.appointments || (dayDetails()?.appointments?.length ?? 0) === 0)">
-            <td colspan="6" class="empty-row">
+            <td colspan="5" class="empty-row">
               <i-lucide [img]="CalendarIcon" [size]="48"></i-lucide>
               <p>No hay turnos para este día</p>
             </td>
@@ -163,47 +153,43 @@
                 <span class="time-separator">-</span>
                 <span class="time-end">{{ appointment.endTime }}</span>
               </div>
-              <div class="duration">({{ appointment.durationMinutes }}m)</div>
+              <div class="duration">{{ appointment.durationMinutes }} min</div>
             </td>
 
             <td class="customer-cell">
-              <div class="customer-avatar">
-                {{ appointment.customerName.substring(0, 2).toUpperCase() }}
+              <div class="customer-info">
+                <div class="customer-avatar">
+                  {{ appointment.customerName.substring(0, 2).toUpperCase() }}
+                </div>
+                <span class="customer-name">{{ appointment.customerName }}</span>
               </div>
-              <span class="customer-name">{{ appointment.customerName }}</span>
             </td>
 
             <td class="service-cell">
               <span class="service-name">{{ appointment.serviceName || '-' }}</span>
-              <span class="service-duration" *ngIf="appointment.serviceName">({{ appointment.durationMinutes }}m)</span>
             </td>
 
             <td class="provider-cell">
               <span class="provider-name">{{ appointment.providerName }}</span>
             </td>
 
-            <td class="status-cell">
-              <span class="status-badge" [ngClass]="getStatusClass(appointment.status)">
-                <i-lucide [img]="getStatusIcon(appointment.status)" [size]="16"></i-lucide>
-                {{ appointment.status }}
-              </span>
-            </td>
-
             <td class="actions-cell">
-              <app-button
-                severity="outlined"
-                [iconStart]="EditIcon"
-                [iconSize]="18"
-                customClass="btn-action btn-edit"
-                (onClick)="editAppointment(appointment.id)"
-              />
-              <app-button
-                severity="danger"
-                [iconStart]="TrashIcon"
-                [iconSize]="18"
-                customClass="btn-action btn-delete"
-                (onClick)="deleteAppointment(appointment.id, appointment.customerName)"
-              />
+              <div class="actions-group">
+                <app-button
+                  severity="outlined"
+                  [iconStart]="EditIcon"
+                  [iconSize]="18"
+                  customClass="btn-action btn-edit"
+                  (onClick)="editAppointment(appointment.id)"
+                />
+                <app-button
+                  severity="danger"
+                  [iconStart]="TrashIcon"
+                  [iconSize]="18"
+                  customClass="btn-action btn-delete"
+                  (onClick)="deleteAppointment(appointment.id, appointment.customerName)"
+                />
+              </div>
             </td>
           </tr>
         </tbody>
@@ -265,3 +251,35 @@
     </div>
   </div>
 </div>
+
+<!-- Modal de Nuevo Turno -->
+<app-dialog
+  [(visible)]="showNewAppointmentModal"
+  width="90vw"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
+  customClass="appointment-dialog"
+>
+  <app-new-appointment
+    [selectedDate]="selectedDate()"
+    (cancel)="closeNewAppointmentModal()"
+    (success)="onAppointmentCreated()"
+  />
+</app-dialog>
+
+<!-- Modal de Editar Turno -->
+<app-dialog
+  [(visible)]="showEditAppointmentModal"
+  width="90vw"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
+  customClass="appointment-dialog"
+>
+  <app-edit-appointment
+    [appointmentId]="selectedAppointmentId()"
+    (cancel)="closeEditAppointmentModal()"
+    (success)="onAppointmentUpdated()"
+  />
+</app-dialog>

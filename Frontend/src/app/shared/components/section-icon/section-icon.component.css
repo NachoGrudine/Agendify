@@ -1,0 +1,20 @@
+﻿/* ICONO DE SECCIÓN GENÉRICO - CONSISTENTE EN TODA LA APP */
+.section-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: white;
+  border-radius: 10px;
+  color: #1d436f;
+  box-shadow: 0 2px 8px rgba(29, 67, 111, 0.12);
+  border: 2px solid #e5e7eb;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.section-icon:hover {
+  box-shadow: 0 4px 12px rgba(29, 67, 111, 0.18);
+  transform: translateY(-1px);
+}

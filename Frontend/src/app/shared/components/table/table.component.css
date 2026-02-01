@@ -1,0 +1,223 @@
+﻿/* ============================================
+   TABLE COMPONENT - GENÉRICO Y PROFESIONAL
+   ============================================ */
+
+.table-container {
+  width: 100%;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* Loading State */
+.table-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #1d436f;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.table-loading p {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Empty State */
+.table-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+}
+
+.table-empty p {
+  color: #9ca3af;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Table Wrapper */
+.table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+/* Table Styles */
+.app-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+/* Table Header */
+.app-table thead {
+  background: #fafbfc;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.app-table th {
+  padding: 1rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #6b7280;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.actions-header {
+  text-align: center !important;
+  width: 120px;
+}
+
+/* Table Body */
+.app-table tbody tr {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s ease;
+}
+
+.app-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.app-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.app-table td {
+  padding: 1rem;
+  color: #374151;
+  vertical-align: middle;
+}
+
+/* Actions Cell */
+.actions-cell {
+  width: 120px;
+  text-align: center;
+}
+
+.actions-group {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Action Buttons */
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 2px solid;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+/* Primary Action (Edit) */
+.action-btn.btn-primary {
+  border-color: #1d436f;
+  color: #1d436f;
+}
+
+.action-btn.btn-primary:hover {
+  background: #1d436f;
+  color: white;
+}
+
+/* Danger Action (Delete) */
+.action-btn.btn-danger {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.action-btn.btn-danger:hover {
+  background: #ef4444;
+  color: white;
+}
+
+/* Secondary Action */
+.action-btn.btn-secondary {
+  border-color: #6b7280;
+  color: #6b7280;
+}
+
+.action-btn.btn-secondary:hover {
+  background: #6b7280;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .app-table {
+    min-width: 600px;
+  }
+
+  .app-table th,
+  .app-table td {
+    padding: 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  .action-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .actions-group {
+    gap: 0.375rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-table th,
+  .app-table td {
+    padding: 0.625rem 0.5rem;
+  }
+
+  .action-btn {
+    width: 28px;
+    height: 28px;
+  }
+}
