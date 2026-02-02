@@ -1,5 +1,11 @@
 <!-- Toast Global para notificaciones -->
 <app-toast />
 
-<router-outlet></router-outlet>
+<!-- Bloqueo para dispositivos móviles -->
+@if (isMobileDevice()) {
+  <app-mobile-block />
+} @else {
+  <router-outlet></router-outlet>
+}
+
 

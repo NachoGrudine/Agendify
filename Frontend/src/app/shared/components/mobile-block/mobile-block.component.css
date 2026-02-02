@@ -1,0 +1,360 @@
+﻿/* ============================================
+   MOBILE BLOCK CONTAINER
+   ============================================ */
+
+.mobile-block-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  z-index: 9999;
+  overflow-y: auto;
+}
+
+.mobile-block-content {
+  max-width: 480px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   LOGO HEADER
+   ============================================ */
+
+.logo-header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.logo-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.02em;
+}
+
+/* ============================================
+   PHONE ILLUSTRATION
+   ============================================ */
+
+.phone-illustration {
+  margin: 1rem 0 0.5rem;
+}
+
+.phone-frame {
+  width: 180px;
+  height: 360px;
+  background: linear-gradient(135deg, #1e3a5f 0%, #1d436f 100%);
+  border-radius: 28px;
+  padding: 10px;
+  box-shadow:
+    0 16px 48px rgba(29, 67, 111, 0.2),
+    0 0 0 6px rgba(29, 67, 111, 0.06),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  animation: floatPhone 3s ease-in-out infinite;
+}
+
+@keyframes floatPhone {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  background: #0a0a0a;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.phone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 20px;
+  background: #000000;
+  border-radius: 0 0 14px 14px;
+  z-index: 2;
+}
+
+.phone-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 25px;
+}
+
+.phone-app-icon {
+  animation: pulseIcon 2s ease-in-out infinite;
+}
+
+.calendar-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #1d436f 0%, #2563eb 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(29, 67, 111, 0.3);
+}
+
+.calendar-icon {
+  color: #ffffff;
+  stroke-width: 2;
+}
+
+@keyframes pulseIcon {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+}
+
+/* ============================================
+   MAIN CONTENT
+   ============================================ */
+
+.main-content {
+  margin: 0.5rem 0;
+}
+
+.main-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.75rem 0;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.highlight-text {
+  color: #1d436f;
+}
+
+.main-description {
+  font-size: 0.9375rem;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 380px;
+}
+
+/* ============================================
+   DESKTOP MODE CARD
+   ============================================ */
+
+.desktop-mode-card {
+  width: 100%;
+  max-width: 400px;
+  background: linear-gradient(135deg, rgba(29, 67, 111, 0.03) 0%, rgba(29, 67, 111, 0.06) 100%);
+  border: 1px solid rgba(29, 67, 111, 0.1);
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  gap: 0.875rem;
+  align-items: flex-start;
+  text-align: left;
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.desktop-mode-card:hover {
+  background: linear-gradient(135deg, rgba(29, 67, 111, 0.06) 0%, rgba(29, 67, 111, 0.09) 100%);
+  border-color: rgba(29, 67, 111, 0.15);
+  box-shadow: 0 4px 12px rgba(29, 67, 111, 0.08);
+}
+
+.card-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  background: #1d436f;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.card-content {
+  flex: 1;
+}
+
+.card-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.25rem 0;
+}
+
+.card-description {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+
+.footer {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e5e7eb;
+  width: 100%;
+}
+
+.footer p {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 640px) {
+  .mobile-block-container {
+    padding: 1.5rem;
+  }
+
+  .mobile-block-content {
+    gap: 1.25rem;
+  }
+
+  .phone-frame {
+    width: 160px;
+    height: 320px;
+    border-radius: 24px;
+  }
+
+  .main-title {
+    font-size: 1.5rem;
+  }
+
+  .main-description {
+    font-size: 0.875rem;
+  }
+
+  .desktop-mode-card {
+    padding: 1.125rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-block-container {
+    padding: 1.25rem;
+  }
+
+  .mobile-block-content {
+    gap: 1rem;
+  }
+
+  .phone-frame {
+    width: 140px;
+    height: 280px;
+    border-radius: 22px;
+    padding: 8px;
+  }
+
+  .phone-screen {
+    border-radius: 16px;
+  }
+
+  .calendar-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+  }
+
+  .calendar-icon {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .main-title {
+    font-size: 1.375rem;
+  }
+
+  .main-description {
+    font-size: 0.8125rem;
+  }
+
+  .card-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .desktop-mode-card {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .mobile-block-container {
+    padding: 1rem;
+  }
+
+  .phone-frame {
+    width: 130px;
+    height: 260px;
+  }
+
+  .main-title {
+    font-size: 1.25rem;
+  }
+}
