@@ -1,0 +1,98 @@
+﻿<app-toast />
+
+<div class="configuracion-container">
+  <!-- Header con breadcrumb -->
+  <div class="page-header">
+    <button class="back-button" (click)="onCancel()" type="button">
+      <i-lucide [img]="ArrowLeftIcon" [size]="20"></i-lucide>
+      <span>Volver al panel general</span>
+    </button>
+  </div>
+
+  <!-- Card Principal -->
+  <div class="main-card">
+    <!-- Header del Card -->
+    <div class="card-header">
+      <div class="header-icon">
+        <i-lucide [img]="StoreIcon" [size]="24"></i-lucide>
+      </div>
+      <div class="header-content">
+        <h1>Información del Negocio</h1>
+        <p>Gestiona la identidad pública de tu marca y cómo te ven tus clientes.</p>
+      </div>
+    </div>
+
+    <!-- Contenido del formulario -->
+    <div class="card-body" *ngIf="!isLoading()">
+      <form class="business-form">
+        <!-- Nombre del Negocio -->
+        <div class="form-group">
+          <app-input
+            inputId="businessName"
+            label="Nombre del Negocio"
+            type="text"
+            placeholder="Ej. Barbería Estilo Urbano"
+            [(ngModel)]="businessName"
+            name="businessName"
+            [required]="true"
+            [error]="errors().businessName"
+            [iconStart]="StoreIcon"
+          />
+          <p class="field-hint">Este nombre será visible en tus correos y página de reserva.</p>
+        </div>
+
+        <!-- Rubro / Industria -->
+        <div class="form-group">
+          <app-dropdown
+            inputId="industry"
+            label="Rubro / Industria"
+            [(ngModel)]="industry"
+            name="industry"
+            [options]="industries"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecciona tu industria"
+            [required]="true"
+            [error]="errors().industry"
+          />
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="form-actions">
+          <app-button
+            type="button"
+            label="Cancelar"
+            severity="outlined"
+            (onClick)="onCancel()"
+            [disabled]="isSaving()"
+          />
+          <app-button
+            type="button"
+            label="Guardar Cambios"
+            severity="primary"
+            [iconStart]="StoreIcon"
+            (onClick)="onSave()"
+            [loading]="isSaving()"
+            [disabled]="!hasChanges()"
+          />
+        </div>
+      </form>
+    </div>
+
+    <!-- Loading State -->
+    <div class="card-body loading-state" *ngIf="isLoading()">
+      <div class="skeleton-loader">
+        <div class="skeleton-field"></div>
+        <div class="skeleton-field"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Información adicional -->
+  <div class="help-section">
+    <p class="help-text">
+      ¿Necesitas ayuda con la configuración?
+      <a href="#" class="help-link">Visita nuestro centro de ayuda</a>
+    </p>
+  </div>
+</div>

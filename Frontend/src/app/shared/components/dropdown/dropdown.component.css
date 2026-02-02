@@ -1,5 +1,5 @@
-/* ============================================
-   DROPDOWN COMPONENT - DISEÑO COMPACTO Y PROFESIONAL
+﻿/* ============================================
+   DROPDOWN COMPONENT - DISEÑO LIMPIO
    ============================================ */
 
 .dropdown-wrapper {
@@ -13,193 +13,196 @@
   color: #374151;
   font-weight: 500;
   font-size: 0.8125rem;
-  letter-spacing: 0.01em;
 }
 
 .required-mark {
   color: #dc2626;
   margin-left: 0.125rem;
-  font-weight: 600;
 }
 
 .dropdown-container {
   position: relative;
-  display: flex;
-  align-items: center;
+  width: 100%;
 }
 
 .dropdown-icon-start {
   position: absolute;
-  left: 0.75rem;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
   color: #9ca3af;
   pointer-events: none;
-  z-index: 10;
-  transition: color 0.15s ease;
+  z-index: 2;
 }
 
-.dropdown-container:focus-within .dropdown-icon-start {
-  color: #1d436f;
-}
+/* ============================================
+   P-SELECT PRINCIPAL
+   ============================================ */
 
-/* Estilos PrimeNG Select */
 :host ::ng-deep .agendify-dropdown {
   width: 100%;
 }
 
+:host ::ng-deep .agendify-dropdown.p-select,
 :host ::ng-deep .agendify-dropdown .p-select {
   width: 100%;
+  min-height: 44px;
   border: 1px solid #d1d5db;
-  border-radius: 6px;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  background-color: #ffffff;
-  min-height: 38px;
+  border-radius: 8px;
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
+:host ::ng-deep .agendify-dropdown.with-icon.p-select,
 :host ::ng-deep .agendify-dropdown.with-icon .p-select {
   padding-left: 2.5rem;
 }
 
-:host ::ng-deep .agendify-dropdown .p-select:hover:not(.p-disabled) {
-  border-color: #94a3b8;
+:host ::ng-deep .agendify-dropdown.p-select:hover,
+:host ::ng-deep .agendify-dropdown .p-select:hover {
+  border-color: #9ca3af;
 }
 
-:host ::ng-deep .agendify-dropdown .p-select:focus,
-:host ::ng-deep .agendify-dropdown .p-select.p-focus {
-  outline: none;
+:host ::ng-deep .agendify-dropdown.p-select.p-focus,
+:host ::ng-deep .agendify-dropdown .p-select.p-focus,
+:host ::ng-deep .agendify-dropdown.p-select:focus,
+:host ::ng-deep .agendify-dropdown .p-select:focus {
   border-color: #1d436f;
-  box-shadow: 0 0 0 2px rgba(29, 67, 111, 0.1);
+  box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.1);
+  outline: none;
 }
 
-:host ::ng-deep .agendify-dropdown .p-select .p-select-label {
-  padding: 0.625rem 0.875rem;
-  font-size: 0.875rem;
-  color: #1f2937;
-  line-height: 1.4;
+/* ============================================
+   TEXTO SELECCIONADO - CRÍTICO
+   ============================================ */
+
+:host ::ng-deep .agendify-dropdown .p-select-label,
+:host ::ng-deep .agendify-dropdown.p-select .p-select-label,
+:host ::ng-deep .p-select .p-select-label {
+  display: block !important;
+  width: auto !important;
+  padding: 0.625rem 0.875rem !important;
+  font-size: 0.875rem !important;
+  color: #111827 !important;
+  line-height: 1.5 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
-:host ::ng-deep .agendify-dropdown .p-select .p-select-label.p-placeholder {
-  color: #9ca3af;
+:host ::ng-deep .agendify-dropdown .p-select-label.p-placeholder,
+:host ::ng-deep .p-select .p-select-label.p-placeholder {
+  color: #9ca3af !important;
 }
 
-:host ::ng-deep .agendify-dropdown .p-select .p-select-trigger {
-  width: 2.25rem;
+/* Flecha */
+:host ::ng-deep .agendify-dropdown .p-select-dropdown,
+:host ::ng-deep .agendify-dropdown .p-select-trigger {
+  width: 2.5rem;
   color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-:host ::ng-deep .agendify-dropdown .p-select .p-select-dropdown-icon {
-  width: 14px;
-  height: 14px;
-}
-
+/* Disabled */
+:host ::ng-deep .agendify-dropdown.p-select.p-disabled,
 :host ::ng-deep .agendify-dropdown .p-select.p-disabled {
-  background-color: #f9fafb;
-  border-color: #e5e7eb;
-  opacity: 0.5;
+  background: #f9fafb;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
-/* Select Panel */
-:host ::ng-deep .p-select-overlay {
+/* ============================================
+   PANEL DROPDOWN
+   ============================================ */
+
+:host ::ng-deep .p-select-overlay,
+:host ::ng-deep .p-select-panel {
   border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  margin-top: 0.25rem;
-  z-index: 9999 !important;
-  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  margin-top: 4px;
+  animation: fadeSlideIn 0.15s ease-out;
 }
 
-/* ELIMINAR el header horrible */
-:host ::ng-deep .p-select-overlay .p-select-header {
-  display: none !important;
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-:host ::ng-deep .p-select-overlay .p-select-items-wrapper {
+:host ::ng-deep .p-select-header {
+  display: none;
+}
+
+:host ::ng-deep .p-select-items-wrapper,
+:host ::ng-deep .p-select-list-container {
   max-height: 280px;
-}
-
-:host ::ng-deep .p-select-overlay .p-select-items {
   padding: 0.375rem;
 }
 
-:host ::ng-deep .p-select-overlay .p-select-option {
-  padding: 0.5rem 0.75rem;
-  border-radius: 4px;
-  margin-bottom: 0.125rem;
-  transition: background-color 0.1s ease, color 0.1s ease;
-  color: #1f2937 !important;
-  font-size: 0.875rem;
-  cursor: pointer;
-  background-color: transparent;
+:host ::ng-deep .p-select-items,
+:host ::ng-deep .p-select-list {
+  padding: 0;
+  margin: 0;
 }
 
-:host ::ng-deep .p-select-overlay .p-select-option:last-child {
+/* Opciones */
+:host ::ng-deep .p-select-item,
+:host ::ng-deep .p-select-option {
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  color: #374151;
+  border-radius: 6px;
+  margin-bottom: 2px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+:host ::ng-deep .p-select-item:last-child,
+:host ::ng-deep .p-select-option:last-child {
   margin-bottom: 0;
 }
 
-:host ::ng-deep .p-select-overlay .p-select-option:hover {
-  background-color: #f1f5f9 !important;
-  color: #1d436f !important;
+:host ::ng-deep .p-select-item:hover,
+:host ::ng-deep .p-select-option:hover {
+  background: #f3f4f6;
 }
 
-:host ::ng-deep .p-select-overlay .p-select-option.p-focus,
-:host ::ng-deep .p-select-overlay .p-select-option.p-selected,
-:host ::ng-deep .p-select-overlay .p-select-option.p-select-option-selected {
-  background-color: #1d436f !important;
-  color: white !important;
+:host ::ng-deep .p-select-item.p-highlight,
+:host ::ng-deep .p-select-option.p-highlight,
+:host ::ng-deep .p-select-item[aria-selected="true"],
+:host ::ng-deep .p-select-option[aria-selected="true"] {
+  background: #1d436f;
+  color: #fff;
 }
 
-:host ::ng-deep .p-select-overlay .p-select-filter-container {
-  padding: 0.5rem 0.5rem 0.375rem 0.5rem;
-  border-bottom: 1px solid #e5e7eb;
-}
+/* ============================================
+   ESTADOS DE ERROR
+   ============================================ */
 
-:host ::ng-deep .p-select-overlay .p-select-filter {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  width: 100%;
-  font-size: 0.8125rem;
-}
-
-:host ::ng-deep .p-select-overlay .p-select-filter::placeholder {
-  color: #9ca3af;
-}
-
-:host ::ng-deep .p-select-overlay .p-select-filter:focus {
-  outline: none;
-  border-color: #1d436f;
-  box-shadow: 0 0 0 2px rgba(29, 67, 111, 0.1);
-}
-
-/* Empty message */
-:host ::ng-deep .p-select-overlay .p-select-empty-message {
-  padding: 0.75rem;
-  color: #6b7280;
-  font-size: 0.8125rem;
-  text-align: center;
-}
-
-/* Error State */
-.dropdown-container.has-error ::ng-deep .agendify-dropdown .p-select {
-  border-color: #dc2626;
-  background-color: #fef2f2;
-}
-
-.dropdown-container.has-error ::ng-deep .agendify-dropdown .p-select:focus {
-  border-color: #b91c1c;
-  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+.dropdown-container.has-error ::ng-deep .p-select {
+  border-color: #ef4444;
+  background: #fef2f2;
 }
 
 .error-message {
   color: #dc2626;
   font-size: 0.75rem;
-  margin-top: 0.125rem;
-  display: block;
+  margin-top: 0.25rem;
 }
 
 .hint-message {
   color: #6b7280;
   font-size: 0.75rem;
-  margin-top: 0.125rem;
-  display: block;
+  margin-top: 0.25rem;
 }

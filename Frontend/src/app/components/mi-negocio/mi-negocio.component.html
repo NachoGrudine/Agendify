@@ -22,7 +22,10 @@
           Aquí podrás configurar el nombre, descripción, horarios de atención,
           información de contacto y otros detalles de tu negocio.
         </p>
-        <app-button label="Próximamente disponible" [disabled]="true" />
+        <app-button
+          label="Configurar Negocio"
+          [disabled]="false"
+          (onClick)="navigateToConfiguracion()" />
       </div>
     </app-card>
 

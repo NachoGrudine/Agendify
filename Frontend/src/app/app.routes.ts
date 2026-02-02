@@ -45,6 +45,10 @@ export const routes: Routes = [
         loadComponent: () => import('./components/mi-negocio/mi-negocio.component').then(m => m.MiNegocioComponent)
       },
       {
+        path: 'mi-negocio/configuracion',
+        loadComponent: () => import('./components/mi-negocio/configuracion-negocio/configuracion-negocio.component').then(m => m.ConfiguracionNegocioComponent)
+      },
+      {
         path: '',
         redirectTo: 'agenda',
         pathMatch: 'full'
