@@ -188,23 +188,22 @@ export class AgendaComponent implements OnInit {
       return { html: `<div class="fc-daygrid-day-number">${arg.dayNumberText}</div>` };
     }
 
-    // SVG de iconos Lucide (Users y Clock)
-    const usersIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`;
-    const clockIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
-
     // Crear badges con los datos
-    let badgesHtml = '<div class="day-badges-container">';
+    let badgesHtml = '<div class="day-badges-container" style="margin-top: 28px; position: relative;">';
 
-    // Badge de turnos
-    badgesHtml += `<div class="badge badge-turnos">`;
-    badgesHtml += `<span class="badge-icon">${usersIconSvg}</span>`;
-    badgesHtml += `<span class="badge-text">${dayData.appointmentsCount} Turnos</span>`;
+    // Badge de turnos - celeste minimalista
+    badgesHtml += `<div style="background: #e0f2fe; border-left: 3px solid #0ea5e9; padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">`;
+    badgesHtml += `<span style="color: #0369a1; font-size: 0.75rem; font-weight: 600; line-height: 1;">${dayData.appointmentsCount} Turnos</span>`;
     badgesHtml += `</div>`;
 
-    // Badge de tiempo disponible
-    badgesHtml += `<div class="badge badge-disponible">`;
-    badgesHtml += `<span class="badge-icon">${clockIconSvg}</span>`;
-    badgesHtml += `<span class="badge-text">${dayData.totalAvailableMinutes}m libres</span>`;
+    // Badge de tiempo disponible - naranja o verde minimalista
+    const isWarning = dayData.totalAvailableMinutes < 60;
+    const bgColor = isWarning ? '#ffedd5' : '#d1fae5';
+    const borderColor = isWarning ? '#fb923c' : '#34d399';
+    const textColor = isWarning ? '#c2410c' : '#047857';
+
+    badgesHtml += `<div style="background: ${bgColor}; border-left: 3px solid ${borderColor}; padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; gap: 4px;">`;
+    badgesHtml += `<span style="color: ${textColor}; font-size: 0.75rem; font-weight: 600; line-height: 1;">${dayData.totalAvailableMinutes}m libres</span>`;
     badgesHtml += `</div>`;
 
     badgesHtml += '</div>';

@@ -1,4 +1,4 @@
-﻿.agenda-container {
+﻿﻿.agenda-container {
   max-width: 100%;
   width: 100%;
   margin: 0 auto;
@@ -604,25 +604,39 @@
   flex: 1;
 }
 
+/* ========== BADGE TURNOS - CELESTE ========== */
 .badge-turnos {
-  background: #dbeafe !important;
-  border: 1px solid #3b82f6;
-  color: #1e40af !important;
+  background: #cffafe !important;
+  border: 1px solid #06b6d4 !important;
+  color: #0c4a6e !important;
 }
 
 .badge-turnos .badge-icon,
 .badge-turnos .badge-text {
-  color: #1e40af !important;
+  color: #0c4a6e !important;
 }
 
-.badge-disponible {
+/* ========== BADGE MINUTOS - ADVERTENCIA (< 60 min) NARANJA ========== */
+.badge-minutos-warning {
+  background: #fed7aa !important;
+  border: 1px solid #f97316 !important;
+  color: #7c2d12 !important;
+}
+
+.badge-minutos-warning .badge-icon,
+.badge-minutos-warning .badge-text {
+  color: #7c2d12 !important;
+}
+
+/* ========== BADGE MINUTOS - ÉXITO (>= 60 min) VERDE ========== */
+.badge-minutos-success {
   background: #d1fae5 !important;
-  border: 1px solid #10b981;
+  border: 1px solid #10b981 !important;
   color: #065f46 !important;
 }
 
-.badge-disponible .badge-icon,
-.badge-disponible .badge-text {
+.badge-minutos-success .badge-icon,
+.badge-minutos-success .badge-text {
   color: #065f46 !important;
 }
 
@@ -644,6 +658,17 @@
   padding: 0 !important;
   box-shadow: 0 2px 8px rgba(29, 67, 111, 0.3);
   font-weight: 700 !important;
+}
+
+/* Asegurar que los badges del día actual estén en la misma posición */
+:host ::ng-deep .fc-day-today .custom-day-cell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+:host ::ng-deep .fc-day-today .day-badges-container {
+  margin-top: 28px !important;
 }
 
 /* Días de otros meses - MÁS SUTILES */

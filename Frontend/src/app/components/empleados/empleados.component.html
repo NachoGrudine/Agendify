@@ -1,20 +1,20 @@
-﻿<div class="empleados-container">
+﻿﻿<div class="empleados-container">
   <div class="page-header">
     <h1>Empleados</h1>
-    <app-button
-      label="Nuevo Empleado"
-      [iconStart]="UserPlusIcon"
-      (onClick)="nuevoEmpleado()"
-    />
   </div>
 
-  <app-card>
-    <div class="empty-state">
-      <span class="empty-icon">
-        <i-lucide [img]="BriefcaseIcon" [size]="64" [strokeWidth]="1.5"></i-lucide>
+  <div class="feature-unavailable">
+    <div class="unavailable-content">
+      <span class="unavailable-icon">
+        <i-lucide [img]="BriefcaseIcon" [size]="80" [strokeWidth]="1.5"></i-lucide>
       </span>
-      <h3>Gestión de Empleados (Providers)</h3>
-      <p>Aquí podrás ver y administrar tus empleados y sus horarios</p>
+      <h2>Gestión de Empleados</h2>
+      <p class="unavailable-message">
+        Esta funcionalidad no está disponible por el momento.
+      </p>
+      <p class="unavailable-note">
+        Nuestro equipo está trabajando en esta característica. Pronto podrás gestionar tus empleados y sus horarios aquí.
+      </p>
     </div>
-  </app-card>
+  </div>
 </div>
