@@ -114,7 +114,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
 
   private initForm(): void {
     const date = this.isEditMode() && this.originalAppointment
-      ? new Date(this.originalAppointment.startTime)
+      ? DateTimeHelper.parseLocalDateTime(this.originalAppointment.startTime)
       : (this.selectedDate || new Date());
     this.appointmentForm = this.formService.createForm(date);
   }
@@ -173,8 +173,8 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
   }
 
   private populateForm(appointment: AppointmentResponse): void {
-    const startDate = new Date(appointment.startTime);
-    const endDate = new Date(appointment.endTime);
+    const startDate = DateTimeHelper.parseLocalDateTime(appointment.startTime);
+    const endDate = DateTimeHelper.parseLocalDateTime(appointment.endTime);
 
     const startTime = DateTimeHelper.formatTime(startDate);
     const endTime = DateTimeHelper.formatTime(endDate);
@@ -264,7 +264,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
 
     const formValue = this.appointmentForm.value;
     const baseDate = this.isEditMode() && this.originalAppointment
-      ? new Date(this.originalAppointment.startTime)
+      ? DateTimeHelper.parseLocalDateTime(this.originalAppointment.startTime)
       : (this.selectedDate || new Date());
 
     const { hours: startHour, minutes: startMinute } = DateTimeHelper.parseTime(formValue.startTime);
@@ -377,7 +377,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
 
   get formattedSelectedDate(): string {
     if (this.isEditMode() && this.originalAppointment) {
-      const date = new Date(this.originalAppointment.startTime);
+      const date = DateTimeHelper.parseLocalDateTime(this.originalAppointment.startTime);
       return DateTimeHelper.formatDateSpanish(date);
     } else if (this.selectedDate) {
       return DateTimeHelper.formatDateSpanish(this.selectedDate);

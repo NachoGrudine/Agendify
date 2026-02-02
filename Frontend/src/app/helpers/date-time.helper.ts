@@ -20,6 +20,35 @@ export class DateTimeHelper {
   }
 
   /**
+   * Parsea un string de fecha/hora del backend y lo interpreta como hora LOCAL
+   * Evita que JavaScript interprete la fecha como UTC
+   * @param dateStr String en formato ISO (ej: "2026-01-29T09:00:00")
+   */
+  static parseLocalDateTime(dateStr: string): Date {
+    if (!dateStr) return new Date();
+
+    // Remover la Z si existe para evitar que se interprete como UTC
+    const cleanDateStr = dateStr.replace('Z', '');
+
+    // Parsear manualmente para evitar problemas de timezone
+    const match = cleanDateStr.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):?(\d{2})?/);
+    if (match) {
+      const [, year, month, day, hours, minutes, seconds = '0'] = match;
+      return new Date(
+        parseInt(year),
+        parseInt(month) - 1,
+        parseInt(day),
+        parseInt(hours),
+        parseInt(minutes),
+        parseInt(seconds)
+      );
+    }
+
+    // Fallback
+    return new Date(cleanDateStr);
+  }
+
+  /**
    * Convierte un string de fecha a Date evitando problemas de timezone
    */
   static parseDate(dateStr: string): Date {

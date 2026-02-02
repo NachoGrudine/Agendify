@@ -51,8 +51,8 @@ export class AppointmentDTOBuilder {
 
     const dto: any = {
       providerId: formValue.providerId,
-      startTime: startTime.toISOString(),
-      endTime: endTime.toISOString(),
+      startTime: DateTimeHelper.toLocalISOString(startTime),
+      endTime: DateTimeHelper.toLocalISOString(endTime),
       status: status,
       notes: formValue.notes || null
     };
