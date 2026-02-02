@@ -1,1 +1,47 @@
-﻿
+﻿<div class="table-container">
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="table-loading">
+    <div class="spinner"></div>
+    <p>Cargando datos...</p>
+  </div>
+
+  <!-- Table -->
+  <div *ngIf="!loading()" class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th *ngFor="let col of columns()" [style.width]="col.width" [class]="'text-' + (col.align || 'left')">
+            {{ col.header }}
+          </th>
+          <th *ngIf="actions().length > 0" class="actions-column">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of data()" class="table-row">
+          <td *ngFor="let col of columns()" [class]="'text-' + (col.align || 'left')">
+            {{ row[col.field] || '-' }}
+          </td>
+          <td *ngIf="actions().length > 0" class="actions-cell">
+            <div class="action-buttons">
+              <button
+                *ngFor="let action of actions()"
+                class="action-btn"
+                [class.btn-danger]="action.severity === 'danger'"
+                [class.btn-primary]="action.severity === 'primary'"
+                [title]="action.label"
+                (click)="action.onClick(row)"
+              >
+                <lucide-angular [img]="action.icon" [size]="16"></lucide-angular>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty State -->
+    <div *ngIf="data().length === 0" class="table-empty">
+      <p>{{ emptyMessage() }}</p>
+    </div>
+  </div>
+</div>

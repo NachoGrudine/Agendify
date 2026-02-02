@@ -50,7 +50,19 @@ export interface ProviderResponse {
 // DTOs para Customer
 export interface CustomerResponse {
   id: number;
-  businessId: number;  // camelCase
+  businessId: number;
+  name: string;
+  phone?: string;
+  email?: string;
+}
+
+export interface CreateCustomerDto {
+  name: string;
+  phone?: string;
+  email?: string;
+}
+
+export interface UpdateCustomerDto {
   name: string;
   phone?: string;
   email?: string;

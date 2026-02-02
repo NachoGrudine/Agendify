@@ -1,6 +1,6 @@
 ﻿import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
+import { LucideAngularModule, Edit, Trash2 } from 'lucide-angular';
 
 export interface TableColumn {
   field: string;
@@ -24,6 +24,10 @@ export interface TableAction {
   styleUrls: ['./table.component.css']
 })
 export class TableComponent {
+  // Icons
+  readonly EditIcon = Edit;
+  readonly TrashIcon = Trash2;
+
   columns = input.required<TableColumn[]>();
   data = input.required<any[]>();
   actions = input<TableAction[]>([]);

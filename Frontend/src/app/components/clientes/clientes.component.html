@@ -1,20 +1,143 @@
-﻿<div class="clientes-container">
+﻿<app-toast />
+
+<div class="clientes-container">
+  <!-- Header -->
   <div class="page-header">
-    <h1>Clientes</h1>
+    <h1>Gestión de Clientes</h1>
     <app-button
       label="Nuevo Cliente"
+      severity="primary"
       [iconStart]="UserPlusIcon"
-      (onClick)="nuevoCliente()"
+      (onClick)="onCreateCustomer()"
     />
   </div>
 
-  <app-card>
-    <div class="empty-state">
-      <span class="empty-icon">
-        <i-lucide [img]="UsersIcon" [size]="64" [strokeWidth]="1.5"></i-lucide>
-      </span>
-      <h3>Gestión de Clientes</h3>
-      <p>Aquí podrás ver y administrar tu lista de clientes</p>
-    </div>
-  </app-card>
+  <!-- Buscador -->
+  <div class="search-section">
+    <app-input
+      inputId="searchCustomer"
+      placeholder="Buscar cliente por nombre, email o teléfono..."
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearch()"
+      [iconStart]="SearchIcon"
+      type="text"
+    />
+  </div>
+
+  <!-- Tabla de clientes -->
+  <div class="table-section" *ngIf="!isLoading()">
+    <app-table
+      [data]="filteredCustomers()"
+      [columns]="tableColumns"
+      [actions]="tableActions"
+      [emptyMessage]="searchTerm() ? 'No se encontraron clientes' : 'No hay clientes registrados'"
+    />
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <div class="spinner"></div>
+    <p>Cargando clientes...</p>
+  </div>
 </div>
+
+<!-- Dialog de formulario (Crear/Editar) -->
+<app-dialog
+  [(visible)]="showFormDialog"
+  [width]="'520px'"
+  [footerTemplate]="true"
+>
+  <!-- Header Custom -->
+  <div class="modal-header">
+    <div class="header-left">
+      <i-lucide [img]="UserPlusIcon" [size]="22" class="header-icon"></i-lucide>
+      <h2 class="modal-title">{{ getDialogTitle() }}</h2>
+    </div>
+  </div>
+
+  <!-- Form Body -->
+  <div class="modal-body">
+    <!-- Nombre -->
+    <div class="form-section">
+      <app-input
+        inputId="customerName"
+        label="NOMBRE COMPLETO"
+        type="text"
+        placeholder="Ej. Juan Pérez"
+        [(ngModel)]="customerName"
+        name="customerName"
+        [required]="true"
+        [error]="errors().name"
+      />
+    </div>
+
+    <!-- Teléfono -->
+    <div class="form-section">
+      <app-input
+        inputId="customerPhone"
+        label="TELÉFONO"
+        type="tel"
+        placeholder="Ej. +54 11 1234-5678"
+        [(ngModel)]="customerPhone"
+        name="customerPhone"
+        [iconStart]="PhoneIcon"
+        [error]="errors().phone"
+      />
+    </div>
+
+    <!-- Email -->
+    <div class="form-section">
+      <app-input
+        inputId="customerEmail"
+        label="EMAIL"
+        type="email"
+        placeholder="Ej. cliente@example.com"
+        [(ngModel)]="customerEmail"
+        name="customerEmail"
+        [iconStart]="MailIcon"
+        [error]="errors().email"
+      />
+    </div>
+  </div>
+
+  <!-- Footer Actions -->
+  <div dialogFooter class="modal-footer">
+    <app-button
+      label="Cancelar"
+      severity="outlined"
+      (onClick)="cancelForm()"
+      [disabled]="isSaving()"
+    />
+    <app-button
+      [label]="isEditMode() ? 'Guardar Cambios' : 'Crear Cliente'"
+      severity="primary"
+      (onClick)="onSubmit()"
+      [loading]="isSaving()"
+    />
+  </div>
+</app-dialog>
+
+<!-- Dialog de confirmación de eliminación -->
+<app-dialog
+  [(visible)]="showDeleteDialog"
+  [header]="'Confirmar Eliminación'"
+  [width]="'450px'"
+>
+  <div class="delete-dialog-content">
+    <p>¿Estás seguro de que deseas eliminar al cliente <strong>{{ selectedCustomer()?.name }}</strong>?</p>
+    <p class="warning-text">Esta acción no se puede deshacer.</p>
+  </div>
+
+  <div dialogFooter class="dialog-actions">
+    <app-button
+      label="Cancelar"
+      severity="outlined"
+      (onClick)="cancelDelete()"
+    />
+    <app-button
+      label="Eliminar"
+      severity="primary"
+      (onClick)="confirmDelete()"
+    />
+  </div>
+</app-dialog>

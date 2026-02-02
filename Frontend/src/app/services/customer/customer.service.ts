@@ -2,7 +2,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { CustomerResponse } from '../../models/appointment.model';
+import { CustomerResponse, CreateCustomerDto, UpdateCustomerDto } from '../../models/appointment.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,5 +22,17 @@ export class CustomerService {
 
   getById(id: number): Observable<CustomerResponse> {
     return this.http.get<CustomerResponse>(`${this.API_URL}/${id}`);
+  }
+
+  create(dto: CreateCustomerDto): Observable<CustomerResponse> {
+    return this.http.post<CustomerResponse>(this.API_URL, dto);
+  }
+
+  update(id: number, dto: UpdateCustomerDto): Observable<CustomerResponse> {
+    return this.http.put<CustomerResponse>(`${this.API_URL}/${id}`, dto);
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/${id}`);
   }
 }

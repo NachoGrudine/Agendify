@@ -1,14 +1,9 @@
 ﻿/* ============================================
-   TABLE COMPONENT - GENÉRICO Y PROFESIONAL
+   TABLE COMPONENT - DISEÑO LIMPIO
    ============================================ */
 
 .table-container {
   width: 100%;
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 /* Loading State */
@@ -17,8 +12,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4rem 2rem;
-  gap: 1rem;
+  padding: 3rem;
 }
 
 .spinner {
@@ -28,192 +22,145 @@
   border-top-color: #1d436f;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
+  margin-bottom: 1rem;
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 .table-loading p {
   color: #6b7280;
   font-size: 0.875rem;
-  font-weight: 500;
-  margin: 0;
-}
-
-/* Empty State */
-.table-empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
-}
-
-.table-empty p {
-  color: #9ca3af;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  margin: 0;
 }
 
 /* Table Wrapper */
 .table-wrapper {
-  overflow-x: auto;
   width: 100%;
+  overflow-x: auto;
 }
 
-/* Table Styles */
-.app-table {
+/* Data Table */
+.data-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
 }
 
-/* Table Header */
-.app-table thead {
-  background: #fafbfc;
+.data-table thead {
+  background: linear-gradient(135deg, #f8f9fb 0%, #ffffff 100%);
   border-bottom: 2px solid #e5e7eb;
 }
 
-.app-table th {
+.data-table th {
   padding: 1rem;
   text-align: left;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #6b7280;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
-.actions-header {
-  text-align: center !important;
-  width: 120px;
-}
-
-/* Table Body */
-.app-table tbody tr {
-  border-bottom: 1px solid #f3f4f6;
-  transition: background-color 0.2s ease;
-}
-
-.app-table tbody tr:hover {
-  background-color: #f9fafb;
-}
-
-.app-table tbody tr:last-child {
-  border-bottom: none;
-}
-
-.app-table td {
-  padding: 1rem;
+  font-weight: 600;
   color: #374151;
-  vertical-align: middle;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-/* Actions Cell */
-.actions-cell {
-  width: 120px;
+.data-table th.text-center {
   text-align: center;
 }
 
-.actions-group {
+.data-table th.text-right {
+  text-align: right;
+}
+
+.data-table th.actions-column {
+  text-align: center;
+  width: 120px;
+}
+
+.data-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.15s ease;
+}
+
+.data-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.data-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.data-table td {
+  padding: 1rem;
+  color: #1f2937;
+}
+
+.data-table td.text-center {
+  text-align: center;
+}
+
+.data-table td.text-right {
+  text-align: right;
+}
+
+/* Action Buttons */
+.actions-cell {
+  text-align: center;
+}
+
+.action-buttons {
   display: flex;
   gap: 0.5rem;
   justify-content: center;
   align-items: center;
 }
 
-/* Action Buttons */
 .action-btn {
-  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: 2px solid;
-  background: white;
   cursor: pointer;
-  transition: all 0.2s ease;
-  padding: 0;
-}
-
-.action-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.action-btn:active {
-  transform: translateY(0);
-}
-
-/* Primary Action (Edit) */
-.action-btn.btn-primary {
-  border-color: #1d436f;
-  color: #1d436f;
-}
-
-.action-btn.btn-primary:hover {
-  background: #1d436f;
-  color: white;
-}
-
-/* Danger Action (Delete) */
-.action-btn.btn-danger {
-  border-color: #ef4444;
-  color: #ef4444;
-}
-
-.action-btn.btn-danger:hover {
-  background: #ef4444;
-  color: white;
-}
-
-/* Secondary Action */
-.action-btn.btn-secondary {
-  border-color: #6b7280;
+  transition: all 0.15s ease;
   color: #6b7280;
 }
 
-.action-btn.btn-secondary:hover {
-  background: #6b7280;
-  color: white;
+.action-btn:hover {
+  transform: scale(1.05);
+}
+
+.action-btn.btn-primary:hover {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  color: #1d4ed8;
+}
+
+.action-btn.btn-danger:hover {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #dc2626;
+}
+
+/* Empty State */
+.table-empty {
+  padding: 3rem;
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.875rem;
+  background: #f9fafb;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .table-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .app-table {
-    min-width: 600px;
-  }
-
-  .app-table th,
-  .app-table td {
-    padding: 0.75rem;
+  .data-table {
     font-size: 0.8125rem;
   }
 
-  .action-btn {
-    width: 32px;
-    height: 32px;
-  }
-
-  .actions-group {
-    gap: 0.375rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .app-table th,
-  .app-table td {
-    padding: 0.625rem 0.5rem;
+  .data-table th,
+  .data-table td {
+    padding: 0.75rem 0.5rem;
   }
 
   .action-btn {
