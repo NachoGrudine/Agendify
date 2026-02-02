@@ -41,12 +41,16 @@ export const routes: Routes = [
         loadComponent: () => import('./components/weekly-schedule/weekly-schedule.component').then(m => m.WeeklyScheduleComponent)
       },
       {
-        path: 'mi-negocio',
-        loadComponent: () => import('./components/mi-negocio/mi-negocio.component').then(m => m.MiNegocioComponent)
+        path: 'servicios',
+        loadComponent: () => import('./components/servicios/servicios.component').then(m => m.ServiciosComponent)
       },
       {
-        path: 'mi-negocio/configuracion',
-        loadComponent: () => import('./components/mi-negocio/configuracion-negocio/configuracion-negocio.component').then(m => m.ConfiguracionNegocioComponent)
+        path: 'servicios/nuevo',
+        loadComponent: () => import('./components/servicios/service-form/service-form.component').then(m => m.ServiceFormComponent)
+      },
+      {
+        path: 'servicios/editar/:id',
+        loadComponent: () => import('./components/servicios/service-form/service-form.component').then(m => m.ServiceFormComponent)
       },
       {
         path: '',

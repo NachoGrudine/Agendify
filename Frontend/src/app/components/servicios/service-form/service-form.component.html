@@ -1,0 +1,90 @@
+﻿<app-toast />
+
+<div class="form-container">
+  <!-- Header -->
+  <div class="form-header">
+    <button class="back-button" (click)="onCancel()" type="button">
+      <i-lucide [img]="ArrowLeftIcon" [size]="20"></i-lucide>
+      <span>Volver a servicios</span>
+    </button>
+  </div>
+
+  <!-- Form Card -->
+  <div class="form-card">
+    <div class="card-header">
+      <h1>{{ getTitle() }}</h1>
+      <p>{{ isEditMode() ? 'Modifica la información del servicio' : 'Completa los datos del nuevo servicio' }}</p>
+    </div>
+
+    <div class="card-body" *ngIf="!isLoading()">
+      <form class="service-form" (ngSubmit)="onSubmit()">
+        <!-- Nombre del Servicio -->
+        <div class="form-group">
+          <app-input
+            inputId="serviceName"
+            label="Nombre del Servicio"
+            type="text"
+            placeholder="Ej. Corte de cabello"
+            [(ngModel)]="name"
+            name="name"
+            [required]="true"
+            [error]="errors().name"
+          />
+        </div>
+
+        <!-- Duración predeterminada -->
+        <div class="form-group">
+          <app-input
+            inputId="defaultDuration"
+            label="Duración (minutos)"
+            type="number"
+            placeholder="Ej. 30"
+            [(ngModel)]="defaultDuration"
+            name="defaultDuration"
+            [required]="true"
+            [error]="errors().defaultDuration"
+          />
+          <p class="field-hint">Duración estimada del servicio en minutos</p>
+        </div>
+
+        <!-- Precio -->
+        <div class="form-group">
+          <app-input
+            inputId="price"
+            label="Precio"
+            type="number"
+            placeholder="Ej. 25.00"
+            [(ngModel)]="price"
+            name="price"
+            [error]="errors().price"
+          />
+          <p class="field-hint">Dejar vacío si el servicio es gratuito</p>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="form-actions">
+          <app-button
+            type="button"
+            label="Cancelar"
+            severity="outlined"
+            (onClick)="onCancel()"
+            [disabled]="isSaving()"
+          />
+          <app-button
+            type="submit"
+            [label]="isEditMode() ? 'Guardar Cambios' : 'Crear Servicio'"
+            severity="primary"
+            [iconStart]="SaveIcon"
+            [loading]="isSaving()"
+          />
+        </div>
+      </form>
+    </div>
+
+    <!-- Loading State -->
+    <div class="card-body loading-state" *ngIf="isLoading()">
+      <div class="spinner"></div>
+      <p>Cargando servicio...</p>
+    </div>
+  </div>
+</div>

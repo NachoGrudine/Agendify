@@ -1,0 +1,31 @@
+﻿<div class="service-card">
+  <div class="card-header">
+    <h3 class="service-name">{{ service.name }}</h3>
+    <div class="card-actions">
+      <button class="action-btn edit-btn" (click)="onEdit()" title="Editar">
+        <i-lucide [img]="EditIcon" [size]="18"></i-lucide>
+      </button>
+      <button class="action-btn delete-btn" (click)="onDelete()" title="Eliminar">
+        <i-lucide [img]="TrashIcon" [size]="18"></i-lucide>
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="service-info">
+      <div class="info-item">
+        <i-lucide [img]="ClockIcon" [size]="18" class="info-icon"></i-lucide>
+        <span class="info-label">Duración:</span>
+        <span class="info-value">{{ formatDuration(service.defaultDuration) }}</span>
+      </div>
+
+      <div class="info-item">
+        <i-lucide [img]="DollarIcon" [size]="18" class="info-icon"></i-lucide>
+        <span class="info-label">Precio:</span>
+        <span class="info-value" [ngClass]="getPriceClass()">
+          {{ formatPrice(service.price) }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

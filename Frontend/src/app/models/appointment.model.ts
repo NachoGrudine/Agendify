@@ -56,11 +56,3 @@ export interface CustomerResponse {
   email?: string;
 }
 
-// DTOs para Service
-export interface ServiceResponse {
-  id: number;
-  businessId: number;  // camelCase
-  name: string;
-  defaultDuration: number;  // camelCase
-  price?: number;
-}

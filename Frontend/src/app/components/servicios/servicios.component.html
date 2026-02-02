@@ -1,0 +1,82 @@
+﻿<app-toast />
+
+<div class="servicios-container">
+  <!-- Header -->
+  <div class="page-header">
+    <h1>Gestión de Servicios</h1>
+    <app-button
+      label="Nuevo Servicio"
+      severity="primary"
+      [iconStart]="PlusIcon"
+      (onClick)="onCreateService()"
+    />
+  </div>
+
+  <!-- Buscador -->
+  <div class="search-section">
+    <app-input
+      inputId="searchService"
+      placeholder="Buscar servicio por nombre..."
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearch()"
+      [iconStart]="SearchIcon"
+      type="text"
+    />
+  </div>
+
+  <!-- Grid de servicios -->
+  <div class="services-grid" *ngIf="!isLoading() && filteredServices().length > 0">
+    <app-service-card
+      *ngFor="let service of filteredServices()"
+      [service]="service"
+      (edit)="onEditService($event)"
+      (delete)="onDeleteService($event)"
+    />
+  </div>
+
+  <!-- Empty state -->
+  <div class="empty-state" *ngIf="!isLoading() && filteredServices().length === 0">
+    <div class="empty-icon">🔧</div>
+    <h3>No hay servicios</h3>
+    <p *ngIf="searchTerm()">No se encontraron servicios que coincidan con tu búsqueda.</p>
+    <p *ngIf="!searchTerm()">Comienza creando tu primer servicio.</p>
+    <app-button
+      *ngIf="!searchTerm()"
+      label="Crear Primer Servicio"
+      severity="primary"
+      [iconStart]="PlusIcon"
+      (onClick)="onCreateService()"
+    />
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <div class="spinner"></div>
+    <p>Cargando servicios...</p>
+  </div>
+</div>
+
+<!-- Dialog de confirmación de eliminación -->
+<app-dialog
+  [(visible)]="showDeleteDialog"
+  [header]="'Confirmar Eliminación'"
+  [width]="'450px'"
+>
+  <div class="delete-dialog-content">
+    <p>¿Estás seguro de que deseas eliminar el servicio <strong>{{ selectedService()?.name }}</strong>?</p>
+    <p class="warning-text">Esta acción no se puede deshacer.</p>
+  </div>
+
+  <div dialogFooter class="dialog-actions">
+    <app-button
+      label="Cancelar"
+      severity="outlined"
+      (onClick)="cancelDelete()"
+    />
+    <app-button
+      label="Eliminar"
+      severity="primary"
+      (onClick)="confirmDelete()"
+    />
+  </div>
+</app-dialog>

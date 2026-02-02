@@ -9,7 +9,8 @@ import { ServiceService } from '../../../../services/service-catalog/service.ser
 import { ScheduleService } from '../../../../services/schedule/schedule.service';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { AppointmentFormService } from '../../../../services/appointment/appointment-form.service';
-import { ProviderResponse, CustomerResponse, ServiceResponse, AppointmentResponse } from '../../../../models/appointment.model';
+import { ProviderResponse, CustomerResponse, AppointmentResponse } from '../../../../models/appointment.model';
+import { ServiceResponse } from '../../../../models/service.model';
 import { ProviderScheduleResponse } from '../../../../models/schedule.model';
 import { DateTimeHelper } from '../../../../helpers/date-time.helper';
 import { ErrorHelper } from '../../../../helpers/error.helper';

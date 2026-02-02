@@ -1,6 +1,7 @@
 ﻿import { Injectable, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CustomerResponse, ServiceResponse } from '../../models/appointment.model';
+import { CustomerResponse } from '../../models/appointment.model';
+import { ServiceResponse } from '../../models/service.model';
 
 /**
  * Servicio para manejar la lógica del formulario de appointments
