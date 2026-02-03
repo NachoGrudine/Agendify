@@ -1,4 +1,4 @@
-﻿using Agendify.Models.Entities;
+﻿﻿using Agendify.Models.Entities;
 using Agendify.DTOs.Service;
 using Agendify.Repositories;
 using Agendify.Common.Errors;
@@ -25,8 +25,8 @@ public class ServiceService : IServiceService
             Price = dto.Price
         };
 
-        await _serviceRepository.AddAsync(service);
-        return Result.Ok(MapToResponseDto(service));
+        var createdService = await _serviceRepository.AddAsync(service);
+        return Result.Ok(MapToResponseDto(createdService));
     }
 
     public async Task<Result<ServiceResponseDto>> UpdateAsync(int businessId, int id, UpdateServiceDto dto)
@@ -108,8 +108,8 @@ public class ServiceService : IServiceService
                 Price = null
             };
 
-            await _serviceRepository.AddAsync(newService);
-            return newService.Id;
+            var createdService = await _serviceRepository.AddAsync(newService);
+            return createdService.Id;
         }
 
         // No hay ni ID válido ni nombre, devolver null
