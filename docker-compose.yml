@@ -1,54 +1,17 @@
-﻿services:
-  # Backend API (.NET)
-  backend:
-    build:
-      context: ./Backend
-      dockerfile: Dockerfile
-    container_name: agendify-backend
-    env_file:
-      - .env
-    ports:
-      - "5000:8080"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
-      - Jwt__Secret=${JWT_SECRET}
-      - Jwt__Issuer=Agendify
-      - Jwt__Audience=AgendifyUsers
-    networks:
-      - agendify-network
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: unless-stopped
+﻿version: '3.8'
 
-  # Frontend (Angular + Nginx)
-  frontend:
-    build:
-      context: ./Frontend
-      dockerfile: Dockerfile
-    container_name: agendify-frontend
-    ports:
-      - "4200:80"
-    networks:
-      - agendify-network
-    depends_on:
-      - backend
-    restart: unless-stopped
-
-  # Base de datos SQL Server
-  db:
+services:
+  sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: agendify-db
+    container_name: agendify-sqlserver
     environment:
       - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=${DB_PASSWORD}
-      - MSSQL_PID=Express
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+      - MSSQL_PID=${MSSQL_PID}
     ports:
-      - "1433:1433"
+      - "${SQL_PORT}:1433"
     volumes:
-      - mssql_data:/var/opt/mssql
+      - sqlserver_data:/var/opt/mssql
     networks:
       - agendify-network
     healthcheck:
@@ -57,13 +20,44 @@
       timeout: 3s
       retries: 20
       start_period: 60s
-    restart: unless-stopped
+
+  api:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: agendify-api
+    env_file:
+      - .env
+    ports:
+      - "${API_HTTP_PORT:-5000}:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS:-http://+:8080}
+      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER},${DB_PORT};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=True;
+      - Jwt__Secret=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER}
+      - Jwt__Audience=${JWT_AUDIENCE}
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - agendify-network
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: agendify-frontend
+    ports:
+      - "${FRONTEND_PORT:-4200}:80"
+    depends_on:
+      - api
+    networks:
+      - agendify-network
 
 networks:
   agendify-network:
     driver: bridge
 
 volumes:
-  mssql_data:
-    driver: local
-
+  sqlserver_data:

@@ -61,7 +61,7 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "  Server: localhost,1433" -ForegroundColor White
     Write-Host "  Database: AgendifyDb" -ForegroundColor White
     Write-Host "  User: sa" -ForegroundColor White
-    Write-Host "  Password: YourStrong@Passw0rd" -ForegroundColor White
+    Write-Host "  Password: (ver archivo .env)" -ForegroundColor White
 } else {
     Write-Host ""
     Write-Host "❌ Error al aplicar migraciones" -ForegroundColor Red

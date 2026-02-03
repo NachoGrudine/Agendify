@@ -1,17 +1,27 @@
 ﻿# ============================================
 # ARCHIVOS SENSIBLES - NUNCA SUBIR A GIT
 # ============================================
+# Variables de entorno con valores reales
 .env
-*.env
-appsettings.json
-appsettings.Development.json
-appsettings.Production.json
+.env.local
+.env.*.local
+!.env.example
 
 # Secretos y configuraciones locales
 secrets/
 *.secret
 *.key
 *.pem
+*.pfx
+*.p12
+
+# Archivos de configuración con contraseñas (si existen)
+**/appsettings.local.json
+**/appsettings.*.local.json
+
+# Scripts de PowerShell (pueden contener rutas locales o configuraciones sensibles)
+*.ps1
+!*.example.ps1
 
 # ============================================
 # ARCHIVOS DE DOCUMENTACIÓN - TODOS
