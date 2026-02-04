@@ -44,42 +44,29 @@ if (Test-Path $migrationsPath) {
 
 Write-Host ""
 Write-Host "🗑️  Eliminando base de datos..." -ForegroundColor Yellow
-Write-Host "⚠️  Leyendo configuración desde .env..." -ForegroundColor Yellow
+Write-Host "⚠️  Conectando temporalmente para eliminar la BD..." -ForegroundColor Yellow
 
-# Leer variables desde el archivo .env
-$envPath = "$rootPath\.env"
-if (-not (Test-Path $envPath)) {
-    Write-Host "❌ Archivo .env no encontrado" -ForegroundColor Red
-    Set-Location $rootPath
-    Read-Host "Presiona Enter para salir"
-    exit 1
+# Crear un appsettings temporal con la connection string
+$tempSettings = @"
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost,1433;Database=AgendifyDb;User Id=sa;Password=Ag3nd1fyDB@S3cur3#2026!;TrustServerCertificate=True;"
+  }
 }
+"@
 
-$envVars = @{}
-Get-Content $envPath | ForEach-Object {
-    if ($_ -match '^\s*([^#][^=]+)=(.*)$') {
-        $key = $matches[1].Trim()
-        $value = $matches[2].Trim()
-        $envVars[$key] = $value
-    }
-}
-
-$dbServer = $envVars['DB_SERVER']
-$dbPort = $envVars['SQL_PORT']
-$dbName = $envVars['DB_NAME']
-$dbUser = $envVars['DB_USER']
-$dbPassword = $envVars['DB_PASSWORD']
-
-# Construir connection string desde variables del .env
-$connectionString = "Server=localhost,$dbPort;Database=$dbName;User Id=$dbUser;Password=$dbPassword;TrustServerCertificate=True;"
-
-Write-Host "✅ Configuración cargada desde .env" -ForegroundColor Green
+$tempSettingsPath = "appsettings.temp.json"
+$tempSettings | Out-File -FilePath $tempSettingsPath -Encoding UTF8
 
 try {
-    dotnet ef database drop --force --connection $connectionString 2>&1 | Out-Null
+    dotnet ef database drop --force --connection "Server=localhost,1433;Database=AgendifyDb;User Id=sa;Password=Ag3nd1fyDB@S3cur3#2026!;TrustServerCertificate=True;" 2>&1 | Out-Null
     Write-Host "✅ Base de datos eliminada" -ForegroundColor Green
 } catch {
     Write-Host "✅ No había base de datos existente" -ForegroundColor Green
+} finally {
+    if (Test-Path $tempSettingsPath) {
+        Remove-Item $tempSettingsPath -Force
+    }
 }
 
 Write-Host ""
