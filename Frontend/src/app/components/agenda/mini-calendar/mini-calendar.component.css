@@ -1,0 +1,104 @@
+﻿.mini-calendar {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.mini-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.month-year {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.nav-btn {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.nav-btn:hover {
+  background: #f3f4f6;
+  color: #030132;
+}
+
+.mini-calendar-grid {
+  width: 100%;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 0.5rem;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #6b7280;
+  padding: 0.25rem 0;
+  text-transform: uppercase;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.day-cell {
+  aspect-ratio: 1;
+  border: none;
+  background: transparent;
+  font-size: 0.75rem;
+  color: #374151;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.day-cell:hover {
+  background: #f3f4f6;
+}
+
+.day-cell.other-month {
+  color: #d1d5db;
+}
+
+.day-cell.today {
+  background: #030132;
+  color: white;
+  font-weight: 700;
+}
+
+.day-cell.today:hover {
+  background: #152f4d;
+}
+
+.day-cell.selected {
+  background: #dbeafe;
+  color: #030132;
+  font-weight: 600;
+}

@@ -1,0 +1,34 @@
+﻿<div class="mini-calendar">
+  <div class="mini-calendar-header">
+    <button class="nav-btn" (click)="previousMonth()">
+      <i-lucide [img]="ChevronLeftIcon" [size]="16"></i-lucide>
+    </button>
+    <span class="month-year">{{ currentMonthYear }}</span>
+    <button class="nav-btn" (click)="nextMonth()">
+      <i-lucide [img]="ChevronRightIcon" [size]="16"></i-lucide>
+    </button>
+  </div>
+
+  <div class="mini-calendar-grid">
+    <!-- Días de la semana -->
+    <div class="weekdays">
+      @for (day of weekDays; track day) {
+        <div class="weekday">{{ day }}</div>
+      }
+    </div>
+
+    <!-- Días del mes -->
+    <div class="days-grid">
+      @for (day of daysInMonth(); track day.date) {
+        <button
+          class="day-cell"
+          [class.other-month]="!day.isCurrentMonth"
+          [class.today]="day.isToday"
+          [class.selected]="day.isSelected"
+          (click)="selectDate(day)">
+          {{ day.dayNumber }}
+        </button>
+      }
+    </div>
+  </div>
+</div>

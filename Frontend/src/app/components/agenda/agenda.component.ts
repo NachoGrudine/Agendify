@@ -9,11 +9,13 @@ import esLocale from '@fullcalendar/core/locales/es';
 import { CalendarService } from '../../services/calendar/calendar.service';
 import { CalendarDaySummaryDto } from '../../models/calendar.model';
 import { LucideAngularModule, ChevronLeft, ChevronRight, CalendarDays, Hourglass, User } from 'lucide-angular';
+import { MiniCalendarComponent } from './mini-calendar/mini-calendar.component';
+import { NextAppointmentComponent } from './next-appointment/next-appointment.component';
 
 @Component({
   selector: 'app-agenda',
   standalone: true,
-  imports: [CommonModule, FullCalendarModule, LucideAngularModule],
+  imports: [CommonModule, FullCalendarModule, LucideAngularModule, MiniCalendarComponent, NextAppointmentComponent],
   templateUrl: './agenda.component.html',
   styleUrls: ['./agenda.component.css']
 })
@@ -21,6 +23,7 @@ export class AgendaComponent implements OnInit {
   private readonly calendarService = inject(CalendarService);
   private readonly router = inject(Router);
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
+  @ViewChild('miniCalendar') miniCalendarComponent!: any;
 
   // Iconos Lucide
   readonly CalendarIcon = CalendarDays;
@@ -163,6 +166,7 @@ export class AgendaComponent implements OnInit {
       calendarApi.prev();
       this.currentDate = calendarApi.getDate();
       this.updateMonthYearDisplay();
+      this.syncMiniCalendar();
     }
   }
 
@@ -175,6 +179,29 @@ export class AgendaComponent implements OnInit {
       calendarApi.next();
       this.currentDate = calendarApi.getDate();
       this.updateMonthYearDisplay();
+      this.syncMiniCalendar();
+    }
+  }
+
+  /**
+   * Volver al mes actual (Hoy)
+   */
+  goToToday(): void {
+    if (this.calendarComponent) {
+      const calendarApi = this.calendarComponent.getApi();
+      calendarApi.today();
+      this.currentDate = calendarApi.getDate();
+      this.updateMonthYearDisplay();
+      this.syncMiniCalendar();
+    }
+  }
+
+  /**
+   * Sincronizar el mini-calendar con el calendario principal
+   */
+  private syncMiniCalendar(): void {
+    if (this.miniCalendarComponent && this.miniCalendarComponent.goToDate) {
+      this.miniCalendarComponent.goToDate(this.currentDate);
     }
   }
 
@@ -311,6 +338,19 @@ export class AgendaComponent implements OnInit {
       this.router.navigate(['/dashboard/agenda/dia'], {
         queryParams: { date: dateStr }
       });
+    }
+  }
+
+  /**
+   * Maneja la selección de fecha desde el mini calendario
+   */
+  onMiniCalendarDateSelected(date: Date): void {
+    // Navegar el calendario principal a la fecha seleccionada
+    if (this.calendarComponent) {
+      const calendarApi = this.calendarComponent.getApi();
+      calendarApi.gotoDate(date);
+      this.currentDate = date;
+      this.updateMonthYearDisplay();
     }
   }
 }
