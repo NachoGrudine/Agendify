@@ -2,7 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { LucideAngularModule, UserPlus, Search, Edit, Trash2, Mail, Phone } from 'lucide-angular';
+import { LucideAngularModule, UserPlus, Search, Edit, Trash2, Mail, Phone, Users } from 'lucide-angular';
 import { ButtonComponent, InputComponent, ToastComponent, DialogComponent, TableComponent, TableColumn, TableAction } from '../../shared/components';
 import { CustomerService } from '../../services/customer/customer.service';
 import { CustomerResponse, CreateCustomerDto, UpdateCustomerDto } from '../../models/appointment.model';
@@ -29,6 +29,7 @@ export class ClientesComponent implements OnInit {
   private readonly messageService = inject(MessageService);
 
   // Icons
+  readonly UsersIcon = Users;
   readonly UserPlusIcon = UserPlus;
   readonly SearchIcon = Search;
   readonly EditIcon = Edit;

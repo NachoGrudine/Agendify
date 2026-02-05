@@ -8,7 +8,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import { CalendarService } from '../../services/calendar/calendar.service';
 import { CalendarDaySummaryDto } from '../../models/calendar.model';
-import { LucideAngularModule, ChevronLeft, ChevronRight, Bell, Calendar } from 'lucide-angular';
+import { LucideAngularModule, ChevronLeft, ChevronRight, CalendarDays, Hourglass, User } from 'lucide-angular';
 
 @Component({
   selector: 'app-agenda',
@@ -23,10 +23,11 @@ export class AgendaComponent implements OnInit {
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
 
   // Iconos Lucide
-  readonly CalendarIcon = Calendar;
+  readonly CalendarIcon = CalendarDays;
   readonly ChevronLeftIcon = ChevronLeft;
   readonly ChevronRightIcon = ChevronRight;
-  readonly BellIcon = Bell;
+  readonly HourglassIcon = Hourglass;
+  readonly UserIcon = User;
 
   // Datos del calendario del mes actual
   calendarData = signal<Map<string, CalendarDaySummaryDto>>(new Map());
@@ -35,14 +36,6 @@ export class AgendaComponent implements OnInit {
   // Para evitar llamadas duplicadas al mismo mes
   private currentLoadedMonth: string = '';
 
-  // Datos del usuario (temporal - después vendrá del servicio de auth)
-  userName = 'Admin User';
-  userRole = 'Gerente';
-  userInitials = 'AU';
-
-  // Notificaciones
-  hasNotifications = signal(true);
-  notificationCount = signal(3);
 
   // Mes y año actual para el selector
   currentMonthYear = '';
@@ -83,6 +76,27 @@ export class AgendaComponent implements OnInit {
     const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
                     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     this.currentMonthYear = `${months[this.currentDate.getMonth()]} ${this.currentDate.getFullYear()}`;
+  }
+
+  /**
+   * Formatea los minutos de forma inteligente:
+   * - Menos de 60 minutos: "45m"
+   * - Horas exactas: "1H", "2H"
+   * - Horas con minutos: "1:30", "2:45"
+   */
+  formatMinutes(totalMinutes: number): string {
+    if (totalMinutes < 60) {
+      return `${totalMinutes}m`;
+    }
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    if (minutes === 0) {
+      return `${hours}H`;
+    }
+
+    return `${hours}:${String(minutes).padStart(2, '0')}`;
   }
 
   /**
@@ -193,6 +207,7 @@ export class AgendaComponent implements OnInit {
 
     // Badge de turnos - celeste minimalista
     badgesHtml += `<div style="background: #e0f2fe; border-left: 3px solid #0ea5e9; padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">`;
+    badgesHtml += `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0369a1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
     badgesHtml += `<span style="color: #0369a1; font-size: 0.75rem; font-weight: 600; line-height: 1;">${dayData.appointmentsCount} Turnos</span>`;
     badgesHtml += `</div>`;
 
@@ -201,9 +216,11 @@ export class AgendaComponent implements OnInit {
     const bgColor = isWarning ? '#ffedd5' : '#d1fae5';
     const borderColor = isWarning ? '#fb923c' : '#34d399';
     const textColor = isWarning ? '#c2410c' : '#047857';
+    const formattedTime = this.formatMinutes(dayData.totalAvailableMinutes);
 
     badgesHtml += `<div style="background: ${bgColor}; border-left: 3px solid ${borderColor}; padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; gap: 4px;">`;
-    badgesHtml += `<span style="color: ${textColor}; font-size: 0.75rem; font-weight: 600; line-height: 1;">${dayData.totalAvailableMinutes}m libres</span>`;
+    badgesHtml += `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="${textColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg>`;
+    badgesHtml += `<span style="color: ${textColor}; font-size: 0.75rem; font-weight: 600; line-height: 1;">${formattedTime} libres</span>`;
     badgesHtml += `</div>`;
 
     badgesHtml += '</div>';

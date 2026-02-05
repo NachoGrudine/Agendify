@@ -17,13 +17,49 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  padding: 1.25rem 0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  background: white;
+  border-radius: 12px;
+  color: #030132;
+  box-shadow: 0 2px 8px rgba(3, 1, 50, 0.12);
+  border: 2px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.header-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
 }
 
 .page-header h1 {
-  font-size: 1.875rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--text-primary);
   margin: 0;
+  line-height: 1;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.3;
 }
 
 /* ============================================
