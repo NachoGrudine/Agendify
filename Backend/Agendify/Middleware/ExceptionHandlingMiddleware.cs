@@ -50,50 +50,54 @@ public class ExceptionHandlingMiddleware
         }
     }
 
-    private Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        var statusCode = HttpStatusCode.InternalServerError;
-        var title = "Internal Server Error";
-        var message = "An unexpected error occurred. Please try again later.";
-        string? stackTrace = null;
+        var (statusCode, title, message) = GetExceptionDetails(exception);
+        var problemDetails = CreateProblemDetails(context, statusCode, title, message, exception);
+        await WriteResponseAsync(context, problemDetails, statusCode);
+    }
 
-        // Casos específicos de excepciones reales del sistema
-        switch (exception)
+    /// <summary>
+    /// Determina el código de estado, título y mensaje según el tipo de excepción.
+    /// </summary>
+    private (HttpStatusCode statusCode, string title, string message) GetExceptionDetails(Exception exception)
+    {
+        return exception switch
         {
             // Errores de base de datos o servicios externos
-            case InvalidOperationException when exception.Source?.Contains("EntityFramework") == true:
-            case TimeoutException:
-                statusCode = HttpStatusCode.ServiceUnavailable;
-                title = "Service Unavailable";
-                message = "The service is temporarily unavailable. Please try again later.";
-                _logger.LogError(exception, "Database or timeout error occurred");
-                break;
-
+            InvalidOperationException when exception.Source?.Contains("EntityFramework") == true
+                => (HttpStatusCode.ServiceUnavailable, 
+                    "Service Unavailable", 
+                    "The service is temporarily unavailable. Please try again later."),
+            
+            TimeoutException 
+                => (HttpStatusCode.ServiceUnavailable, 
+                    "Service Unavailable", 
+                    "The service is temporarily unavailable. Please try again later."),
+            
             // Errores de validación de argumentos (bugs de programación)
-            case ArgumentNullException:
-            case ArgumentException:
-                statusCode = HttpStatusCode.InternalServerError;
-                title = "Internal Server Error";
-                message = "An internal error occurred.";
-                _logger.LogError(exception, "Argument error - possible bug in code");
-                break;
-
+            ArgumentNullException or ArgumentException 
+                => (HttpStatusCode.InternalServerError, 
+                    "Internal Server Error", 
+                    "An internal error occurred."),
+            
             // Default: Error interno del servidor no categorizado
-            default:
-                statusCode = HttpStatusCode.InternalServerError;
-                title = "Internal Server Error";
-                message = "An unexpected error occurred.";
-                _logger.LogError(exception, "Unhandled exception occurred");
-                break;
-        }
+            _ => (HttpStatusCode.InternalServerError, 
+                  "Internal Server Error", 
+                  "An unexpected error occurred. Please try again later.")
+        };
+    }
 
-        // En desarrollo, incluir stack trace completo
-        if (_environment.IsDevelopment())
-        {
-            stackTrace = exception.ToString();
-        }
-
-        // Usar ProblemDetails (RFC 7807) para consistencia con ResultExtensions
+    /// <summary>
+    /// Crea el objeto ProblemDetails según RFC 7807.
+    /// </summary>
+    private ProblemDetails CreateProblemDetails(
+        HttpContext context, 
+        HttpStatusCode statusCode, 
+        string title, 
+        string message, 
+        Exception exception)
+    {
         var problemDetails = new ProblemDetails
         {
             Status = (int)statusCode,
@@ -103,23 +107,33 @@ public class ExceptionHandlingMiddleware
             Instance = context.Request.Path
         };
 
-        // Agregar stack trace en desarrollo
-        if (stackTrace != null)
+        // En desarrollo, incluir stack trace completo
+        if (_environment.IsDevelopment())
         {
-            problemDetails.Extensions["stackTrace"] = stackTrace;
+            problemDetails.Extensions["stackTrace"] = exception.ToString();
         }
 
-        var result = JsonSerializer.Serialize(problemDetails, new JsonSerializerOptions
+        return problemDetails;
+    }
+
+    /// <summary>
+    /// Serializa y escribe la respuesta en el HttpContext.
+    /// </summary>
+    private async Task WriteResponseAsync(HttpContext context, ProblemDetails problemDetails, HttpStatusCode statusCode)
+    {
+        var jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = _environment.IsDevelopment(),
             DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        });
+        };
+
+        var result = JsonSerializer.Serialize(problemDetails, jsonOptions);
 
         context.Response.ContentType = "application/problem+json";
         context.Response.StatusCode = (int)statusCode;
-
-        return context.Response.WriteAsync(result);
+        
+        await context.Response.WriteAsync(result);
     }
 }
 
