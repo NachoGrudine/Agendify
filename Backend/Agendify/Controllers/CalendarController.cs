@@ -1,4 +1,4 @@
-﻿using Agendify.DTOs.Calendar;
+﻿﻿using Agendify.DTOs.Calendar;
 using Agendify.Services.Calendar;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -36,14 +36,13 @@ public class CalendarController : BaseController
     /// <summary>
     /// Obtiene el detalle completo de un día específico con todos los turnos.
     /// Retorna: información del día, lista de turnos con cliente, proveedor, horario y duración.
-    /// Se puede filtrar por estado, hora, o texto de búsqueda general (busca en cliente, servicio y proveedor).
+    /// Se puede filtrar por hora, o texto de búsqueda general (busca en cliente, servicio y proveedor).
     /// </summary>
     [HttpGet("day/{date}")]
     public async Task<ActionResult<DayDetailsDto>> GetDayDetails(
         DateTime date,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 15,
-        [FromQuery] string? status = null,
         [FromQuery] string? startTime = null,
         [FromQuery] string? searchText = null)
     {
@@ -53,7 +52,6 @@ public class CalendarController : BaseController
             date,
             page,
             pageSize,
-            status,
             startTime, 
             searchText);
         return Ok(details);

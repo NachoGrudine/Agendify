@@ -38,12 +38,11 @@ public class CalendarService : ICalendarService
         DateTime date,
         int page = 1,
         int pageSize = 10,
-        string? status = null,
         string? startTime = null,
         string? searchText = null)
     {
         return await _dayDetailService.GetDayDetailsAsync(
-            businessId, date, page, pageSize, status, startTime, searchText);
+            businessId, date, page, pageSize, startTime, searchText);
     }
 }
 

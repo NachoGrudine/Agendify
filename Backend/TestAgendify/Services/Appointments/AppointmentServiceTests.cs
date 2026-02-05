@@ -1,7 +1,6 @@
 using Agendify.Common.Errors;
 using Agendify.DTOs.Appointment;
 using Agendify.Models.Entities;
-using Agendify.Models.Enums;
 using Agendify.Repositories;
 using Agendify.Services.Appointments;
 using Agendify.Services.Customers;
@@ -67,9 +66,7 @@ public class AppointmentServiceTests
             CustomerId = 5,
             ServiceId = 3,
             StartTime = dto.StartTime,
-            EndTime = dto.EndTime,
-            Status = AppointmentStatus.Pending,
-            Notes = dto.Notes,
+            EndTime = dto.EndTime,            Notes = dto.Notes,
             Provider = new Provider { Id = 10, Name = "Dr. Smith" }
         };
 
@@ -85,8 +82,6 @@ public class AppointmentServiceTests
         result.Value.Id.Should().Be(100);
         result.Value.ProviderId.Should().Be(10);
         result.Value.ProviderName.Should().Be("Dr. Smith");
-        result.Value.Status.Should().Be(AppointmentStatus.Pending);
-
         _mockAppointmentRepository.Verify(x => x.HasConflictAsync(dto.ProviderId, dto.StartTime, dto.EndTime), Times.Once);
         _mockAppointmentRepository.Verify(x => x.AddAsync(It.IsAny<Appointment>()), Times.Once);
     }
@@ -151,9 +146,7 @@ public class AppointmentServiceTests
             ProviderId = dto.ProviderId,
             CustomerId = 99,
             StartTime = dto.StartTime,
-            EndTime = dto.EndTime,
-            Status = AppointmentStatus.Pending,
-            Provider = new Provider { Id = 10, Name = "Dr. Smith" },
+            EndTime = dto.EndTime,            Provider = new Provider { Id = 10, Name = "Dr. Smith" },
             Customer = new Customer { Id = 99, Name = "New Customer" }
         };
 
@@ -188,9 +181,7 @@ public class AppointmentServiceTests
             CustomerId = 5,
             ServiceId = 3,
             StartTime = new DateTime(2026, 2, 5, 14, 0, 0),
-            EndTime = new DateTime(2026, 2, 5, 15, 0, 0),
-            Status = AppointmentStatus.Confirmed,
-            Notes = "Updated notes"
+            EndTime = new DateTime(2026, 2, 5, 15, 0, 0),            Notes = "Updated notes"
         };
 
         var existingAppointment = new Appointment
@@ -227,7 +218,6 @@ public class AppointmentServiceTests
             ServiceId = 3,
             StartTime = dto.StartTime,
             EndTime = dto.EndTime,
-            Status = dto.Status,
             Notes = dto.Notes,
             Provider = new Provider { Id = 10, Name = "Dr. Smith" }
         };
@@ -241,9 +231,7 @@ public class AppointmentServiceTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Id.Should().Be(appointmentId);
-        result.Value.Status.Should().Be(AppointmentStatus.Confirmed);
-        result.Value.Notes.Should().Be("Updated notes");
+        result.Value.Id.Should().Be(appointmentId);        result.Value.Notes.Should().Be("Updated notes");
 
         _mockAppointmentRepository.Verify(x => x.UpdateAsync(It.IsAny<Appointment>()), Times.Once);
     }
@@ -258,9 +246,7 @@ public class AppointmentServiceTests
         {
             ProviderId = 10,
             StartTime = new DateTime(2026, 2, 5, 14, 0, 0),
-            EndTime = new DateTime(2026, 2, 5, 15, 0, 0),
-            Status = AppointmentStatus.Confirmed
-        };
+            EndTime = new DateTime(2026, 2, 5, 15, 0, 0),        };
 
         _mockAppointmentRepository
             .Setup(x => x.GetByIdAsync(appointmentId))
@@ -288,9 +274,7 @@ public class AppointmentServiceTests
         {
             ProviderId = 10,
             StartTime = new DateTime(2026, 2, 5, 14, 0, 0),
-            EndTime = new DateTime(2026, 2, 5, 15, 0, 0),
-            Status = AppointmentStatus.Confirmed
-        };
+            EndTime = new DateTime(2026, 2, 5, 15, 0, 0),        };
 
         var existingAppointment = new Appointment
         {
@@ -321,9 +305,7 @@ public class AppointmentServiceTests
         {
             ProviderId = 10,
             StartTime = new DateTime(2026, 2, 5, 14, 0, 0),
-            EndTime = new DateTime(2026, 2, 5, 15, 0, 0),
-            Status = AppointmentStatus.Confirmed
-        };
+            EndTime = new DateTime(2026, 2, 5, 15, 0, 0),        };
 
         var existingAppointment = new Appointment
         {
@@ -367,9 +349,7 @@ public class AppointmentServiceTests
             BusinessId = businessId,
             ProviderId = 10,
             StartTime = new DateTime(2026, 2, 5, 10, 0, 0),
-            EndTime = new DateTime(2026, 2, 5, 11, 0, 0),
-            Status = AppointmentStatus.Pending,
-            Provider = new Provider { Id = 10, Name = "Dr. Smith" }
+            EndTime = new DateTime(2026, 2, 5, 11, 0, 0),            Provider = new Provider { Id = 10, Name = "Dr. Smith" }
         };
 
         _mockAppointmentRepository
@@ -632,4 +612,5 @@ public class AppointmentServiceTests
 
     #endregion
 }
+
 

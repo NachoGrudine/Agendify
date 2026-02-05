@@ -14,7 +14,6 @@ public interface ICalendarDayDetailService
     /// <param name="date">Fecha del día a consultar</param>
     /// <param name="page">Número de página (paginación)</param>
     /// <param name="pageSize">Cantidad de elementos por página</param>
-    /// <param name="status">Filtro por status del appointment</param>
     /// <param name="startTime">Filtro por hora de inicio (formato HH:mm)</param>
     /// <param name="searchText">Texto de búsqueda en customer, service o provider</param>
     /// <returns>Detalle completo del día con appointments paginados y métricas</returns>
@@ -23,7 +22,6 @@ public interface ICalendarDayDetailService
         DateTime date,
         int page = 1,
         int pageSize = 10,
-        string? status = null,
         string? startTime = null,
         string? searchText = null);
 }

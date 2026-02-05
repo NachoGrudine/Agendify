@@ -1,6 +1,5 @@
 using Agendify.Controllers;
 using Agendify.DTOs.Appointment;
-using Agendify.Models.Enums;
 using Agendify.Services.Appointments;
 using FluentAssertions;
 using FluentResults;
@@ -63,7 +62,6 @@ public class AppointmentsControllerTests
             ProviderName = "Dr. Smith",
             StartTime = DateTime.Now.AddDays(1),
             EndTime = DateTime.Now.AddDays(1).AddHours(1),
-            Status = AppointmentStatus.Pending
         };
         
         _mockAppointmentService
@@ -126,7 +124,6 @@ public class AppointmentsControllerTests
             ServiceId = createDto.ServiceId,
             StartTime = createDto.StartTime,
             EndTime = createDto.EndTime,
-            Status = AppointmentStatus.Pending,
             Notes = createDto.Notes
         };
         
@@ -183,8 +180,7 @@ public class AppointmentsControllerTests
         {
             ProviderId = 2,
             StartTime = DateTime.Now.AddDays(2),
-            EndTime = DateTime.Now.AddDays(2).AddHours(1),
-            Status = AppointmentStatus.Completed
+            EndTime = DateTime.Now.AddDays(2).AddHours(1)
         };
         
         var expectedResponse = new AppointmentResponseDto
@@ -193,8 +189,7 @@ public class AppointmentsControllerTests
             BusinessId = BusinessId,
             ProviderId = updateDto.ProviderId,
             StartTime = updateDto.StartTime,
-            EndTime = updateDto.EndTime,
-            Status = updateDto.Status
+            EndTime = updateDto.EndTime
         };
         
         _mockAppointmentService

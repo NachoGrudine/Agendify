@@ -1,5 +1,3 @@
-using Agendify.Models.Enums;
-
 namespace Agendify.Models.Entities;
 
 public class Appointment : BaseEntity
@@ -10,7 +8,6 @@ public class Appointment : BaseEntity
     public int? ServiceId { get; set; }
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
-    public AppointmentStatus Status { get; set; }
     public string? Notes { get; set; }
     
     // Navigation properties

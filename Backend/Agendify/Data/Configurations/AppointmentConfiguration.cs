@@ -1,5 +1,4 @@
-﻿﻿using Agendify.Models.Entities;
-using Agendify.Models.Enums;
+﻿using Agendify.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -18,10 +17,6 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
         
         builder.Property(a => a.EndTime)
             .IsRequired();
-        
-        builder.Property(a => a.Status)
-            .IsRequired()
-            .HasDefaultValue(AppointmentStatus.Pending);
         
         builder.Property(a => a.Notes)
             .HasMaxLength(1000);
@@ -59,7 +54,6 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
         // �ndices para b�squedas eficientes
         builder.HasIndex(a => new { a.ProviderId, a.StartTime, a.EndTime });
         builder.HasIndex(a => new { a.BusinessId, a.StartTime });
-        builder.HasIndex(a => a.Status);
     }
 }
 

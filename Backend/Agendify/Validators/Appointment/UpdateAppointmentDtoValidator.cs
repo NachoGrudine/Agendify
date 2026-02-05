@@ -17,10 +17,6 @@ public class UpdateAppointmentDtoValidator : AbstractValidator<UpdateAppointment
         RuleFor(x => x.EndTime)
             .NotEmpty().WithMessage("La fecha de fin es requerida")
             .GreaterThan(x => x.StartTime).WithMessage("La fecha de fin debe ser posterior a la fecha de inicio");
-
-        RuleFor(x => x.Status)
-            .IsInEnum().WithMessage("El estado no es válido");
-
         // Validación: Si se proporciona CustomerId, debe ser mayor a 0
         RuleFor(x => x.CustomerId)
             .GreaterThan(0)

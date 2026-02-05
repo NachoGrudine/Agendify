@@ -1,6 +1,5 @@
 ﻿using Agendify.Common.Errors;
 using Agendify.Models.Entities;
-using Agendify.Models.Enums;
 using Agendify.DTOs.Appointment;
 using Agendify.DTOs.Common;
 using Agendify.Repositories;
@@ -51,7 +50,6 @@ public class AppointmentService : IAppointmentService
             ServiceId = serviceId,
             StartTime = dto.StartTime,
             EndTime = dto.EndTime,
-            Status = AppointmentStatus.Pending,
             Notes = dto.Notes
         };
 
@@ -90,7 +88,6 @@ public class AppointmentService : IAppointmentService
         appointment.ServiceId = serviceId;
         appointment.StartTime = dto.StartTime;
         appointment.EndTime = dto.EndTime;
-        appointment.Status = dto.Status;
         appointment.Notes = dto.Notes;
 
         var updated = await _appointmentRepository.UpdateAsync(appointment);
@@ -168,7 +165,6 @@ public class AppointmentService : IAppointmentService
             ServiceName = appointment.Service?.Name,
             StartTime = appointment.StartTime,
             EndTime = appointment.EndTime,
-            Status = appointment.Status,
             Notes = appointment.Notes
         };
     }

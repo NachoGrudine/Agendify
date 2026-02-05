@@ -1,6 +1,5 @@
 using Agendify.DTOs.Appointment;
 using Agendify.DTOs.Calendar;
-using Agendify.Models.Enums;
 using Agendify.Services.Calendar;
 using Agendify.Services.Calendar.DayDetail;
 using Agendify.Services.Calendar.Summary;
@@ -145,7 +144,6 @@ public class CalendarServiceTests
                     StartTime = "10:00",
                     EndTime = "11:00",
                     DurationMinutes = 60,
-                    Status = "Confirmed"
                 }
             },
             CurrentPage = 1,
@@ -155,7 +153,7 @@ public class CalendarServiceTests
         };
 
         _mockDayDetailService
-            .Setup(x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, null, null))
+            .Setup(x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, null))
             .ReturnsAsync(expectedDetails);
 
         // Act
@@ -166,7 +164,7 @@ public class CalendarServiceTests
         result.Should().BeEquivalentTo(expectedDetails);
 
         _mockDayDetailService.Verify(
-            x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, null, null),
+            x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, null),
             Times.Once
         );
     }
@@ -179,7 +177,6 @@ public class CalendarServiceTests
         var date = new DateTime(2026, 2, 5);
         var page = 2;
         var pageSize = 20;
-        var status = "Confirmed";
         var startTime = "10:00";
         var searchText = "John";
 
@@ -199,11 +196,11 @@ public class CalendarServiceTests
         };
 
         _mockDayDetailService
-            .Setup(x => x.GetDayDetailsAsync(businessId, date, page, pageSize, status, startTime, searchText))
+            .Setup(x => x.GetDayDetailsAsync(businessId, date, page, pageSize, startTime, searchText))
             .ReturnsAsync(expectedDetails);
 
         // Act
-        var result = await _sut.GetDayDetailsAsync(businessId, date, page, pageSize, status, startTime, searchText);
+        var result = await _sut.GetDayDetailsAsync(businessId, date, page, pageSize, startTime, searchText);
 
         // Assert
         result.Should().NotBeNull();
@@ -217,57 +214,12 @@ public class CalendarServiceTests
                 It.Is<DateTime>(d => d == date),
                 It.Is<int>(p => p == page),
                 It.Is<int>(ps => ps == pageSize),
-                It.Is<string>(s => s == status),
                 It.Is<string>(st => st == startTime),
                 It.Is<string>(txt => txt == searchText)),
             Times.Once
         );
     }
 
-    [Fact]
-    public async Task GetDayDetailsAsync_WithStatusFilter_ShouldFilterCorrectly()
-    {
-        // Arrange
-        var businessId = 1;
-        var date = new DateTime(2026, 2, 5);
-        var status = "Pending";
-
-        var expectedDetails = new DayDetailsDto
-        {
-            Date = date,
-            DayOfWeek = "Wednesday",
-            TotalAppointments = 3,
-            Appointments = new List<AppointmentDetailDto>
-            {
-                new()
-                {
-                    Id = 1,
-                    Status = "Pending",
-                    CustomerName = "Jane Doe",
-                    ProviderName = "Dr. Smith",
-                    StartTime = "09:00",
-                    EndTime = "10:00",
-                    DurationMinutes = 60
-                }
-            },
-            CurrentPage = 1,
-            PageSize = 10,
-            TotalPages = 1,
-            TotalCount = 3
-        };
-
-        _mockDayDetailService
-            .Setup(x => x.GetDayDetailsAsync(businessId, date, 1, 10, status, null, null))
-            .ReturnsAsync(expectedDetails);
-
-        // Act
-        var result = await _sut.GetDayDetailsAsync(businessId, date, status: status);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.TotalCount.Should().Be(3);
-        result.Appointments.Should().AllSatisfy(a => a.Status.Should().Be("Pending"));
-    }
 
     [Fact]
     public async Task GetDayDetailsAsync_WithSearchText_ShouldSearchCorrectly()
@@ -292,7 +244,6 @@ public class CalendarServiceTests
                     StartTime = "10:00",
                     EndTime = "11:00",
                     DurationMinutes = 60,
-                    Status = "Confirmed"
                 },
                 new()
                 {
@@ -302,7 +253,6 @@ public class CalendarServiceTests
                     StartTime = "14:00",
                     EndTime = "15:00",
                     DurationMinutes = 60,
-                    Status = "Confirmed"
                 }
             },
             CurrentPage = 1,
@@ -312,7 +262,7 @@ public class CalendarServiceTests
         };
 
         _mockDayDetailService
-            .Setup(x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, null, searchText))
+            .Setup(x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, searchText))
             .ReturnsAsync(expectedDetails);
 
         // Act
@@ -340,11 +290,11 @@ public class CalendarServiceTests
             TotalAppointments = 25,
             Appointments = new List<AppointmentDetailDto>
             {
-                new() { Id = 11, CustomerName = "Customer 11", ProviderName = "Dr. A", StartTime = "10:00", EndTime = "11:00", DurationMinutes = 60, Status = "Confirmed" },
-                new() { Id = 12, CustomerName = "Customer 12", ProviderName = "Dr. B", StartTime = "11:00", EndTime = "12:00", DurationMinutes = 60, Status = "Confirmed" },
-                new() { Id = 13, CustomerName = "Customer 13", ProviderName = "Dr. C", StartTime = "12:00", EndTime = "13:00", DurationMinutes = 60, Status = "Confirmed" },
-                new() { Id = 14, CustomerName = "Customer 14", ProviderName = "Dr. D", StartTime = "13:00", EndTime = "14:00", DurationMinutes = 60, Status = "Confirmed" },
-                new() { Id = 15, CustomerName = "Customer 15", ProviderName = "Dr. E", StartTime = "14:00", EndTime = "15:00", DurationMinutes = 60, Status = "Confirmed" }
+                new() { Id = 11, CustomerName = "Customer 11", ProviderName = "Dr. A", StartTime = "10:00", EndTime = "11:00", DurationMinutes = 60 },
+                new() { Id = 12, CustomerName = "Customer 12", ProviderName = "Dr. B", StartTime = "11:00", EndTime = "12:00", DurationMinutes = 60 },
+                new() { Id = 13, CustomerName = "Customer 13", ProviderName = "Dr. C", StartTime = "12:00", EndTime = "13:00", DurationMinutes = 60 },
+                new() { Id = 14, CustomerName = "Customer 14", ProviderName = "Dr. D", StartTime = "13:00", EndTime = "14:00", DurationMinutes = 60 },
+                new() { Id = 15, CustomerName = "Customer 15", ProviderName = "Dr. E", StartTime = "14:00", EndTime = "15:00", DurationMinutes = 60 }
             },
             CurrentPage = page,
             PageSize = pageSize,
@@ -353,7 +303,7 @@ public class CalendarServiceTests
         };
 
         _mockDayDetailService
-            .Setup(x => x.GetDayDetailsAsync(businessId, date, page, pageSize, null, null, null))
+            .Setup(x => x.GetDayDetailsAsync(businessId, date, page, pageSize, null, null))
             .ReturnsAsync(expectedDetails);
 
         // Act
@@ -391,7 +341,7 @@ public class CalendarServiceTests
         };
 
         _mockDayDetailService
-            .Setup(x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, null, null))
+            .Setup(x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, null))
             .ReturnsAsync(expectedDetails);
 
         // Act
@@ -405,4 +355,6 @@ public class CalendarServiceTests
 
     #endregion
 }
+
+
 

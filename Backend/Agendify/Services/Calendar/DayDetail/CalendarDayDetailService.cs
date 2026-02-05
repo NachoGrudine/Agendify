@@ -35,7 +35,6 @@ public class CalendarDayDetailService : ICalendarDayDetailService
         DateTime date,
         int page = 1,
         int pageSize = 10,
-        string? status = null,
         string? startTime = null,
         string? searchText = null)
     {
@@ -49,7 +48,7 @@ public class CalendarDayDetailService : ICalendarDayDetailService
         var (totalAppointments, totalOccupiedMinutes) = CalculateDayTotals(allAppointments);
 
         // 3. Aplicar filtros de búsqueda
-        var filteredAppointments = ApplyFilters(allAppointments, status, startTime, searchText);
+        var filteredAppointments = ApplyFilters(allAppointments, startTime, searchText);
 
         // 4. Aplicar paginación
         var (paginatedAppointments, totalCount, totalPages) = ApplyPagination(filteredAppointments, page, pageSize);
@@ -102,22 +101,15 @@ public class CalendarDayDetailService : ICalendarDayDetailService
     }
 
     /// <summary>
-    /// Aplica filtros de búsqueda a la lista de appointments (status, hora, texto)
+    /// Aplica filtros de búsqueda a la lista de appointments (hora, texto)
     /// </summary>
     private static List<Appointment> ApplyFilters(
         List<Appointment> appointments,
-        string? status,
         string? startTime,
         string? searchText)
     {
         var filtered = appointments.OrderByDescending(a => a.StartTime).ToList();
 
-        if (!string.IsNullOrWhiteSpace(status))
-        {
-            filtered = filtered
-                .Where(a => a.Status.ToString().Equals(status, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-        }
 
         if (!string.IsNullOrWhiteSpace(startTime))
         {
@@ -194,8 +186,7 @@ public class CalendarDayDetailService : ICalendarDayDetailService
             ServiceName = appointment.Service?.Name,
             StartTime = appointment.StartTime.ToString("HH:mm"),
             EndTime = appointment.EndTime.ToString("HH:mm"),
-            DurationMinutes = (int)(appointment.EndTime - appointment.StartTime).TotalMinutes,
-            Status = appointment.Status.ToString()
+            DurationMinutes = (int)(appointment.EndTime - appointment.StartTime).TotalMinutes
         };
     }
 

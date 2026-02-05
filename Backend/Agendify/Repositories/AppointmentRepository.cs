@@ -1,6 +1,5 @@
 ﻿using Agendify.Data;
 using Agendify.Models.Entities;
-using Agendify.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Agendify.Repositories;
@@ -79,7 +78,6 @@ public class AppointmentRepository : Repository<Appointment>, IAppointmentReposi
         var query = _dbSet
             .Where(a => a.ProviderId == providerId 
                 && !a.IsDeleted
-                && a.Status != AppointmentStatus.Canceled
                 && ((a.StartTime < endTime && a.EndTime > startTime)));
 
         if (excludeAppointmentId.HasValue)

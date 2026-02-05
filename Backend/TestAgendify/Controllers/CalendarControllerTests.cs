@@ -136,10 +136,7 @@ public class CalendarControllerTests
                 BusinessId, 
                 date, 
                 1, 
-                15, 
-                null, 
-                null, 
-                null))
+                15, null, null))
             .ReturnsAsync(expectedDetails);
 
         // Act
@@ -151,7 +148,7 @@ public class CalendarControllerTests
         okResult!.Value.Should().BeEquivalentTo(expectedDetails);
         
         _mockCalendarService.Verify(
-            s => s.GetDayDetailsAsync(BusinessId, date, 1, 15, null, null, null),
+            s => s.GetDayDetailsAsync(BusinessId, date, 1, 15, null, null),
             Times.Once);
     }
 
@@ -178,10 +175,7 @@ public class CalendarControllerTests
                 BusinessId, 
                 date, 
                 page, 
-                pageSize, 
-                null, 
-                null, 
-                null))
+                pageSize, null, null))
             .ReturnsAsync(expectedDetails);
 
         // Act
@@ -193,48 +187,7 @@ public class CalendarControllerTests
         okResult!.Value.Should().BeEquivalentTo(expectedDetails);
         
         _mockCalendarService.Verify(
-            s => s.GetDayDetailsAsync(BusinessId, date, page, pageSize, null, null, null),
-            Times.Once);
-    }
-
-    [Fact]
-    public async Task GetDayDetails_WithStatusFilter_ReturnsOkWithFilteredResults()
-    {
-        // Arrange
-        var date = new DateTime(2026, 1, 15);
-        var status = "Confirmed";
-        var expectedDetails = new DayDetailsDto
-        {
-            Date = date,
-            DayOfWeek = date.DayOfWeek.ToString(),
-            TotalAppointments = 5,
-            Appointments = new List<AppointmentDetailDto>(),
-            CurrentPage = 1,
-            PageSize = 15,
-            TotalPages = 1
-        };
-        
-        _mockCalendarService
-            .Setup(s => s.GetDayDetailsAsync(
-                BusinessId, 
-                date, 
-                1, 
-                15, 
-                status, 
-                null, 
-                null))
-            .ReturnsAsync(expectedDetails);
-
-        // Act
-        var result = await _sut.GetDayDetails(date, 1, 15, status);
-
-        // Assert
-        result.Result.Should().BeOfType<OkObjectResult>();
-        var okResult = result.Result as OkObjectResult;
-        okResult!.Value.Should().BeEquivalentTo(expectedDetails);
-        
-        _mockCalendarService.Verify(
-            s => s.GetDayDetailsAsync(BusinessId, date, 1, 15, status, null, null),
+            s => s.GetDayDetailsAsync(BusinessId, date, page, pageSize, null, null),
             Times.Once);
     }
 
@@ -257,17 +210,11 @@ public class CalendarControllerTests
         
         _mockCalendarService
             .Setup(s => s.GetDayDetailsAsync(
-                BusinessId, 
-                date, 
-                1, 
-                15, 
-                null, 
-                null, 
-                searchText))
+                BusinessId, date, 1, 15, null, searchText))
             .ReturnsAsync(expectedDetails);
 
         // Act
-        var result = await _sut.GetDayDetails(date, 1, 15, null, null, searchText);
+        var result = await _sut.GetDayDetails(date, 1, 15, null, searchText);
 
         // Assert
         result.Result.Should().BeOfType<OkObjectResult>();
@@ -275,7 +222,7 @@ public class CalendarControllerTests
         okResult!.Value.Should().BeEquivalentTo(expectedDetails);
         
         _mockCalendarService.Verify(
-            s => s.GetDayDetailsAsync(BusinessId, date, 1, 15, null, null, searchText),
+            s => s.GetDayDetailsAsync(BusinessId, date, 1, 15, null, searchText),
             Times.Once);
     }
 
@@ -286,7 +233,6 @@ public class CalendarControllerTests
         var date = new DateTime(2026, 1, 15);
         var page = 1;
         var pageSize = 20;
-        var status = "Pending";
         var startTime = "09:00";
         var searchText = "consultation";
         
@@ -307,13 +253,12 @@ public class CalendarControllerTests
                 date, 
                 page, 
                 pageSize, 
-                status, 
                 startTime, 
                 searchText))
             .ReturnsAsync(expectedDetails);
 
         // Act
-        var result = await _sut.GetDayDetails(date, page, pageSize, status, startTime, searchText);
+        var result = await _sut.GetDayDetails(date, page, pageSize, startTime, searchText);
 
         // Assert
         result.Result.Should().BeOfType<OkObjectResult>();
@@ -321,7 +266,7 @@ public class CalendarControllerTests
         okResult!.Value.Should().BeEquivalentTo(expectedDetails);
         
         _mockCalendarService.Verify(
-            s => s.GetDayDetailsAsync(BusinessId, date, page, pageSize, status, startTime, searchText),
+            s => s.GetDayDetailsAsync(BusinessId, date, page, pageSize, startTime, searchText),
             Times.Once);
     }
 
@@ -355,7 +300,7 @@ public class CalendarControllerTests
         var expectedDetails = new DayDetailsDto();
         
         _mockCalendarService
-            .Setup(s => s.GetDayDetailsAsync(BusinessId, date, 1, 15, null, null, null))
+            .Setup(s => s.GetDayDetailsAsync(BusinessId, date, 1, 15, null, null))
             .ReturnsAsync(expectedDetails);
 
         // Act
@@ -363,9 +308,11 @@ public class CalendarControllerTests
 
         // Assert
         _mockCalendarService.Verify(
-            s => s.GetDayDetailsAsync(BusinessId, date, 1, 15, null, null, null),
+            s => s.GetDayDetailsAsync(BusinessId, date, 1, 15, null, null),
             Times.Once,
             "Should use BusinessId from authenticated user claims");
     }
 }
+
+
 

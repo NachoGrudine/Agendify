@@ -1,6 +1,5 @@
 using Agendify.DTOs.Appointment;
 using Agendify.Models.Entities;
-using Agendify.Models.Enums;
 using Agendify.Services.Appointments;
 using Agendify.Services.Calendar.DayDetail;
 using Agendify.Services.Providers;
@@ -122,15 +121,14 @@ public class CalendarDayDetailServiceTests
         // Arrange
         var businessId = 1;
         var date = new DateTime(2026, 2, 5);
-        var status = "Confirmed";
 
         var appointments = new List<Appointment>
         {
-            CreateAppointment(1, date, 10, 0, AppointmentStatus.Confirmed),
-            CreateAppointment(2, date, 11, 0, AppointmentStatus.Pending),
-            CreateAppointment(3, date, 12, 0, AppointmentStatus.Confirmed),
-            CreateAppointment(4, date, 13, 0, AppointmentStatus.Canceled),
-            CreateAppointment(5, date, 14, 0, AppointmentStatus.Confirmed)
+            CreateAppointment(1, date, 10, 0),
+            CreateAppointment(2, date, 11, 0),
+            CreateAppointment(3, date, 12, 0),
+            CreateAppointment(4, date, 13, 0),
+            CreateAppointment(5, date, 14, 0)
         };
 
         _mockAppointmentService
@@ -151,14 +149,13 @@ public class CalendarDayDetailServiceTests
             .ReturnsAsync(new Dictionary<DayOfWeek, int> { { date.DayOfWeek, 480 } });
 
         // Act
-        var result = await _sut.GetDayDetailsAsync(businessId, date, status: status);
+        var result = await _sut.GetDayDetailsAsync(businessId, date);
 
         // Assert
         result.Should().NotBeNull();
-        result.TotalAppointments.Should().Be(5); // Total sin filtrar
-        result.TotalCount.Should().Be(3); // Solo los Confirmed después de filtrar
-        result.Appointments.Should().HaveCount(3);
-        result.Appointments.Should().AllSatisfy(a => a.Status.Should().Be("Confirmed"));
+        result.TotalAppointments.Should().Be(5);
+        result.TotalCount.Should().Be(5);
+        result.Appointments.Should().HaveCount(5);
     }
 
     [Fact]
@@ -171,10 +168,10 @@ public class CalendarDayDetailServiceTests
 
         var appointments = new List<Appointment>
         {
-            CreateAppointment(1, date, 10, 0, AppointmentStatus.Confirmed),
-            CreateAppointment(2, date, 11, 0, AppointmentStatus.Confirmed),
-            CreateAppointment(3, date, 10, 0, AppointmentStatus.Pending),
-            CreateAppointment(4, date, 14, 0, AppointmentStatus.Confirmed)
+            CreateAppointment(1, date, 10, 0),
+            CreateAppointment(2, date, 11, 0),
+            CreateAppointment(3, date, 10, 0),
+            CreateAppointment(4, date, 14, 0)
         };
 
         _mockAppointmentService
@@ -252,16 +249,15 @@ public class CalendarDayDetailServiceTests
         // Arrange
         var businessId = 1;
         var date = new DateTime(2026, 2, 5);
-        var status = "Confirmed";
         var startTime = "10:00";
         var searchText = "Smith";
 
         var appointments = new List<Appointment>
         {
-            CreateAppointmentWithDetails(1, date, 10, 0, "John Smith", "Dr. Jones", "Consultation", AppointmentStatus.Confirmed),
-            CreateAppointmentWithDetails(2, date, 10, 0, "John Smith", "Dr. Jones", "Consultation", AppointmentStatus.Pending),
-            CreateAppointmentWithDetails(3, date, 11, 0, "John Smith", "Dr. Jones", "Consultation", AppointmentStatus.Confirmed),
-            CreateAppointmentWithDetails(4, date, 10, 0, "Bob Johnson", "Dr. Jones", "Consultation", AppointmentStatus.Confirmed)
+            CreateAppointmentWithDetails(1, date, 10, 0, "John Smith", "Dr. Jones", "Consultation"),
+            CreateAppointmentWithDetails(2, date, 10, 0, "John Smith", "Dr. Jones", "Consultation"),
+            CreateAppointmentWithDetails(3, date, 11, 0, "John Smith", "Dr. Jones", "Consultation"),
+            CreateAppointmentWithDetails(4, date, 10, 0, "Bob Johnson", "Dr. Jones", "Consultation")
         };
 
         _mockAppointmentService
@@ -282,15 +278,14 @@ public class CalendarDayDetailServiceTests
             .ReturnsAsync(new Dictionary<DayOfWeek, int> { { date.DayOfWeek, 480 } });
 
         // Act
-        var result = await _sut.GetDayDetailsAsync(businessId, date, status: status, startTime: startTime, searchText: searchText);
+        var result = await _sut.GetDayDetailsAsync(businessId, date, startTime: startTime, searchText: searchText);
 
         // Assert
         result.Should().NotBeNull();
-        result.TotalCount.Should().Be(1); // Solo el primero cumple todos los filtros
-        result.Appointments.Should().ContainSingle();
-        result.Appointments[0].StartTime.Should().Be("10:00");
-        result.Appointments[0].Status.Should().Be("Confirmed");
-        result.Appointments[0].CustomerName.Should().Be("John Smith");
+        result.TotalCount.Should().Be(2); // Los dos primeros cumplen ambos filtros (hora 10:00 y contienen "Smith")
+        result.Appointments.Should().HaveCount(2);
+        result.Appointments.Should().AllSatisfy(a => a.StartTime.Should().Be("10:00"));
+        result.Appointments.Should().AllSatisfy(a => a.CustomerName.Should().Contain("Smith"));
     }
 
     [Fact]
@@ -338,11 +333,11 @@ public class CalendarDayDetailServiceTests
 
         var appointments = new List<Appointment>
         {
-            CreateAppointment(1, date, 10, 0, AppointmentStatus.Confirmed),
-            CreateAppointment(2, date, 16, 0, AppointmentStatus.Confirmed),
-            CreateAppointment(3, date, 12, 0, AppointmentStatus.Confirmed),
-            CreateAppointment(4, date, 9, 0, AppointmentStatus.Confirmed),
-            CreateAppointment(5, date, 14, 0, AppointmentStatus.Confirmed)
+            CreateAppointment(1, date, 10, 0),
+            CreateAppointment(2, date, 16, 0),
+            CreateAppointment(3, date, 12, 0),
+            CreateAppointment(4, date, 9, 0),
+            CreateAppointment(5, date, 14, 0)
         };
 
         _mockAppointmentService
@@ -490,7 +485,6 @@ public class CalendarDayDetailServiceTests
             Id = 1,
             StartTime = new DateTime(2026, 2, 5, 10, 0, 0),
             EndTime = new DateTime(2026, 2, 5, 11, 0, 0),
-            Status = AppointmentStatus.Pending,
             Customer = null, // Sin cliente
             Provider = new Provider { Name = "Dr. Smith" },
             Service = new Service { Name = "Consultation" }
@@ -529,22 +523,21 @@ public class CalendarDayDetailServiceTests
     {
         return new List<Appointment>
         {
-            CreateAppointment(1, date, 10, 0, AppointmentStatus.Confirmed),
-            CreateAppointment(2, date, 11, 0, AppointmentStatus.Pending),
-            CreateAppointment(3, date, 14, 0, AppointmentStatus.Confirmed),
-            CreateAppointment(4, date, 15, 0, AppointmentStatus.Completed),
-            CreateAppointment(5, date, 16, 0, AppointmentStatus.Canceled)
+            CreateAppointment(1, date, 10, 0),
+            CreateAppointment(2, date, 11, 0),
+            CreateAppointment(3, date, 14, 0),
+            CreateAppointment(4, date, 15, 0),
+            CreateAppointment(5, date, 16, 0)
         };
     }
 
-    private Appointment CreateAppointment(int id, DateTime date, int startHour, int startMinute, AppointmentStatus status)
+    private Appointment CreateAppointment(int id, DateTime date, int startHour, int startMinute)
     {
         return new Appointment
         {
             Id = id,
             StartTime = new DateTime(date.Year, date.Month, date.Day, startHour, startMinute, 0),
             EndTime = new DateTime(date.Year, date.Month, date.Day, startHour + 1, startMinute, 0),
-            Status = status,
             Customer = new Customer { Id = id, Name = $"Customer {id}" },
             Provider = new Provider { Id = 1, Name = "Dr. Smith" },
             Service = new Service { Id = 1, Name = "Consultation" }
@@ -558,15 +551,13 @@ public class CalendarDayDetailServiceTests
         int startMinute,
         string customerName,
         string providerName,
-        string serviceName,
-        AppointmentStatus status = AppointmentStatus.Confirmed)
+        string serviceName)
     {
         return new Appointment
         {
             Id = id,
             StartTime = new DateTime(date.Year, date.Month, date.Day, startHour, startMinute, 0),
             EndTime = new DateTime(date.Year, date.Month, date.Day, startHour + 1, startMinute, 0),
-            Status = status,
             Customer = new Customer { Id = id, Name = customerName },
             Provider = new Provider { Id = 1, Name = providerName },
             Service = new Service { Id = 1, Name = serviceName }
