@@ -1,4 +1,4 @@
-ï»¿/* ICONO DE SECCIÃ“N GENÃ‰RICO - CONSISTENTE EN TODA LA APP */
+/* ICONO DE SECCIÓN GENÉRICO - CONSISTENTE EN TODA LA APP */
 .section-icon {
   display: flex;
   align-items: center;
@@ -7,7 +7,7 @@
   height: 48px;
   background: white;
   border-radius: 10px;
-  color: #1d436f;
+  color: #030132;
   box-shadow: 0 2px 8px rgba(29, 67, 111, 0.12);
   border: 2px solid #e5e7eb;
   flex-shrink: 0;

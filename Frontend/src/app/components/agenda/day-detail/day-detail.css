@@ -202,7 +202,7 @@
   justify-content: center;
   flex-shrink: 0;
   background: white;
-  color: #1d436f;
+  color: #030132;
   box-shadow: 0 2px 8px rgba(29, 67, 111, 0.12);
 }
 
@@ -210,7 +210,7 @@
 .card-icon-circle.icon-purple,
 .card-icon-circle.icon-green {
   background: white;
-  color: #1d436f;
+  color: #030132;
 }
 
 /* Estilos de progress-bar ahora manejados por el componente genérico ProgressBarComponent */
@@ -273,13 +273,13 @@
 }
 
 .search-filter-bar ::ng-deep .input-field:focus {
-  border-color: #1d436f;
+  border-color: #030132;
   box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.08);
   outline: none;
 }
 
 .search-filter-bar ::ng-deep .input-field:focus + .input-icon-start {
-  color: #1d436f;
+  color: #030132;
 }
 
 /* ============================================
@@ -363,7 +363,7 @@
 }
 
 .time-start {
-  color: #1d436f;
+  color: #030132;
 }
 
 .time-end {
@@ -399,7 +399,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #1d436f, #3b82f6);
+  background: linear-gradient(135deg, #030132, #3b82f6);
   color: white;
   display: flex;
   align-items: center;
@@ -602,7 +602,7 @@
 
 .page-size-selector select:focus {
   outline: none;
-  border-color: #1d436f;
+  border-color: #030132;
   box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.1);
 }
 
@@ -631,13 +631,13 @@
 
 .btn-page:hover:not(:disabled):not(.active) {
   background: white;
-  border-color: #1d436f;
-  color: #1d436f;
+  border-color: #030132;
+  color: #030132;
 }
 
 .btn-page.active {
-  background: #1d436f;
-  border-color: #1d436f;
+  background: #030132;
+  border-color: #030132;
   color: white;
   font-weight: 600;
 }

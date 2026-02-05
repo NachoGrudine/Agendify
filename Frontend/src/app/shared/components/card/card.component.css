@@ -1,4 +1,4 @@
-﻿/* ============================================
+/* ============================================
    CARD COMPONENT - ESTILOS MEJORADOS
    ============================================ */
 
@@ -23,7 +23,7 @@
 }
 
 :host ::ng-deep .agendify-card .p-card-title {
-  color: #1d436f;
+  color: #030132;
   font-weight: 700;
   font-size: 1.25rem;
   margin-bottom: 0.25rem;
@@ -61,7 +61,7 @@
 
 /* Card con borde destacado */
 :host ::ng-deep .agendify-card.card-bordered {
-  border: 2px solid #1d436f;
+  border: 2px solid #030132;
 }
 
 /* Card interactivo */
@@ -71,13 +71,13 @@
 }
 
 :host ::ng-deep .agendify-card.card-interactive:hover {
-  border-color: #1d436f;
+  border-color: #030132;
   box-shadow: 0 8px 20px rgba(29, 67, 111, 0.12), 0 4px 8px rgba(29, 67, 111, 0.06);
 }
 
 /* Card con acento superior */
 :host ::ng-deep .agendify-card.card-accent {
-  border-top: 4px solid #1d436f;
+  border-top: 4px solid #030132;
 }
 
 /* Card compacto */
@@ -87,8 +87,8 @@
 
 /* Card con fondo de color */
 :host ::ng-deep .agendify-card.card-primary {
-  background: linear-gradient(135deg, #1d436f 0%, #2563a8 100%);
-  border-color: #1d436f;
+  background: linear-gradient(135deg, #030132 0%, #2563a8 100%);
+  border-color: #030132;
 }
 
 :host ::ng-deep .agendify-card.card-primary .p-card-title,

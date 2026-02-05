@@ -1,4 +1,4 @@
-﻿/* Contenedor del paso */
+/* Contenedor del paso */
 .step-container {
   max-width: 100%;
 }
@@ -76,7 +76,7 @@
 
 .form-input:focus {
   outline: none;
-  border-color: #1d436f;
+  border-color: #030132;
   box-shadow: 0 0 0 2px rgba(29, 67, 111, 0.1);
 }
 
@@ -113,7 +113,7 @@
 .info-box-icon {
   width: 16px;
   height: 16px;
-  color: #1d436f;
+  color: #030132;
   flex-shrink: 0;
   margin-top: 0.0625rem;
 }
@@ -149,7 +149,7 @@
 }
 
 .btn-primary {
-  background: var(--primary-color, #1d436f);
+  background: var(--primary-color, #030132);
   color: white;
 }
 
@@ -231,7 +231,7 @@
 }
 
 .footer-link {
-  color: var(--primary-color, #1d436f);
+  color: var(--primary-color, #030132);
   text-decoration: none;
   font-weight: 500;
   display: block;

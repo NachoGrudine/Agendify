@@ -10,12 +10,12 @@
 /* Variables globales de color */
 :root {
   /* Color principal - Azul Agendify */
-  --primary-color: #1d436f;
+  --primary-color: #030132;
   --primary-hover: #152f4d;
   --primary-light: rgba(29, 67, 111, 0.1);
 
   /* Colores de fondo */
-  --bg-primary: #1d436f;
+  --bg-primary: #030132;
   --bg-white: #ffffff;
 
   /* Colores de texto */
@@ -26,7 +26,7 @@
 
   /* Colores de borde */
   --border-color: #e5e7eb;
-  --border-focus: #1d436f;
+  --border-focus: #030132;
 
   /* Colores de estado */
   --error-bg: #fee2e2;
@@ -442,7 +442,7 @@ body {
 .p-listbox-option:hover,
 .p-listbox-option.p-focus {
   background-color: #e8f0f8 !important;
-  color: #1d436f !important;
+  color: #030132 !important;
   border-color: #d1dce8 !important;
 }
 
@@ -453,10 +453,10 @@ body {
 .p-listbox-option.p-selected,
 .p-listbox-option.p-highlight,
 .p-listbox-option[aria-selected="true"] {
-  background-color: #1d436f !important;
+  background-color: #030132 !important;
   color: #ffffff !important;
   font-weight: 500 !important;
-  border-color: #1d436f !important;
+  border-color: #030132 !important;
 }
 
 /* Hover sobre opción seleccionada */

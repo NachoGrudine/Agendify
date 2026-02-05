@@ -1,5 +1,5 @@
-﻿/* ============================================
-   INPUT COMPONENT - DISEÑO COMPACTO
+/* ============================================
+   INPUT COMPONENT - DISE�O COMPACTO
    ============================================ */
 
 .input-wrapper {
@@ -59,7 +59,7 @@
 
 .input-field:focus {
   outline: none;
-  border-color: #1d436f;
+  border-color: #030132;
   background-color: #ffffff;
   box-shadow: 0 0 0 2px rgba(29, 67, 111, 0.1);
 }
@@ -90,7 +90,7 @@
 }
 
 .input-container:focus-within .input-icon-start {
-  color: #1d436f;
+  color: #030132;
 }
 
 .input-icon-end {
@@ -112,7 +112,7 @@
 }
 
 .error-message::before {
-  content: "⚠";
+  content: "?";
   font-size: 0.75rem;
 }
 
@@ -148,7 +148,7 @@
 
 :host ::ng-deep .p-inputtext:enabled:focus {
   outline: none;
-  border-color: #1d436f;
+  border-color: #030132;
   box-shadow: 0 0 0 2px rgba(29, 67, 111, 0.1);
 }
 

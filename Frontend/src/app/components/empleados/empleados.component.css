@@ -1,4 +1,4 @@
-﻿﻿.empleados-container {
+?.empleados-container {
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -40,7 +40,7 @@
 .unavailable-icon {
   display: block;
   margin-bottom: 2rem;
-  color: #1d436f;
+  color: #030132;
   opacity: 0.3;
 }
 

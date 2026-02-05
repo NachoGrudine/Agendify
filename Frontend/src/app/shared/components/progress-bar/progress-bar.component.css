@@ -1,5 +1,5 @@
-ï»¿/* ============================================
-   PROGRESS BAR COMPONENT - DISEÃ‘O COMPACTO
+/* ============================================
+   PROGRESS BAR COMPONENT - DISEÑO COMPACTO
    ============================================ */
 
 .progress-wrapper {
@@ -44,9 +44,9 @@
   transition: width 0.3s ease;
 }
 
-/* Colores segÃºn el tipo */
+/* Colores según el tipo */
 .progress-fill.color-primary {
-  background: #1d436f;
+  background: #030132;
 }
 
 .progress-fill.color-success {

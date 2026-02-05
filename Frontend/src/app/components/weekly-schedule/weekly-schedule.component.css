@@ -1,11 +1,11 @@
-Ôªø/* Container Principal - ULTRA COMPACTO */
+/* Container Principal - ULTRA COMPACTO */
 .schedule-container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 1rem 1.5rem;
 }
 
-/* Page Header - M√ÅS COMPACTO */
+/* Page Header - M¡S COMPACTO */
 .page-header {
   display: flex;
   align-items: center;
@@ -23,7 +23,7 @@
   height: 48px;
   background: white;
   border-radius: 10px;
-  color: #1d436f;
+  color: #030132;
   box-shadow: 0 2px 8px rgba(29, 67, 111, 0.12);
   border: 2px solid #e5e7eb;
   flex-shrink: 0;
@@ -44,7 +44,7 @@
   margin-top: 0.125rem;
 }
 
-/* Header - M√ÅS COMPACTO */
+/* Header - M¡S COMPACTO */
 .schedule-header {
   display: flex;
   justify-content: space-between;
@@ -100,7 +100,7 @@
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Animaci√≥n cuando aparece/desaparece el bot√≥n Descartar */
+/* AnimaciÛn cuando aparece/desaparece el botÛn Descartar */
 .header-actions app-button:first-child {
   animation: slideInRight 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -116,7 +116,7 @@
   }
 }
 
-/* Alerts - M√ÅS COMPACTAS Y R√ÅPIDAS */
+/* Alerts - M¡S COMPACTAS Y R¡PIDAS */
 .alert {
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
@@ -147,7 +147,7 @@
   color: #991b1b;
 }
 
-/* Animaci√≥n de entrada m√°s r√°pida y suave */
+/* AnimaciÛn de entrada m·s r·pida y suave */
 @keyframes slideDownFade {
   from {
     opacity: 0;
@@ -159,7 +159,7 @@
   }
 }
 
-/* Animaci√≥n de salida */
+/* AnimaciÛn de salida */
 .alert.fade-out {
   animation: fadeOut 0.2s ease forwards;
 }
@@ -217,7 +217,7 @@
   margin: 0;
 }
 
-/* Toggle Switch - M√ÅS PEQUE√ëO */
+/* Toggle Switch - M¡S PEQUE—O */
 .toggle-switch-compact {
   position: relative;
   display: inline-block;
@@ -258,14 +258,14 @@
 }
 
 .toggle-input:checked + .toggle-slider-compact {
-  background-color: #1d436f;
+  background-color: #030132;
 }
 
 .toggle-input:checked + .toggle-slider-compact:before {
   transform: translateX(14px);
 }
 
-/* Bot√≥n Copy - MINI */
+/* BotÛn Copy - MINI */
 .btn-copy-compact {
   padding: 4px 8px;
   background: white;
@@ -282,8 +282,8 @@
 }
 
 .btn-copy-compact:hover:not(:disabled) {
-  background: #1d436f;
-  border-color: #1d436f;
+  background: #030132;
+  border-color: #030132;
   color: white;
 }
 
@@ -310,7 +310,7 @@
   background: white;
 }
 
-/* Slot Inline - TODO EN UNA L√çNEA */
+/* Slot Inline - TODO EN UNA LÕNEA */
 .slot-inline {
   display: flex;
   align-items: center;
@@ -318,7 +318,7 @@
   flex-wrap: nowrap;
 }
 
-/* Time Input - M√ÅS GRANDE Y PROFESIONAL */
+/* Time Input - M¡S GRANDE Y PROFESIONAL */
 .time-input-compact {
   padding: 8px 12px;
   border: 1px solid #d1d5db;
@@ -334,7 +334,7 @@
 
 .time-input-compact:focus {
   outline: none;
-  border-color: #1d436f;
+  border-color: #030132;
   box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.1);
   background: #fafbfc;
 }
@@ -356,7 +356,7 @@
   flex-shrink: 0;
 }
 
-/* Bot√≥n Icono - M√ÅS PEQUE√ëO */
+/* BotÛn Icono - M¡S PEQUE—O */
 .btn-icon-compact {
   padding: 6px;
   background: white;
@@ -377,12 +377,12 @@
   transform: scale(1.05);
 }
 
-/* Bot√≥n Add - M√ÅS COMPACTO */
+/* BotÛn Add - M¡S COMPACTO */
 .btn-add-compact {
   padding: 6px 10px;
   background: white;
   border: 1px dashed #d1d5db;
-  color: #1d436f;
+  color: #030132;
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -397,7 +397,7 @@
 
 .btn-add-compact:hover {
   background: #f9fafb;
-  border-color: #1d436f;
+  border-color: #030132;
   border-style: solid;
 }
 
@@ -409,7 +409,7 @@
   margin-top: 2px;
 }
 
-/* Schedule Footer - M√ÅS COMPACTO */
+/* Schedule Footer - M¡S COMPACTO */
 .schedule-footer {
   margin-top: 12px;
   padding: 10px 12px;

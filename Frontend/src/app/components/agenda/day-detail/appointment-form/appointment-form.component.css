@@ -1,4 +1,4 @@
-Ôªø/* ============================================
+/* ============================================
    CONTENEDOR PRINCIPAL - PARA USO CON APP-DIALOG
    ============================================ */
 :host {
@@ -69,7 +69,7 @@
   gap: 0.875rem;
 }
 
-/* Scroll personalizado m√°s elegante - aplicado al contenedor del dialog */
+/* Scroll personalizado m·s elegante - aplicado al contenedor del dialog */
 :host ::ng-deep .p-dialog-content {
   max-height: 75vh;
   overflow-y: auto;
@@ -159,7 +159,7 @@
 .field-select:focus,
 .field-textarea:focus {
   outline: none;
-  border-color: #1d436f;
+  border-color: #030132;
   box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.1);
 }
 
@@ -291,7 +291,7 @@
   transition: all 0.15s ease;
 }
 
-/* Bot√≥n cancelar */
+/* BotÛn cancelar */
 .modal-footer ::ng-deep app-button:first-child button {
   color: #6b7280;
   border-color: #d1d5db;
@@ -451,7 +451,7 @@
 }
 
 .label-icon {
-  color: #1d436f;
+  color: #030132;
 }
 
 /* ============================================
@@ -497,7 +497,7 @@
 
 .time-input:focus {
   outline: none;
-  border-color: #1d436f;
+  border-color: #030132;
   box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.1);
 }
 
@@ -528,11 +528,11 @@
 .duration-value {
   font-size: 0.875rem;
   font-weight: 700;
-  color: #1d436f;
+  color: #030132;
 }
 
 /* ============================================
-   ALERTS - M√ÅS VISIBLES
+   ALERTS - M¡S VISIBLES
    ============================================ */
 
 .alert {

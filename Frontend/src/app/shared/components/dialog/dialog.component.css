@@ -1,4 +1,4 @@
-﻿/* ============================================
+/* ============================================
    DIALOG COMPONENT - ESTILOS MEJORADOS
    ============================================ */
 
@@ -16,7 +16,7 @@
 }
 
 :host ::ng-deep .agendify-dialog .p-dialog-title {
-  color: #1d436f;
+  color: #030132;
   font-weight: 700;
   font-size: 1.25rem;
   letter-spacing: -0.01em;
@@ -38,7 +38,7 @@
   border-radius: 0 0 12px 12px;
 }
 
-/* Botón de cerrar */
+/* Bot�n de cerrar */
 :host ::ng-deep .agendify-dialog .p-dialog-header-close {
   color: #6b7280;
   transition: color 0.2s ease, background-color 0.2s ease;

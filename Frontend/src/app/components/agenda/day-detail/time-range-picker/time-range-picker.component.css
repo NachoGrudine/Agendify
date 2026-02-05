@@ -1,4 +1,4 @@
-﻿.time-range-picker {
+.time-range-picker {
   width: 100%;
   background: white;
   border: 1px solid #e8eaed;
@@ -58,7 +58,7 @@
 }
 
 .time-input-wrapper:focus-within {
-  border-color: #1d436f;
+  border-color: #030132;
   box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.08);
 }
 
@@ -95,15 +95,15 @@
 }
 
 .quick-btn:hover {
-  border-color: #1d436f;
+  border-color: #030132;
   background: rgba(29, 67, 111, 0.05);
-  color: #1d436f;
+  color: #030132;
   transform: translateY(-1px);
 }
 
 .quick-btn.active {
-  background: #1d436f;
-  border-color: #1d436f;
+  background: #030132;
+  border-color: #030132;
   color: white;
   box-shadow: 0 2px 8px rgba(29, 67, 111, 0.25);
 }
@@ -141,7 +141,7 @@
 }
 
 .duration-badge {
-  background: #1d436f;
+  background: #030132;
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 6px;

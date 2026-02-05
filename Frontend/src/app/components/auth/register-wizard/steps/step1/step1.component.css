@@ -1,4 +1,4 @@
-﻿﻿/* Contenedor del paso */
+?/* Contenedor del paso */
 .step-container {
   max-width: 100%;
 }
@@ -55,7 +55,7 @@
 
 .form-input:focus {
   outline: none;
-  border-color: #1d436f;
+  border-color: #030132;
   box-shadow: 0 0 0 2px rgba(29, 67, 111, 0.1);
 }
 
@@ -112,7 +112,7 @@
   font-weight: 500;
 }
 
-/* Indicador de fuerza de contraseña */
+/* Indicador de fuerza de contrase�a */
 .password-strength {
   margin-top: 0.125rem;
 }
@@ -137,10 +137,10 @@
   font-weight: 500;
 }
 
-/* Botón primario */
+/* Bot�n primario */
 .btn-primary {
   padding: 0.625rem 1rem;
-  background: var(--primary-color, #1d436f);
+  background: var(--primary-color, #030132);
   color: white;
   font-weight: 500;
   font-size: 0.875rem;
@@ -177,7 +177,7 @@
 .link-button {
   background: none;
   border: none;
-  color: var(--primary-color, #1d436f);
+  color: var(--primary-color, #030132);
   font-weight: 500;
   cursor: pointer;
   padding: 0;
@@ -210,7 +210,7 @@
 .badge-icon {
   width: 14px;
   height: 14px;
-  color: #1d436f;
+  color: #030132;
 }
 
 .badge span {

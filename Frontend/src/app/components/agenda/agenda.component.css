@@ -1,4 +1,4 @@
-﻿﻿.agenda-container {
+.agenda-container {
   max-width: 100%;
   width: 100%;
   margin: 0 auto;
@@ -26,7 +26,7 @@
   gap: 2rem;
 }
 
-/* IZQUIERDA: Icono + Título */
+/* IZQUIERDA: Icono + T�tulo */
 .header-left {
   display: flex;
   align-items: center;
@@ -42,7 +42,7 @@
   height: 48px;
   background: white;
   border-radius: 10px;
-  color: #1d436f;
+  color: #030132;
   box-shadow: 0 2px 8px rgba(29, 67, 111, 0.12);
   border: 2px solid #e5e7eb;
   flex-shrink: 0;
@@ -97,7 +97,7 @@
 
 .month-nav-btn:hover {
   background: rgba(29, 67, 111, 0.1);
-  color: #1d436f;
+  color: #030132;
 }
 
 .current-month {
@@ -115,7 +115,7 @@
   align-items: center;
 }
 
-/* Botón de Notificaciones */
+/* Bot�n de Notificaciones */
 .notification-btn {
   position: relative;
   background: white;
@@ -134,8 +134,8 @@
 
 .notification-btn:hover {
   background: rgba(29, 67, 111, 0.05);
-  color: #1d436f;
-  border-color: #1d436f;
+  color: #030132;
+  border-color: #030132;
   box-shadow: 0 2px 6px rgba(29, 67, 111, 0.15);
 }
 
@@ -236,7 +236,7 @@
   /* El calendario ocupa todo */
 }
 
-/* Eliminar márgenes del FullCalendar */
+/* Eliminar m�rgenes del FullCalendar */
 :host ::ng-deep .fc {
   margin: 0;
 }
@@ -303,7 +303,7 @@
   color: var(--primary-color);
 }
 
-/* Botones de navegación */
+/* Botones de navegaci�n */
 :host ::ng-deep .fc .fc-button {
   background: var(--bg-white);
   color: var(--primary-color);
@@ -333,10 +333,10 @@
   border-color: var(--primary-color);
 }
 
-/* Días de la semana - COLOR CORRECTO DEL SISTEMA */
+/* D�as de la semana - COLOR CORRECTO DEL SISTEMA */
 :host ::ng-deep .fc .fc-col-header-cell {
   padding: 0.875rem 0.5rem;
-  background: #1d436f;
+  background: #030132 !important;
   border-color: rgba(255, 255, 255, 0.15);
   border-right: 1px solid rgba(255, 255, 255, 0.15);
   font-weight: 600;
@@ -370,23 +370,23 @@
   height: auto !important;
 }
 
-/* ALTURA DINÁMICA - Se adapta según cantidad de filas del mes */
-/* Cuando hay 5 semanas (Enero, etc) → Celdas más grandes */
+/* ALTURA DIN�MICA - Se adapta seg�n cantidad de filas del mes */
+/* Cuando hay 5 semanas (Enero, etc) ? Celdas m�s grandes */
 :host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(5):last-child) tr {
   height: 130px !important;
 }
 
-/* Cuando hay 6 semanas (Marzo, Mayo, etc) → Celdas normales */
+/* Cuando hay 6 semanas (Marzo, Mayo, etc) ? Celdas normales */
 :host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(6)) tr {
   height: 110px !important;
 }
 
-/* Fallback para 4 semanas (raro pero posible) → Celdas extra grandes */
+/* Fallback para 4 semanas (raro pero posible) ? Celdas extra grandes */
 :host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(4):last-child) tr {
   height: 150px !important;
 }
 
-/* Celdas de días - estructura base MEJORADA Y PROLIJA */
+/* Celdas de d�as - estructura base MEJORADA Y PROLIJA */
 :host ::ng-deep .fc .fc-daygrid-day {
   border-color: #e5e7eb;
   border-width: 1px;
@@ -444,11 +444,11 @@
 :host ::ng-deep .fc .fc-col-header-cell,
 :host ::ng-deep .fc .fc-daygrid-day {
   min-width: 0 !important;
-  width: 14.28% !important; /* 100% / 7 días */
+  width: 14.28% !important; /* 100% / 7 d�as */
   box-sizing: border-box !important;
 }
 
-/* Texto de días sin cortes y centrado */
+/* Texto de d�as sin cortes y centrado */
 :host ::ng-deep .fc .fc-col-header-cell-cushion {
   color: white;
   font-weight: 600;
@@ -458,7 +458,7 @@
   padding: 0 4px;
   box-sizing: border-box;
 }
-/* Frame de la celda - ALTURA DINÁMICA */
+/* Frame de la celda - ALTURA DIN�MICA */
 /* Por defecto (6 semanas) */
 :host ::ng-deep .fc .fc-daygrid-day-frame {
   height: 100% !important;
@@ -471,19 +471,19 @@
   overflow: hidden !important;
 }
 
-/* 5 semanas → frames más grandes */
+/* 5 semanas ? frames m�s grandes */
 :host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(5):last-child) .fc-daygrid-day-frame {
   min-height: 130px !important;
   max-height: 130px !important;
 }
 
-/* 4 semanas → frames extra grandes */
+/* 4 semanas ? frames extra grandes */
 :host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(4):last-child) .fc-daygrid-day-frame {
   min-height: 150px !important;
   max-height: 150px !important;
 }
 
-/* Top de la celda - aquí va TODO el contenido */
+/* Top de la celda - aqu� va TODO el contenido */
 :host ::ng-deep .fc .fc-daygrid-day-top {
   position: relative !important;
   flex: 1;
@@ -547,7 +547,7 @@
   background: rgba(29, 67, 111, 0.08) !important;
 }
 
-/* Contenedor de badges - ALTURA DINÁMICA */
+/* Contenedor de badges - ALTURA DIN�MICA */
 /* Por defecto (6 semanas - 110px) */
 .day-badges-container {
   display: flex;
@@ -561,12 +561,12 @@
   max-height: calc(110px - 38px);
 }
 
-/* 5 semanas → más espacio para badges (130px) */
+/* 5 semanas ? m�s espacio para badges (130px) */
 :host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(5):last-child) .day-badges-container {
   max-height: calc(130px - 38px) !important;
 }
 
-/* 4 semanas → mucho más espacio (150px) */
+/* 4 semanas ? mucho m�s espacio (150px) */
 :host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(4):last-child) .day-badges-container {
   max-height: calc(150px - 38px) !important;
 }
@@ -628,7 +628,7 @@
   color: #7c2d12 !important;
 }
 
-/* ========== BADGE MINUTOS - ÉXITO (>= 60 min) VERDE ========== */
+/* ========== BADGE MINUTOS - �XITO (>= 60 min) VERDE ========== */
 .badge-minutos-success {
   background: #d1fae5 !important;
   border: 1px solid #10b981 !important;
@@ -640,14 +640,14 @@
   color: #065f46 !important;
 }
 
-/* Día actual - COLOR CORRECTO DEL SISTEMA */
+/* D�a actual - COLOR CORRECTO DEL SISTEMA */
 :host ::ng-deep .fc-day-today {
   background: rgba(29, 67, 111, 0.06) !important;
   border: 2px solid rgba(29, 67, 111, 0.2) !important;
 }
 
 :host ::ng-deep .fc-day-today .day-number-wrapper .fc-daygrid-day-number {
-  background: #1d436f !important;
+  background: #030132 !important;
   color: white !important;
   border-radius: 50%;
   width: 32px;
@@ -660,7 +660,7 @@
   font-weight: 700 !important;
 }
 
-/* Asegurar que los badges del día actual estén en la misma posición */
+/* Asegurar que los badges del d�a actual est�n en la misma posici�n */
 :host ::ng-deep .fc-day-today .custom-day-cell {
   display: flex;
   flex-direction: column;
@@ -671,7 +671,7 @@
   margin-top: 28px !important;
 }
 
-/* Días de otros meses - MÁS SUTILES */
+/* D�as de otros meses - M�S SUTILES */
 :host ::ng-deep .fc-day-other {
   background: #fafbfc !important;
 }
@@ -815,7 +815,7 @@
     font-size: 0.95rem;
   }
 
-  /* Días de semana más compactos */
+  /* D�as de semana m�s compactos */
   :host ::ng-deep .fc .fc-col-header-cell {
     padding: 0.75rem 0.3rem;
     font-size: 0.7rem;

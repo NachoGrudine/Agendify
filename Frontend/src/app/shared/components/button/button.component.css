@@ -1,5 +1,5 @@
-ï»¿ï»¿/* ============================================
-   BUTTON COMPONENT - DISEÃ‘O COMPACTO Y PROFESIONAL
+?/* ============================================
+   BUTTON COMPONENT - DISEÑO COMPACTO Y PROFESIONAL
    ============================================ */
 
 button {
@@ -37,11 +37,11 @@ button:disabled {
 }
 
 /* ============================================
-   BOTÃ“N PRIMARIO - Azul Agendify
+   BOTÓN PRIMARIO - Azul Agendify
    ============================================ */
 :host ::ng-deep .p-button-primary {
-  background-color: #1d436f;
-  border-color: #1d436f;
+  background-color: #030132;
+  border-color: #030132;
   color: white;
 }
 
@@ -55,7 +55,7 @@ button:disabled {
 }
 
 /* ============================================
-   BOTÃ“N SECONDARY - Gris moderno
+   BOTÓN SECONDARY - Gris moderno
    ============================================ */
 :host ::ng-deep .p-button-secondary {
   background-color: #64748b;
@@ -73,7 +73,7 @@ button:disabled {
 }
 
 /* ============================================
-   BOTÃ“N SUCCESS - Verde bonito
+   BOTÓN SUCCESS - Verde bonito
    ============================================ */
 :host ::ng-deep .p-button-success {
   background-color: #16a34a;
@@ -91,7 +91,7 @@ button:disabled {
 }
 
 /* ============================================
-   BOTÃ“N DANGER - Rojo elegante
+   BOTÓN DANGER - Rojo elegante
    ============================================ */
 :host ::ng-deep .p-button-danger {
   background-color: #dc2626;
@@ -109,18 +109,18 @@ button:disabled {
 }
 
 /* ============================================
-   BOTÃ“N OUTLINED - Borde con hover suave
+   BOTÓN OUTLINED - Borde con hover suave
    ============================================ */
 :host ::ng-deep .p-button-outlined {
   background-color: transparent;
-  color: #1d436f;
+  color: #030132;
   border: 1px solid #d1d5db;
 }
 
 :host ::ng-deep .p-button-outlined:hover:not(:disabled) {
   background-color: #f8fafc;
-  border-color: #1d436f;
-  color: #1d436f;
+  border-color: #030132;
+  color: #030132;
 }
 
 :host ::ng-deep .p-button-outlined:active:not(:disabled) {
@@ -179,7 +179,7 @@ button:disabled {
 }
 
 /* ============================================
-   TAMAÃ‘OS Y RESPONSIVE
+   TAMAÑOS Y RESPONSIVE
    ============================================ */
 :host ::ng-deep .p-button {
   min-height: 34px;
@@ -189,7 +189,7 @@ button:disabled {
   transition: background-color 0.15s ease, border-color 0.15s ease !important;
 }
 
-/* Botones pequeÃ±os */
+/* Botones pequeños */
 :host ::ng-deep .p-button.p-button-sm {
   padding: 0.375rem 0.75rem;
   font-size: 0.8125rem;
@@ -251,7 +251,7 @@ button:disabled {
 :host ::ng-deep .p-button-outlined:hover,
 :host ::ng-deep .p-button-outlined:active,
 :host ::ng-deep .p-button-outlined:focus {
-  color: #1d436f !important;
+  color: #030132 !important;
 }
 
 

@@ -1,5 +1,5 @@
-Ôªø/* ============================================
-   DROPDOWN COMPONENT - DISE√ëO LIMPIO
+/* ============================================
+   DROPDOWN COMPONENT - DISE—O LIMPIO
    ============================================ */
 
 .dropdown-wrapper {
@@ -67,13 +67,13 @@
 :host ::ng-deep .agendify-dropdown .p-select.p-focus,
 :host ::ng-deep .agendify-dropdown.p-select:focus,
 :host ::ng-deep .agendify-dropdown .p-select:focus {
-  border-color: #1d436f;
+  border-color: #030132;
   box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.1);
   outline: none;
 }
 
 /* ============================================
-   TEXTO SELECCIONADO - CR√çTICO
+   TEXTO SELECCIONADO - CRÕTICO
    ============================================ */
 
 :host ::ng-deep .agendify-dropdown .p-select-label,
@@ -182,7 +182,7 @@
 :host ::ng-deep .p-select-option.p-highlight,
 :host ::ng-deep .p-select-item[aria-selected="true"],
 :host ::ng-deep .p-select-option[aria-selected="true"] {
-  background: #1d436f;
+  background: #030132;
   color: #fff;
 }
 
