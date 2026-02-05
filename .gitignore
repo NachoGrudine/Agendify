@@ -1,4 +1,4 @@
-﻿# ============================================
+﻿ ============================================
 # ARCHIVOS SENSIBLES - NUNCA SUBIR A GIT
 # ============================================
 # Variables de entorno con valores reales
@@ -19,9 +19,8 @@ secrets/
 **/appsettings.local.json
 **/appsettings.*.local.json
 
-# Scripts de PowerShell (pueden contener rutas locales o configuraciones sensibles)
+# Scripts de PowerShell (NINGUNO debe subirse a Git)
 *.ps1
-!*.example.ps1
 
 # ============================================
 # ============================================

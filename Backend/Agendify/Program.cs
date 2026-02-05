@@ -19,6 +19,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json;
 
@@ -110,44 +111,64 @@ builder.Services.AddProblemDetails(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    options.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Agendify API",
         Version = "v1",
-        Description = "API para sistema de gestión de turnos Agendify",
-        Contact = new Microsoft.OpenApi.Models.OpenApiContact
-        {
-            Name = "Agendify Team"
-        }
+        Description = "Appointment management system with JWT authentication. All JSON uses snake_case.",
+        Contact = new OpenApiContact { Name = "Agendify Team" }
     });
 
-    // Configurar JWT en Swagger
-    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    // JWT Authentication
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header usando el esquema Bearer. Solo ingresa el token (sin 'Bearer')",
+        Description = "JWT Authorization header. Enter your token (without 'Bearer' prefix)",
         Name = "Authorization",
-        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
         Scheme = "bearer",
         BearerFormat = "JWT"
     });
 
-    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            new OpenApiSecurityScheme
             {
-                Reference = new Microsoft.OpenApi.Models.OpenApiReference
-                {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                },
-                Scheme = "bearer",
-                Name = "Bearer",
-                In = Microsoft.OpenApi.Models.ParameterLocation.Header
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
             },
-            new List<string>()
+            Array.Empty<string>()
         }
+    });
+
+    // XML Documentation
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+    {
+        options.IncludeXmlComments(xmlPath);
+    }
+
+    options.EnableAnnotations();
+    options.CustomSchemaIds(type => type.Name);
+    
+    // Ordenar endpoints por flujo lógico de uso
+    options.OrderActionsBy(apiDesc =>
+    {
+        var controllerName = apiDesc.ActionDescriptor.RouteValues["controller"];
+        var order = controllerName switch
+        {
+            "Auth" => "1",
+            "Business" => "2",
+            "Providers" => "3",
+            "Services" => "4",
+            "Customers" => "5",
+            "ProviderSchedules" => "6",
+            "Appointments" => "7",
+            "Calendar" => "8",
+            _ => "9"
+        };
+        return $"{order}_{controllerName}_{apiDesc.RelativePath}";
     });
 });
 
@@ -164,28 +185,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Aplicar migraciones automáticamente al iniciar
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<AgendifyDbContext>();
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        
-        logger.LogInformation("Aplicando migraciones pendientes...");
-        await context.Database.MigrateAsync();
-        logger.LogInformation("Migraciones aplicadas exitosamente.");
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Error al aplicar migraciones de base de datos");
-        throw;
-    }
-}
-
-// Middleware de manejo de excepciones global
+// Global exception handling middleware
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
