@@ -1,4 +1,4 @@
-import { Component, signal, OnInit, inject, ViewChild } from '@angular/core';
+import { Component, signal, OnInit, inject, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FullCalendarModule, FullCalendarComponent } from '@fullcalendar/angular';
@@ -36,6 +36,10 @@ export class AgendaComponent implements OnInit {
   // Para evitar llamadas duplicadas al mismo mes
   private currentLoadedMonth: string = '';
 
+  // Control de scroll para cambiar de mes
+  private scrollTimeout: any = null;
+  private isScrolling = false;
+
 
   // Mes y año actual para el selector
   currentMonthYear = '';
@@ -67,6 +71,57 @@ export class AgendaComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateMonthYearDisplay();
+  }
+
+  /**
+   * Maneja el scroll del mouse sobre el calendario para cambiar de mes
+   * Estilo Google Calendar
+   */
+  @HostListener('wheel', ['$event'])
+  onWheel(event: WheelEvent): void {
+    // Solo aplicar si el scroll es sobre el calendario
+    const target = event.target as HTMLElement;
+    if (!target.closest('.calendar-wrapper')) {
+      return;
+    }
+
+    // Prevenir el scroll normal
+    event.preventDefault();
+
+    // Si ya hay un scroll en progreso, ignorar
+    if (this.isScrolling) {
+      return;
+    }
+
+    // Determinar dirección del scroll
+    const deltaY = event.deltaY;
+
+    // Threshold mínimo para considerar el scroll
+    if (Math.abs(deltaY) < 10) {
+      return;
+    }
+
+    // Marcar que estamos procesando un scroll
+    this.isScrolling = true;
+
+    // Limpiar timeout anterior si existe
+    if (this.scrollTimeout) {
+      clearTimeout(this.scrollTimeout);
+    }
+
+    // Cambiar de mes según la dirección
+    if (deltaY > 0) {
+      // Scroll hacia abajo = mes siguiente
+      this.nextMonth();
+    } else {
+      // Scroll hacia arriba = mes anterior
+      this.previousMonth();
+    }
+
+    // Debounce: permitir siguiente scroll después de un delay
+    this.scrollTimeout = setTimeout(() => {
+      this.isScrolling = false;
+    }, 400); // 400ms de delay entre cambios de mes
   }
 
   /**

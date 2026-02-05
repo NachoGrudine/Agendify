@@ -183,6 +183,13 @@
 
 .calendar-wrapper {
   /* El calendario ocupa todo */
+  cursor: grab;
+  user-select: none;
+  transition: opacity 0.2s ease;
+}
+
+.calendar-wrapper:active {
+  cursor: grabbing;
 }
 
 /* Eliminar m�rgenes del FullCalendar */
@@ -285,11 +292,11 @@
 /* D�as de la semana - COLOR CORRECTO DEL SISTEMA */
 :host ::ng-deep .fc .fc-col-header-cell {
   padding: 0.875rem 0.5rem;
-  background: #030132 !important;
-  border-color: rgba(255, 255, 255, 0.15);
-  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  background: white !important;
+  border-color: #e5e7eb;
+  border-right: 1px solid #e5e7eb;
   font-weight: 600;
-  color: white;
+  color: #030132;
   text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 0.5px;
@@ -301,7 +308,7 @@
 }
 
 :host ::ng-deep .fc .fc-col-header-cell-cushion {
-  color: white;
+  color: #030132;
   font-weight: 600;
 }
 
@@ -359,6 +366,21 @@
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
   width: 100% !important;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Animación suave cuando se renderizan las celdas */
+:host ::ng-deep .fc .fc-daygrid-day {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* FORZAR que todo el calendario ocupe el 100% del ancho disponible */
@@ -399,7 +421,7 @@
 
 /* Texto de d�as sin cortes y centrado */
 :host ::ng-deep .fc .fc-col-header-cell-cushion {
-  color: white;
+  color: #030132;
   font-weight: 600;
   display: block;
   width: 100%;
