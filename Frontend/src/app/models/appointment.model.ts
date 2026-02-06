@@ -68,3 +68,11 @@ export interface UpdateCustomerDto {
   email?: string;
 }
 
+// DTO para próximo turno
+export interface NextAppointmentResponse {
+  customerName: string;
+  startTime: string;  // ISO DateTime
+  endTime: string;    // ISO DateTime
+  day: string;        // ISO DateTime (fecha del día)
+}
+

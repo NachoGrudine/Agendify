@@ -24,6 +24,7 @@ export class AgendaComponent implements OnInit {
   private readonly router = inject(Router);
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
   @ViewChild('miniCalendar') miniCalendarComponent!: any;
+  @ViewChild(NextAppointmentComponent) nextAppointmentComponent!: NextAppointmentComponent;
 
   // Iconos Lucide
   readonly CalendarIcon = CalendarDays;

@@ -1,12 +1,57 @@
-﻿<div class="next-appointment">
+﻿﻿<div class="next-appointment">
   <h3 class="title">Próxima Cita</h3>
 
   <div class="content">
-    <div class="empty-state">
-      <div class="icon-wrapper">
-        <i-lucide [img]="CalendarIcon" [size]="32"></i-lucide>
+    <!-- Estado de carga -->
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p class="message">Cargando...</p>
       </div>
-      <p class="message">No hay próximas citas.</p>
-    </div>
+    }
+    <!-- Estado de error / sin turnos -->
+    @else if (hasError() || !nextAppointment()) {
+      <div class="empty-state">
+        <div class="icon-wrapper">
+          <i-lucide [img]="CalendarIcon" [size]="32"></i-lucide>
+        </div>
+        <p class="message">{{ errorMessage() || 'No hay próximos turnos programados' }}</p>
+      </div>
+    }
+    <!-- Datos del próximo turno -->
+    @else if (nextAppointment()) {
+      <div class="appointment-card">
+        <!-- Cliente o Fecha/Hora -->
+        <div class="appointment-header">
+          @if (shouldShowTimeDetails()) {
+            <div class="customer-info">
+              <i-lucide [img]="UserIcon" [size]="18" class="info-icon"></i-lucide>
+              <span class="customer-name">{{ getCustomerDisplay() }}</span>
+            </div>
+          } @else {
+            <div class="datetime-info">
+              <i-lucide [img]="CalendarIcon" [size]="18" class="info-icon"></i-lucide>
+              <span class="datetime-text">{{ getCustomerDisplay() }}</span>
+            </div>
+          }
+        </div>
+
+        <!-- Detalles de horario (solo si hay nombre de cliente) -->
+        @if (shouldShowTimeDetails()) {
+          <div class="appointment-details">
+            <div class="detail-row">
+              <i-lucide [img]="CalendarIcon" [size]="16" class="detail-icon"></i-lucide>
+              <span class="detail-text">{{ formatDay(nextAppointment()!.day) }}</span>
+            </div>
+            <div class="detail-row">
+              <i-lucide [img]="ClockIcon" [size]="16" class="detail-icon"></i-lucide>
+              <span class="detail-text">
+                {{ formatTime(nextAppointment()!.startTime) }} - {{ formatTime(nextAppointment()!.endTime) }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+    }
   </div>
 </div>
