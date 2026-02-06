@@ -79,8 +79,11 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
   readonly modalIcon = computed(() => this.isEditMode() ? this.CalendarCheckIcon : this.CalendarPlusIcon);
   readonly submitButtonLabel = computed(() => this.isEditMode() ? 'Actualizar Turno' : 'Crear Turno');
 
-  // Computed para verificar si la fecha/hora es pasada
+  // Computed para verificar si la fecha/hora es pasada - SOLO en modo edición
   readonly isPastDateTime = computed(() => {
+    // Solo validar en modo edición
+    if (!this.isEditMode()) return false;
+
     if (!this.appointmentForm) return false;
 
     const formValue = this.appointmentForm.value;
@@ -300,10 +303,11 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
     const startDateTime = DateTimeHelper.createDateTime(baseDate, startHour, startMinute);
     const endDateTime = DateTimeHelper.createDateTime(baseDate, endHour, endMinute);
 
-    // Validar que no sea una fecha/hora pasada
+    // Validar que no sea una fecha/hora pasada SOLO en modo edición
+    // En modo crear, permitimos crear turnos para cualquier fecha seleccionada
     const now = new Date();
-    if (startDateTime < now) {
-      this.errorMessage.set('No se puede crear o editar un turno en una fecha u hora pasada');
+    if (this.isEditMode() && startDateTime < now) {
+      this.errorMessage.set('No se puede editar un turno a una fecha u hora pasada');
       return;
     }
 
@@ -421,8 +425,12 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
 
   /**
    * Verifica si la fecha/hora seleccionada está en el pasado
+   * Solo aplica en modo edición
    */
   isDateTimeInPast(): boolean {
+    // Solo validar en modo edición
+    if (!this.isEditMode()) return false;
+
     const startTime = this.appointmentForm.get('startTime')?.value;
     if (!startTime) return false;
 
