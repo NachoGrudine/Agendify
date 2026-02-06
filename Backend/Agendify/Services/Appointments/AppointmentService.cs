@@ -150,6 +150,32 @@ public class AppointmentService : IAppointmentService
         return todayCount - yesterdayCount;
     }
 
+    /// <summary>
+    /// Obtiene el próximo turno programado a partir de una fecha/hora específica
+    /// </summary>
+    /// <param name="businessId">ID del business</param>
+    /// <param name="currentDateTime">Fecha y hora actual desde el frontend</param>
+    /// <returns>Datos del próximo turno: nombre del cliente, horario inicio-fin y día</returns>
+    public async Task<Result<NextAppointmentResponseDto>> GetNextAppointmentAsync(int businessId, DateTime currentDateTime)
+    {
+        var appointment = await _appointmentRepository.GetNextAppointmentAsync(businessId, currentDateTime);
+        
+        if (appointment == null)
+        {
+            return Result.Fail(new NotFoundError("No hay turnos próximos programados"));
+        }
+
+        var nextAppointmentDto = new NextAppointmentResponseDto
+        {
+            CustomerName = appointment.Customer?.Name ?? "Sin cliente asignado",
+            StartTime = appointment.StartTime,
+            EndTime = appointment.EndTime,
+            Day = appointment.StartTime.Date
+        };
+
+        return Result.Ok(nextAppointmentDto);
+    }
+
 
     private static AppointmentResponseDto MapToResponseDto(Appointment appointment)
     {

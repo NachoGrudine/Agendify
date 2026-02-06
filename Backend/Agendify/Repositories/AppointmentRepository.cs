@@ -1,4 +1,4 @@
-﻿using Agendify.Data;
+﻿﻿using Agendify.Data;
 using Agendify.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -86,6 +86,17 @@ public class AppointmentRepository : Repository<Appointment>, IAppointmentReposi
         }
 
         return await query.AnyAsync();
+    }
+
+    public async Task<Appointment?> GetNextAppointmentAsync(int businessId, DateTime currentDateTime)
+    {
+        return await _dbSet
+            .Where(a => a.BusinessId == businessId 
+                && !a.IsDeleted 
+                && a.StartTime >= currentDateTime)
+            .Include(a => a.Customer)
+            .OrderBy(a => a.StartTime)
+            .FirstOrDefaultAsync();
     }
 }
 

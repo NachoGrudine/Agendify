@@ -1,4 +1,4 @@
-﻿using Agendify.DTOs.Appointment;
+﻿﻿using Agendify.DTOs.Appointment;
 using Agendify.DTOs.Common;
 using Agendify.Models.Entities;
 using FluentResults;
@@ -13,5 +13,6 @@ public interface IAppointmentService
     Task<IEnumerable<Appointment>> GetAppointmentsWithDetailsByDateRangeAsync(int businessId, DateTime startDate, DateTime endDate);
     Task<Result> DeleteAsync(int businessId, int id);
     Task<int> GetAppointmentsTrendAsync(int businessId, DateTime date);
+    Task<Result<NextAppointmentResponseDto>> GetNextAppointmentAsync(int businessId, DateTime currentDateTime);
 }
 

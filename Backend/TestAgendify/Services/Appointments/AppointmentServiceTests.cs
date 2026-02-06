@@ -609,6 +609,115 @@ public class AppointmentServiceTests
             Times.Once
         );
     }
+    
+    [Fact]
+    public async Task GetNextAppointmentAsync_WhenNextAppointmentExists_ShouldReturnNextAppointment()
+    {
+        // Arrange
+        var businessId = 1;
+        var currentDateTime = new DateTime(2026, 2, 5, 9, 0, 0);
+        
+        var nextAppointment = new Appointment
+        {
+            Id = 100,
+            BusinessId = businessId,
+            StartTime = new DateTime(2026, 2, 5, 14, 0, 0),
+            EndTime = new DateTime(2026, 2, 5, 15, 0, 0),
+            Customer = new Customer { Id = 5, Name = "Juan Pérez" }
+        };
+
+        _mockAppointmentRepository
+            .Setup(x => x.GetNextAppointmentAsync(businessId, currentDateTime))
+            .ReturnsAsync(nextAppointment);
+
+        // Act
+        var result = await _sut.GetNextAppointmentAsync(businessId, currentDateTime);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.CustomerName.Should().Be("Juan Pérez");
+        result.Value.StartTime.Should().Be(new DateTime(2026, 2, 5, 14, 0, 0));
+        result.Value.EndTime.Should().Be(new DateTime(2026, 2, 5, 15, 0, 0));
+        result.Value.Day.Should().Be(new DateTime(2026, 2, 5));
+    }
+
+    [Fact]
+    public async Task GetNextAppointmentAsync_WhenNoUpcomingAppointments_ShouldReturnNotFoundError()
+    {
+        // Arrange
+        var businessId = 1;
+        var currentDateTime = new DateTime(2026, 2, 5, 9, 0, 0);
+
+        _mockAppointmentRepository
+            .Setup(x => x.GetNextAppointmentAsync(businessId, currentDateTime))
+            .ReturnsAsync((Appointment?)null);
+
+        // Act
+        var result = await _sut.GetNextAppointmentAsync(businessId, currentDateTime);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors[0].Should().BeOfType<NotFoundError>();
+        result.Errors[0].Message.Should().Be("No hay turnos próximos programados");
+    }
+
+    [Fact]
+    public async Task GetNextAppointmentAsync_WhenCustomerIsNull_ShouldReturnDefaultCustomerName()
+    {
+        // Arrange
+        var businessId = 1;
+        var currentDateTime = new DateTime(2026, 2, 5, 9, 0, 0);
+        
+        var nextAppointment = new Appointment
+        {
+            Id = 100,
+            BusinessId = businessId,
+            StartTime = new DateTime(2026, 2, 5, 14, 0, 0),
+            EndTime = new DateTime(2026, 2, 5, 15, 0, 0),
+            Customer = null
+        };
+
+        _mockAppointmentRepository
+            .Setup(x => x.GetNextAppointmentAsync(businessId, currentDateTime))
+            .ReturnsAsync(nextAppointment);
+
+        // Act
+        var result = await _sut.GetNextAppointmentAsync(businessId, currentDateTime);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.CustomerName.Should().Be("Sin cliente asignado");
+    }
+
+    [Fact]
+    public async Task GetNextAppointmentAsync_ShouldReturnCorrectDay()
+    {
+        // Arrange
+        var businessId = 1;
+        var currentDateTime = new DateTime(2026, 2, 5, 23, 0, 0);
+        
+        var nextAppointment = new Appointment
+        {
+            Id = 100,
+            BusinessId = businessId,
+            StartTime = new DateTime(2026, 2, 6, 10, 30, 0), // Al día siguiente
+            EndTime = new DateTime(2026, 2, 6, 11, 30, 0),
+            Customer = new Customer { Id = 5, Name = "María López" }
+        };
+
+        _mockAppointmentRepository
+            .Setup(x => x.GetNextAppointmentAsync(businessId, currentDateTime))
+            .ReturnsAsync(nextAppointment);
+
+        // Act
+        var result = await _sut.GetNextAppointmentAsync(businessId, currentDateTime);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Day.Should().Be(new DateTime(2026, 2, 6)); // Solo la fecha sin hora
+        result.Value.StartTime.Hour.Should().Be(10);
+        result.Value.StartTime.Minute.Should().Be(30);
+    }
 
     #endregion
 }

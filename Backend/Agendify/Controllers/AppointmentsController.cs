@@ -1,4 +1,4 @@
-﻿using Agendify.DTOs.Appointment;
+﻿﻿using Agendify.DTOs.Appointment;
 using Agendify.Services.Appointments;
 using Agendify.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -97,6 +97,27 @@ public class AppointmentsController : BaseController
     {
         var businessId = GetBusinessId();
         var result = await _appointmentService.UpdateAsync(businessId, id, dto);
+        return result.ToActionResult();
+    }
+
+    /// <summary>
+    /// Gets the next scheduled appointment
+    /// </summary>
+    /// <param name="currentDateTime">Current date and time from frontend</param>
+    /// <returns>Next appointment data: customer name, start-end time, and day</returns>
+    /// <response code="200">Next appointment found</response>
+    /// <response code="404">No upcoming appointments found</response>
+    [HttpGet("next")]
+    [SwaggerOperation(
+        Summary = "Get next appointment",
+        Description = "Returns the next scheduled appointment after the specified date/time",
+        OperationId = "GetNextAppointment",
+        Tags = new[] { "Appointments" }
+    )]
+    public async Task<ActionResult<NextAppointmentResponseDto>> GetNext([FromQuery] DateTime currentDateTime)
+    {
+        var businessId = GetBusinessId();
+        var result = await _appointmentService.GetNextAppointmentAsync(businessId, currentDateTime);
         return result.ToActionResult();
     }
 
