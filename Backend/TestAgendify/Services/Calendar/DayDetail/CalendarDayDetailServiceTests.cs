@@ -164,13 +164,13 @@ public class CalendarDayDetailServiceTests
         // Arrange
         var businessId = 1;
         var date = new DateTime(2026, 2, 5);
-        var startTime = "10:00";
+        var startTimeFrom = "11:00";
 
         var appointments = new List<Appointment>
         {
             CreateAppointment(1, date, 10, 0),
             CreateAppointment(2, date, 11, 0),
-            CreateAppointment(3, date, 10, 0),
+            CreateAppointment(3, date, 12, 0),
             CreateAppointment(4, date, 14, 0)
         };
 
@@ -192,13 +192,12 @@ public class CalendarDayDetailServiceTests
             .ReturnsAsync(new Dictionary<DayOfWeek, int> { { date.DayOfWeek, 480 } });
 
         // Act
-        var result = await _sut.GetDayDetailsAsync(businessId, date, startTime: startTime);
+        var result = await _sut.GetDayDetailsAsync(businessId, date, startTimeFrom: startTimeFrom);
 
         // Assert
         result.Should().NotBeNull();
-        result.TotalCount.Should().Be(2); // Solo los que empiezan a las 10:00
-        result.Appointments.Should().HaveCount(2);
-        result.Appointments.Should().AllSatisfy(a => a.StartTime.Should().Be("10:00"));
+        result.TotalCount.Should().Be(3); // Los que empiezan desde las 11:00
+        result.Appointments.Should().HaveCount(3);
     }
 
     [Fact]
@@ -249,7 +248,8 @@ public class CalendarDayDetailServiceTests
         // Arrange
         var businessId = 1;
         var date = new DateTime(2026, 2, 5);
-        var startTime = "10:00";
+        var startTimeFrom = "10:00";
+        var startTimeTo = "10:30";
         var searchText = "Smith";
 
         var appointments = new List<Appointment>
@@ -278,7 +278,7 @@ public class CalendarDayDetailServiceTests
             .ReturnsAsync(new Dictionary<DayOfWeek, int> { { date.DayOfWeek, 480 } });
 
         // Act
-        var result = await _sut.GetDayDetailsAsync(businessId, date, startTime: startTime, searchText: searchText);
+        var result = await _sut.GetDayDetailsAsync(businessId, date, startTimeFrom: startTimeFrom, startTimeTo: startTimeTo, searchText: searchText);
 
         // Assert
         result.Should().NotBeNull();
@@ -286,6 +286,91 @@ public class CalendarDayDetailServiceTests
         result.Appointments.Should().HaveCount(2);
         result.Appointments.Should().AllSatisfy(a => a.StartTime.Should().Be("10:00"));
         result.Appointments.Should().AllSatisfy(a => a.CustomerName.Should().Contain("Smith"));
+    }
+
+    [Fact]
+    public async Task GetDayDetailsAsync_WithStartTimeToFilter_ShouldFilterToTime()
+    {
+        // Arrange
+        var businessId = 1;
+        var date = new DateTime(2026, 2, 5);
+        var startTimeTo = "12:00";
+
+        var appointments = new List<Appointment>
+        {
+            CreateAppointment(1, date, 10, 0),
+            CreateAppointment(2, date, 11, 0),
+            CreateAppointment(3, date, 12, 0),
+            CreateAppointment(4, date, 14, 0)
+        };
+
+        _mockAppointmentService
+            .Setup(x => x.GetAppointmentsWithDetailsByDateRangeAsync(
+                businessId, date, date.AddDays(1).AddSeconds(-1)))
+            .ReturnsAsync(appointments);
+
+        _mockAppointmentService
+            .Setup(x => x.GetAppointmentsTrendAsync(businessId, date))
+            .ReturnsAsync(0);
+
+        _mockProviderService
+            .Setup(x => x.GetProviderIdsByBusinessAsync(businessId))
+            .ReturnsAsync(new List<int> { 1 });
+
+        _mockScheduleService
+            .Setup(x => x.GetScheduledMinutesByProviderIdsForDateAsync(It.IsAny<List<int>>(), date))
+            .ReturnsAsync(new Dictionary<DayOfWeek, int> { { date.DayOfWeek, 480 } });
+
+        // Act
+        var result = await _sut.GetDayDetailsAsync(businessId, date, startTimeTo: startTimeTo);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.TotalCount.Should().Be(3); // Los que empiezan hasta las 12:00 (10, 11, 12)
+        result.Appointments.Should().HaveCount(3);
+    }
+
+    [Fact]
+    public async Task GetDayDetailsAsync_WithStartTimeRangeFilter_ShouldFilterByRange()
+    {
+        // Arrange
+        var businessId = 1;
+        var date = new DateTime(2026, 2, 5);
+        var startTimeFrom = "11:00";
+        var startTimeTo = "13:00";
+
+        var appointments = new List<Appointment>
+        {
+            CreateAppointment(1, date, 10, 0),
+            CreateAppointment(2, date, 11, 0),
+            CreateAppointment(3, date, 12, 0),
+            CreateAppointment(4, date, 14, 0)
+        };
+
+        _mockAppointmentService
+            .Setup(x => x.GetAppointmentsWithDetailsByDateRangeAsync(
+                businessId, date, date.AddDays(1).AddSeconds(-1)))
+            .ReturnsAsync(appointments);
+
+        _mockAppointmentService
+            .Setup(x => x.GetAppointmentsTrendAsync(businessId, date))
+            .ReturnsAsync(0);
+
+        _mockProviderService
+            .Setup(x => x.GetProviderIdsByBusinessAsync(businessId))
+            .ReturnsAsync(new List<int> { 1 });
+
+        _mockScheduleService
+            .Setup(x => x.GetScheduledMinutesByProviderIdsForDateAsync(It.IsAny<List<int>>(), date))
+            .ReturnsAsync(new Dictionary<DayOfWeek, int> { { date.DayOfWeek, 480 } });
+
+        // Act
+        var result = await _sut.GetDayDetailsAsync(businessId, date, startTimeFrom: startTimeFrom, startTimeTo: startTimeTo);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.TotalCount.Should().Be(2); // Los que empiezan entre las 11:00 y 13:00 (11:00 y 12:00)
+        result.Appointments.Should().HaveCount(2);
     }
 
     [Fact]

@@ -153,7 +153,7 @@ public class CalendarServiceTests
         };
 
         _mockDayDetailService
-            .Setup(x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, null))
+            .Setup(x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, null, null))
             .ReturnsAsync(expectedDetails);
 
         // Act
@@ -164,7 +164,7 @@ public class CalendarServiceTests
         result.Should().BeEquivalentTo(expectedDetails);
 
         _mockDayDetailService.Verify(
-            x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, null),
+            x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, null, null),
             Times.Once
         );
     }
@@ -177,7 +177,8 @@ public class CalendarServiceTests
         var date = new DateTime(2026, 2, 5);
         var page = 2;
         var pageSize = 20;
-        var startTime = "10:00";
+        var startTimeFrom = "10:00";
+        var startTimeTo = "14:00";
         var searchText = "John";
 
         var expectedDetails = new DayDetailsDto
@@ -196,11 +197,11 @@ public class CalendarServiceTests
         };
 
         _mockDayDetailService
-            .Setup(x => x.GetDayDetailsAsync(businessId, date, page, pageSize, startTime, searchText))
+            .Setup(x => x.GetDayDetailsAsync(businessId, date, page, pageSize, startTimeFrom, startTimeTo, searchText))
             .ReturnsAsync(expectedDetails);
 
         // Act
-        var result = await _sut.GetDayDetailsAsync(businessId, date, page, pageSize, startTime, searchText);
+        var result = await _sut.GetDayDetailsAsync(businessId, date, page, pageSize, startTimeFrom, startTimeTo, searchText);
 
         // Assert
         result.Should().NotBeNull();
@@ -214,7 +215,8 @@ public class CalendarServiceTests
                 It.Is<DateTime>(d => d == date),
                 It.Is<int>(p => p == page),
                 It.Is<int>(ps => ps == pageSize),
-                It.Is<string>(st => st == startTime),
+                It.Is<string>(stf => stf == startTimeFrom),
+                It.Is<string>(stt => stt == startTimeTo),
                 It.Is<string>(txt => txt == searchText)),
             Times.Once
         );
@@ -262,7 +264,7 @@ public class CalendarServiceTests
         };
 
         _mockDayDetailService
-            .Setup(x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, searchText))
+            .Setup(x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, null, searchText))
             .ReturnsAsync(expectedDetails);
 
         // Act
@@ -303,7 +305,7 @@ public class CalendarServiceTests
         };
 
         _mockDayDetailService
-            .Setup(x => x.GetDayDetailsAsync(businessId, date, page, pageSize, null, null))
+            .Setup(x => x.GetDayDetailsAsync(businessId, date, page, pageSize, null, null, null))
             .ReturnsAsync(expectedDetails);
 
         // Act
@@ -341,7 +343,7 @@ public class CalendarServiceTests
         };
 
         _mockDayDetailService
-            .Setup(x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, null))
+            .Setup(x => x.GetDayDetailsAsync(businessId, date, 1, 10, null, null, null))
             .ReturnsAsync(expectedDetails);
 
         // Act

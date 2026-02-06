@@ -1,0 +1,140 @@
+﻿/* ============================================
+   CONFIRM DIALOG - ESTILOS GENERALES
+   ============================================ */
+
+/* Ocultar header por defecto del dialog */
+:host ::ng-deep .confirm-dialog-custom .p-dialog-header {
+  display: none !important;
+}
+
+:host ::ng-deep .confirm-dialog-custom.agendify-dialog {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+:host ::ng-deep .confirm-dialog-custom .p-dialog-content {
+  padding: 0 !important;
+}
+
+/* ============================================
+   HEADER PERSONALIZADO
+   ============================================ */
+
+.confirm-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 1.5rem 1.25rem 1.5rem;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.header-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.icon-warning {
+  background: #fef3c7;
+  color: #f59e0b;
+}
+
+.icon-info {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  letter-spacing: -0.01em;
+}
+
+/* ============================================
+   CONTENIDO
+   ============================================ */
+
+.confirm-content {
+  padding: 1.5rem;
+  background: #ffffff;
+}
+
+.confirm-message {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.confirm-message :global(strong) {
+  font-weight: 600;
+  color: #111827;
+}
+
+.confirm-detail {
+  margin: 0.75rem 0 0 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #dc2626;
+  line-height: 1.5;
+}
+
+/* ============================================
+   FOOTER CON BOTONES
+   ============================================ */
+
+.confirm-footer {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+}
+
+.confirm-footer app-button {
+  min-width: 100px;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 640px) {
+  :host ::ng-deep .confirm-dialog-custom.agendify-dialog {
+    width: 95vw !important;
+    margin: 1rem;
+  }
+
+  .confirm-header {
+    padding: 1.25rem;
+  }
+
+  .confirm-content {
+    padding: 1.25rem;
+  }
+
+  .confirm-footer {
+    flex-direction: column-reverse;
+    gap: 0.625rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .confirm-footer app-button {
+    width: 100%;
+    min-width: 0;
+  }
+}

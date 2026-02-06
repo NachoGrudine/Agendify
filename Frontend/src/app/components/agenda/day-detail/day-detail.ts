@@ -12,8 +12,10 @@ import { ProviderResponse } from '../../../models/appointment.model';
 import { DateTimeHelper } from '../../../helpers/date-time.helper';
 import { ErrorHelper } from '../../../helpers/error.helper';
 import { AppointmentStatusHelper } from '../../../helpers/appointment-status.helper';
-import { ButtonComponent, InputComponent, LoadingSpinnerComponent, ProgressBarComponent, DialogComponent } from '../../../shared/components';
+import { ButtonComponent, InputComponent, LoadingSpinnerComponent, ProgressBarComponent, DialogComponent, ToastComponent } from '../../../shared/components';
 import { AppointmentFormComponent } from './appointment-form/appointment-form.component';
+import { ConfirmService } from '../../../shared/services/confirm.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-day-detail',
@@ -27,10 +29,12 @@ import { AppointmentFormComponent } from './appointment-form/appointment-form.co
     LoadingSpinnerComponent,
     ProgressBarComponent,
     DialogComponent,
-    AppointmentFormComponent
+    AppointmentFormComponent,
+    ToastComponent
   ],
   templateUrl: './day-detail.html',
   styleUrl: './day-detail.css',
+  providers: [MessageService]
 })
 export class DayDetailComponent implements OnInit {
   private readonly calendarService = inject(CalendarService);
@@ -39,6 +43,8 @@ export class DayDetailComponent implements OnInit {
   private readonly filterService = inject(DayDetailFilterService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly confirmService = inject(ConfirmService);
+  private readonly messageService = inject(MessageService);
 
   // Exponer Math para el template
   readonly Math = Math;
@@ -285,20 +291,29 @@ export class DayDetailComponent implements OnInit {
   /**
    * Eliminar un appointment
    */
-  deleteAppointment(appointmentId: number, customerName: string): void {
-    const confirmed = confirm(`¿Estás seguro de que deseas eliminar el turno de ${customerName}?`);
+  async deleteAppointment(appointmentId: number, customerName: string): Promise<void> {
+    const confirmed = await this.confirmService.confirmDelete(`el turno de ${customerName}`);
 
     if (confirmed) {
       this.isLoading.set(true);
 
       this.appointmentService.delete(appointmentId).subscribe({
         next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Turno eliminado correctamente'
+          });
           // Recargar los detalles del día después de eliminar
           this.loadDayDetails();
         },
         error: (error) => {
           const errorMsg = ErrorHelper.extractErrorMessage(error, 'Error al eliminar el turno');
-          alert(errorMsg);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: errorMsg
+          });
           this.isLoading.set(false);
         }
       });

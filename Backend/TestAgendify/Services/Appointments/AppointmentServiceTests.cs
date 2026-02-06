@@ -41,8 +41,8 @@ public class AppointmentServiceTests
             ProviderId = 10,
             CustomerId = 5,
             ServiceId = 3,
-            StartTime = new DateTime(2026, 2, 5, 10, 0, 0),
-            EndTime = new DateTime(2026, 2, 5, 11, 0, 0),
+            StartTime = new DateTime(2026, 2, 10, 10, 0, 0),
+            EndTime = new DateTime(2026, 2, 10, 11, 0, 0),
             Notes = "Test appointment"
         };
 
@@ -94,8 +94,8 @@ public class AppointmentServiceTests
         var dto = new CreateAppointmentDto
         {
             ProviderId = 10,
-            StartTime = new DateTime(2026, 2, 5, 10, 0, 0),
-            EndTime = new DateTime(2026, 2, 5, 11, 0, 0)
+            StartTime = new DateTime(2026, 2, 10, 10, 0, 0),
+            EndTime = new DateTime(2026, 2, 10, 11, 0, 0)
         };
 
         _mockAppointmentRepository
@@ -123,8 +123,8 @@ public class AppointmentServiceTests
         {
             ProviderId = 10,
             CustomerName = "New Customer",
-            StartTime = new DateTime(2026, 2, 5, 10, 0, 0),
-            EndTime = new DateTime(2026, 2, 5, 11, 0, 0)
+            StartTime = new DateTime(2026, 2, 10, 10, 0, 0),
+            EndTime = new DateTime(2026, 2, 10, 11, 0, 0)
         };
 
         _mockAppointmentRepository
@@ -180,8 +180,9 @@ public class AppointmentServiceTests
             ProviderId = 10,
             CustomerId = 5,
             ServiceId = 3,
-            StartTime = new DateTime(2026, 2, 5, 14, 0, 0),
-            EndTime = new DateTime(2026, 2, 5, 15, 0, 0),            Notes = "Updated notes"
+            StartTime = new DateTime(2026, 2, 10, 14, 0, 0),
+            EndTime = new DateTime(2026, 2, 10, 15, 0, 0),
+            Notes = "Updated notes"
         };
 
         var existingAppointment = new Appointment
@@ -189,8 +190,8 @@ public class AppointmentServiceTests
             Id = appointmentId,
             BusinessId = businessId,
             ProviderId = 10,
-            StartTime = new DateTime(2026, 2, 5, 10, 0, 0),
-            EndTime = new DateTime(2026, 2, 5, 11, 0, 0)
+            StartTime = new DateTime(2026, 2, 10, 10, 0, 0),
+            EndTime = new DateTime(2026, 2, 10, 11, 0, 0)
         };
 
         _mockAppointmentRepository
@@ -245,8 +246,9 @@ public class AppointmentServiceTests
         var dto = new UpdateAppointmentDto
         {
             ProviderId = 10,
-            StartTime = new DateTime(2026, 2, 5, 14, 0, 0),
-            EndTime = new DateTime(2026, 2, 5, 15, 0, 0),        };
+            StartTime = new DateTime(2026, 2, 10, 14, 0, 0),
+            EndTime = new DateTime(2026, 2, 10, 15, 0, 0),
+        };
 
         _mockAppointmentRepository
             .Setup(x => x.GetByIdAsync(appointmentId))
@@ -273,8 +275,9 @@ public class AppointmentServiceTests
         var dto = new UpdateAppointmentDto
         {
             ProviderId = 10,
-            StartTime = new DateTime(2026, 2, 5, 14, 0, 0),
-            EndTime = new DateTime(2026, 2, 5, 15, 0, 0),        };
+            StartTime = new DateTime(2026, 2, 10, 14, 0, 0),
+            EndTime = new DateTime(2026, 2, 10, 15, 0, 0),
+        };
 
         var existingAppointment = new Appointment
         {
@@ -304,8 +307,9 @@ public class AppointmentServiceTests
         var dto = new UpdateAppointmentDto
         {
             ProviderId = 10,
-            StartTime = new DateTime(2026, 2, 5, 14, 0, 0),
-            EndTime = new DateTime(2026, 2, 5, 15, 0, 0),        };
+            StartTime = new DateTime(2026, 2, 10, 14, 0, 0),
+            EndTime = new DateTime(2026, 2, 10, 15, 0, 0),
+        };
 
         var existingAppointment = new Appointment
         {
@@ -348,8 +352,9 @@ public class AppointmentServiceTests
             Id = appointmentId,
             BusinessId = businessId,
             ProviderId = 10,
-            StartTime = new DateTime(2026, 2, 5, 10, 0, 0),
-            EndTime = new DateTime(2026, 2, 5, 11, 0, 0),            Provider = new Provider { Id = 10, Name = "Dr. Smith" }
+            StartTime = new DateTime(2026, 2, 10, 10, 0, 0),
+            EndTime = new DateTime(2026, 2, 10, 11, 0, 0),
+            Provider = new Provider { Id = 10, Name = "Dr. Smith" }
         };
 
         _mockAppointmentRepository

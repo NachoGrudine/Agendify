@@ -6,43 +6,55 @@
   box-sizing: border-box;
 }
 
-/* Page Header - M�S COMPACTO */
+/* Page Header */
 .page-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1.5rem;
+  padding: 0.25rem 0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
 }
 
 .header-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  background: white;
+  width: 40px;
+  height: 40px;
+  background: transparent;
   border-radius: 10px;
   color: #030132;
-  box-shadow: 0 2px 8px rgba(29, 67, 111, 0.12);
-  border: 2px solid #e5e7eb;
+  box-shadow: none;
+  border: none;
   flex-shrink: 0;
 }
 
-.header-content-main h1 {
-  font-size: 1.5rem;
+.header-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.header-title-section h1 {
+  font-size: 1.35rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0;
   line-height: 1;
 }
 
-.header-content-main p {
-  color: #6b7280;
+.subtitle {
+  color: var(--text-secondary);
   font-size: 0.8125rem;
   margin: 0;
-  margin-top: 0.125rem;
+  font-weight: 400;
+  line-height: 1.2;
 }
 
 /* Header - M�S COMPACTO */

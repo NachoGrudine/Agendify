@@ -14,7 +14,8 @@ public interface ICalendarDayDetailService
     /// <param name="date">Fecha del día a consultar</param>
     /// <param name="page">Número de página (paginación)</param>
     /// <param name="pageSize">Cantidad de elementos por página</param>
-    /// <param name="startTime">Filtro por hora de inicio (formato HH:mm)</param>
+    /// <param name="startTimeFrom">Filtro por hora de inicio desde (formato HH:mm)</param>
+    /// <param name="startTimeTo">Filtro por hora de inicio hasta (formato HH:mm)</param>
     /// <param name="searchText">Texto de búsqueda en customer, service o provider</param>
     /// <returns>Detalle completo del día con appointments paginados y métricas</returns>
     Task<DayDetailsDto> GetDayDetailsAsync(
@@ -22,7 +23,8 @@ public interface ICalendarDayDetailService
         DateTime date,
         int page = 1,
         int pageSize = 10,
-        string? startTime = null,
+        string? startTimeFrom = null,
+        string? startTimeTo = null,
         string? searchText = null);
 }
 

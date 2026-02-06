@@ -1,4 +1,4 @@
-﻿using Agendify.DTOs.Calendar;
+﻿﻿using Agendify.DTOs.Calendar;
 using Agendify.Services.Calendar.DayDetail;
 using Agendify.Services.Calendar.Summary;
 
@@ -38,11 +38,12 @@ public class CalendarService : ICalendarService
         DateTime date,
         int page = 1,
         int pageSize = 10,
-        string? startTime = null,
+        string? startTimeFrom = null,
+        string? startTimeTo = null,
         string? searchText = null)
     {
         return await _dayDetailService.GetDayDetailsAsync(
-            businessId, date, page, pageSize, startTime, searchText);
+            businessId, date, page, pageSize, startTimeFrom, startTimeTo, searchText);
     }
 }
 

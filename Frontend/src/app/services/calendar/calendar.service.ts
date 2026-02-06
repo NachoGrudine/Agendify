@@ -34,7 +34,7 @@ export class CalendarService {
    * @param date Fecha del día
    * @param page Número de página (1-based)
    * @param pageSize Cantidad de registros por página
-   * @param filters Filtros opcionales (status, startTime, searchText)
+   * @param filters Filtros opcionales (status, startTimeFrom, startTimeTo, searchText)
    * @returns Detalle del día con lista de turnos paginados
    */
   getDayDetails(
@@ -43,7 +43,8 @@ export class CalendarService {
     pageSize: number = 15,
     filters?: {
       status?: string;
-      startTime?: string;
+      startTimeFrom?: string;
+      startTimeTo?: string;
       searchText?: string;
     }
   ): Observable<DayDetailsDto> {
@@ -52,7 +53,8 @@ export class CalendarService {
       .set('pageSize', pageSize.toString());
 
     if (filters?.status) params = params.set('status', filters.status);
-    if (filters?.startTime) params = params.set('startTime', filters.startTime);
+    if (filters?.startTimeFrom) params = params.set('startTimeFrom', filters.startTimeFrom);
+    if (filters?.startTimeTo) params = params.set('startTimeTo', filters.startTimeTo);
     if (filters?.searchText) params = params.set('searchText', filters.searchText);
 
     // Usar formato local YYYY-MM-DD para evitar problemas de timezone

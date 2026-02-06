@@ -1,3 +1,5 @@
+<app-toast />
+
 <div class="day-detail-container">
   <!-- Header -->
   <div class="header">
@@ -100,12 +102,24 @@
   <div class="filters-panel" *ngIf="showFilters()">
     <div class="filters-content">
       <div class="filter-group">
-        <label for="time-filter">Hora de Inicio</label>
+        <label for="time-filter-from">Hora Desde</label>
         <input
           type="time"
-          id="time-filter"
-          [(ngModel)]="filters.startTime"
+          id="time-filter-from"
+          [(ngModel)]="filters.startTimeFrom"
           (change)="applyFilters()"
+          placeholder="HH:mm"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label for="time-filter-to">Hora Hasta</label>
+        <input
+          type="time"
+          id="time-filter-to"
+          [(ngModel)]="filters.startTimeTo"
+          (change)="applyFilters()"
+          placeholder="HH:mm"
         />
       </div>
 

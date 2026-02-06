@@ -1,6 +1,19 @@
 <!-- Toast Global para notificaciones -->
 <app-toast />
 
+<!-- Confirm Dialog Global -->
+<app-confirm-dialog
+  [(visible)]="confirmState().visible"
+  [header]="confirmState().header || 'Confirmar'"
+  [message]="confirmState().message"
+  [detail]="confirmState().detail"
+  [confirmLabel]="confirmState().confirmLabel || 'Confirmar'"
+  [cancelLabel]="confirmState().cancelLabel || 'Cancelar'"
+  [severity]="confirmState().severity || 'warning'"
+  (confirm)="onConfirm()"
+  (cancel)="onCancel()"
+/>
+
 <!-- Bloqueo para dispositivos móviles -->
 @if (isMobileDevice()) {
   <app-mobile-block />

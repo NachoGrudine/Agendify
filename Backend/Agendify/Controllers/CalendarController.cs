@@ -55,19 +55,21 @@ public class CalendarController : BaseController
     /// </summary>
     /// <remarks>
     /// Returns complete appointment list for the day with pagination.
-    /// Optional filters: startTime (start hour), searchText (searches in customer, service, provider).
+    /// Optional filters: startTimeFrom and startTimeTo (time range for appointment start), searchText (searches in customer, service, provider).
+    /// You can use only startTimeFrom (appointments from this time onwards), only startTimeTo (appointments until this time), or both for a complete range.
     /// </remarks>
     /// <param name="date">Date of the day</param>
     /// <param name="page">Page number (default: 1)</param>
     /// <param name="pageSize">Page size (default: 15)</param>
-    /// <param name="startTime">Filter from hour (HH:mm)</param>
+    /// <param name="startTimeFrom">Filter from hour (HH:mm)</param>
+    /// <param name="startTimeTo">Filter to hour (HH:mm)</param>
     /// <param name="searchText">Search text</param>
     /// <returns>Day details with appointment list</returns>
     /// <response code="200">Details retrieved</response>
     [HttpGet("day/{date}")]
     [SwaggerOperation(
         Summary = "Appointment details for a specific day",
-        Description = "Gets complete appointment list for a day with pagination and optional filters",
+        Description = "Gets complete appointment list for a day with pagination and optional time range filters",
         OperationId = "GetDayDetails",
         Tags = new[] { "Calendar" }
     )]
@@ -75,7 +77,8 @@ public class CalendarController : BaseController
         DateTime date,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 15,
-        [FromQuery] string? startTime = null,
+        [FromQuery] string? startTimeFrom = null,
+        [FromQuery] string? startTimeTo = null,
         [FromQuery] string? searchText = null)
     {
         var businessId = GetBusinessId();
@@ -84,7 +87,8 @@ public class CalendarController : BaseController
             date,
             page,
             pageSize,
-            startTime, 
+            startTimeFrom,
+            startTimeTo,
             searchText);
         return Ok(details);
     }

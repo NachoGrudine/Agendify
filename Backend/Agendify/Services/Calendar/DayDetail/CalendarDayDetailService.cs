@@ -35,7 +35,8 @@ public class CalendarDayDetailService : ICalendarDayDetailService
         DateTime date,
         int page = 1,
         int pageSize = 10,
-        string? startTime = null,
+        string? startTimeFrom = null,
+        string? startTimeTo = null,
         string? searchText = null)
     {
         date = date.Date;
@@ -48,7 +49,7 @@ public class CalendarDayDetailService : ICalendarDayDetailService
         var (totalAppointments, totalOccupiedMinutes) = CalculateDayTotals(allAppointments);
 
         // 3. Aplicar filtros de búsqueda
-        var filteredAppointments = ApplyFilters(allAppointments, startTime, searchText);
+        var filteredAppointments = ApplyFilters(allAppointments, startTimeFrom, startTimeTo, searchText);
 
         // 4. Aplicar paginación
         var (paginatedAppointments, totalCount, totalPages) = ApplyPagination(filteredAppointments, page, pageSize);
@@ -101,23 +102,55 @@ public class CalendarDayDetailService : ICalendarDayDetailService
     }
 
     /// <summary>
-    /// Aplica filtros de búsqueda a la lista de appointments (hora, texto)
+    /// Aplica filtros de búsqueda a la lista de appointments (rango de hora, texto)
     /// </summary>
     private static List<Appointment> ApplyFilters(
         List<Appointment> appointments,
-        string? startTime,
+        string? startTimeFrom,
+        string? startTimeTo,
         string? searchText)
     {
         var filtered = appointments.OrderByDescending(a => a.StartTime).ToList();
 
-
-        if (!string.IsNullOrWhiteSpace(startTime))
+        // Filtro por rango de tiempo
+        if (!string.IsNullOrWhiteSpace(startTimeFrom) && !string.IsNullOrWhiteSpace(startTimeTo))
         {
-            filtered = filtered
-                .Where(a => a.StartTime.ToString("HH:mm") == startTime)
-                .ToList();
+            // Ambos filtros presentes: rango completo
+            if (TimeSpan.TryParse(startTimeFrom, out var timeFrom) &&
+                TimeSpan.TryParse(startTimeTo, out var timeTo))
+            {
+                filtered = filtered
+                    .Where(a =>
+                    {
+                        var appointmentTime = a.StartTime.TimeOfDay;
+                        // El turno debe comenzar dentro del rango especificado
+                        return appointmentTime >= timeFrom && appointmentTime <= timeTo;
+                    })
+                    .ToList();
+            }
+        }
+        else if (!string.IsNullOrWhiteSpace(startTimeFrom))
+        {
+            // Solo desde: turnos que comienzan desde esta hora en adelante
+            if (TimeSpan.TryParse(startTimeFrom, out var timeFrom))
+            {
+                filtered = filtered
+                    .Where(a => a.StartTime.TimeOfDay >= timeFrom)
+                    .ToList();
+            }
+        }
+        else if (!string.IsNullOrWhiteSpace(startTimeTo))
+        {
+            // Solo hasta: turnos que comienzan hasta esta hora
+            if (TimeSpan.TryParse(startTimeTo, out var timeTo))
+            {
+                filtered = filtered
+                    .Where(a => a.StartTime.TimeOfDay <= timeTo)
+                    .ToList();
+            }
         }
 
+        // Filtro por texto
         if (!string.IsNullOrWhiteSpace(searchText))
         {
             filtered = filtered

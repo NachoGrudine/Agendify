@@ -1,0 +1,39 @@
+﻿<app-dialog
+  [(visible)]="visible"
+  [width]="'500px'"
+  [modal]="true"
+  [closable]="false"
+  [headerTemplate]="true"
+  [footerTemplate]="true"
+  customClass="confirm-dialog-custom"
+>
+  <!-- Header personalizado -->
+  <div dialogHeader class="confirm-header">
+    <div class="header-icon" [ngClass]="'icon-' + severity">
+      <i-lucide [img]="getIcon()" [size]="24" [strokeWidth]="2"></i-lucide>
+    </div>
+    <h3 class="header-title">{{ header }}</h3>
+  </div>
+
+  <!-- Contenido -->
+  <div class="confirm-content">
+    <p class="confirm-message" [innerHTML]="message"></p>
+    @if (detail) {
+      <p class="confirm-detail">{{ detail }}</p>
+    }
+  </div>
+
+  <!-- Footer con botones -->
+  <div dialogFooter class="confirm-footer">
+    <app-button
+      [label]="cancelLabel"
+      severity="outlined"
+      (onClick)="onCancel()"
+    />
+    <app-button
+      [label]="confirmLabel"
+      [severity]="confirmButtonSeverity"
+      (onClick)="onConfirm()"
+    />
+  </div>
+</app-dialog>

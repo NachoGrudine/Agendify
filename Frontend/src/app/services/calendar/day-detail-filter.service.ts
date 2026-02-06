@@ -17,7 +17,8 @@ export class DayDetailFilterService {
   searchText = signal('');
   filters = signal({
     status: '',
-    startTime: ''
+    startTimeFrom: '',
+    startTimeTo: ''
   });
 
   // Estados disponibles
@@ -36,7 +37,8 @@ export class DayDetailFilterService {
     const currentFilters = this.filters();
     return {
       status: currentFilters.status || undefined,
-      startTime: currentFilters.startTime || undefined,
+      startTimeFrom: currentFilters.startTimeFrom || undefined,
+      startTimeTo: currentFilters.startTimeTo || undefined,
       searchText: this.searchText() || undefined
     };
   }
@@ -48,7 +50,8 @@ export class DayDetailFilterService {
     this.searchText.set('');
     this.filters.set({
       status: '',
-      startTime: ''
+      startTimeFrom: '',
+      startTimeTo: ''
     });
     this.showFilters.set(false);
     this.currentPage.set(1);

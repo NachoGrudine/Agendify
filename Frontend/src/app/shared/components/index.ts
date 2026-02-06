@@ -17,4 +17,6 @@ export { SectionIconComponent } from './section-icon/section-icon.component';
 export { TableComponent } from './table/table.component';
 export type { TableColumn, TableAction } from './table/table.component';
 export { MobileBlockComponent } from './mobile-block/mobile-block.component';
+export { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+export type { ConfirmSeverity } from './confirm-dialog/confirm-dialog.component';
 

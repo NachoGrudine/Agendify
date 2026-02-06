@@ -1,4 +1,4 @@
-﻿﻿using Agendify.DTOs.Calendar;
+﻿﻿﻿using Agendify.DTOs.Calendar;
 
 namespace Agendify.Services.Calendar;
 
@@ -10,6 +10,7 @@ public interface ICalendarService
         DateTime date,
         int page = 1,
         int pageSize = 10,
-        string? startTime = null, 
+        string? startTimeFrom = null,
+        string? startTimeTo = null,
         string? searchText = null);
 }

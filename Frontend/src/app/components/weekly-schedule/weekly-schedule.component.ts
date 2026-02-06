@@ -6,6 +6,7 @@ import { DaySchedule, TimeRange, DayOfWeek } from '../../models/schedule.model';
 import { ScheduleService } from '../../services/schedule/schedule.service';
 import { ErrorHelper } from '../../helpers/error.helper';
 import { ButtonComponent, LoadingSpinnerComponent, CardComponent } from '../../shared/components';
+import { ConfirmService } from '../../shared/services/confirm.service';
 
 @Component({
   selector: 'app-weekly-schedule',
@@ -28,6 +29,7 @@ export class WeeklyScheduleComponent implements OnInit {
 
   // Services
   private readonly scheduleService = inject(ScheduleService);
+  private readonly confirmService = inject(ConfirmService);
   private readonly STORAGE_KEY = 'agendify_temp_schedule';
 
   // State signals
@@ -194,8 +196,10 @@ export class WeeklyScheduleComponent implements OnInit {
     });
   }
 
-  discardChanges(): void {
-    if (confirm('¿Descartar los cambios no guardados?')) {
+  async discardChanges(): Promise<void> {
+    const confirmed = await this.confirmService.confirmDiscard();
+
+    if (confirmed) {
       // Limpiar localStorage inmediatamente
       this.clearLocalStorage();
       this.clearMessages();
