@@ -79,6 +79,23 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
   readonly modalIcon = computed(() => this.isEditMode() ? this.CalendarCheckIcon : this.CalendarPlusIcon);
   readonly submitButtonLabel = computed(() => this.isEditMode() ? 'Actualizar Turno' : 'Crear Turno');
 
+  // Computed para verificar si la fecha/hora es pasada
+  readonly isPastDateTime = computed(() => {
+    if (!this.appointmentForm) return false;
+
+    const formValue = this.appointmentForm.value;
+    if (!formValue.startTime) return false;
+
+    const baseDate = this.isEditMode() && this.originalAppointment
+      ? DateTimeHelper.parseLocalDateTime(this.originalAppointment.startTime)
+      : (this.selectedDate || new Date());
+
+    const { hours: startHour, minutes: startMinute } = DateTimeHelper.parseTime(formValue.startTime);
+    const startDateTime = DateTimeHelper.createDateTime(baseDate, startHour, startMinute);
+
+    return startDateTime < new Date();
+  });
+
   // Delegated to formService
   get filteredCustomers() { return this.formService.filteredCustomers; }
   get filteredServices() { return this.formService.filteredServices; }
@@ -144,11 +161,20 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
     this.isLoading.set(true);
     this.errorMessage.set('');
 
+    // Cargar todas las listas necesarias y el appointment
     Promise.all([
       this.providerService.getAll().toPromise(),
       this.customerService.getAll().toPromise(),
-      this.serviceService.getAll().toPromise()
-    ]).then(([providers, customers, services]) => {
+      this.serviceService.getAll().toPromise(),
+      this.appointmentService.getById(this.appointmentId!).toPromise()
+    ]).then(([providers, customers, services, appointment]) => {
+      console.log('🔄 Datos cargados en modo edición:');
+      console.log('  - Providers:', providers?.length);
+      console.log('  - Customers:', customers?.length);
+      console.log('  - Services:', services?.length);
+      console.log('  - Appointment:', appointment);
+
+      // Guardar las listas
       this.providers.set((providers || []).filter(p => p.isActive));
       this.customers.set(customers || []);
       this.services.set(services || []);
@@ -157,13 +183,13 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
         this.showProviderField.set(false);
       }
 
-      return this.appointmentService.getById(this.appointmentId!).toPromise();
-    }).then((appointment) => {
+      // Poblar el formulario con los datos del appointment
       if (appointment) {
         this.originalAppointment = appointment;
         this.populateForm(appointment);
         this.loadProviderSchedules(appointment.providerId);
       }
+
       this.isLoading.set(false);
     }).catch((error) => {
       const errorMsg = ErrorHelper.extractErrorMessage(error, 'Error al cargar el turno');
@@ -179,6 +205,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
     const startTime = DateTimeHelper.formatTime(startDate);
     const endTime = DateTimeHelper.formatTime(endDate);
 
+    // Poblar el formulario con los datos del appointment
     this.appointmentForm.patchValue({
       providerId: appointment.providerId,
       customerId: appointment.customerId || null,
@@ -188,7 +215,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
       startTime: startTime,
       endTime: endTime,
       notes: appointment.notes || ''
-    });
+    }, { emitEvent: false }); // No emitir eventos para evitar búsquedas innecesarias
   }
 
   private loadProviders(): void {
@@ -272,6 +299,13 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
 
     const startDateTime = DateTimeHelper.createDateTime(baseDate, startHour, startMinute);
     const endDateTime = DateTimeHelper.createDateTime(baseDate, endHour, endMinute);
+
+    // Validar que no sea una fecha/hora pasada
+    const now = new Date();
+    if (startDateTime < now) {
+      this.errorMessage.set('No se puede crear o editar un turno en una fecha u hora pasada');
+      return;
+    }
 
     const timeValidation = AppointmentDTOBuilder.validateTimes(startDateTime, endDateTime);
     if (!timeValidation.valid) {
@@ -383,5 +417,23 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
       return DateTimeHelper.formatDateSpanish(this.selectedDate);
     }
     return DateTimeHelper.formatDateSpanish(new Date());
+  }
+
+  /**
+   * Verifica si la fecha/hora seleccionada está en el pasado
+   */
+  isDateTimeInPast(): boolean {
+    const startTime = this.appointmentForm.get('startTime')?.value;
+    if (!startTime) return false;
+
+    const baseDate = this.isEditMode() && this.originalAppointment
+      ? DateTimeHelper.parseLocalDateTime(this.originalAppointment.startTime)
+      : (this.selectedDate || new Date());
+
+    const { hours: startHour, minutes: startMinute } = DateTimeHelper.parseTime(startTime);
+    const startDateTime = DateTimeHelper.createDateTime(baseDate, startHour, startMinute);
+
+    const now = new Date();
+    return startDateTime < now;
   }
 }

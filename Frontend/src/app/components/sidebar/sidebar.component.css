@@ -65,6 +65,7 @@
   cursor: pointer;
   font-weight: 500;
   border-left: 3px solid transparent;
+  position: relative;
 }
 
 .nav-item:hover {
@@ -90,6 +91,31 @@
 
 .nav-label {
   font-size: 0.95rem;
+  flex: 1;
+}
+
+.nav-shortcut {
+  font-size: 0.7rem;
+  background: rgba(29, 67, 111, 0.08);
+  color: var(--text-secondary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  opacity: 0.6;
+  transition: var(--transition-normal);
+}
+
+.nav-item:hover .nav-shortcut {
+  opacity: 1;
+  background: rgba(29, 67, 111, 0.12);
+  color: var(--primary-color);
+}
+
+.nav-item.active .nav-shortcut {
+  background: var(--primary-color);
+  color: white;
+  opacity: 1;
 }
 
 .sidebar-footer {
@@ -140,7 +166,8 @@
   }
 
   .nav-label,
-  .logo h2 {
+  .logo h2,
+  .nav-shortcut {
     display: none;
   }
 

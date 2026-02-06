@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -68,6 +68,19 @@ export class DayDetailComponent implements OnInit {
   private _showNewAppointmentModal = false;
   private _showEditAppointmentModal = false;
   selectedAppointmentId = signal<number | null>(null);
+
+  // Computed para verificar si la fecha seleccionada es pasada
+  isPastDate = computed(() => {
+    const selected = this.selectedDate();
+    if (!selected) return false;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const selectedDay = new Date(selected);
+    selectedDay.setHours(0, 0, 0, 0);
+
+    return selectedDay < today;
+  });
 
   get showNewAppointmentModal() { return this._showNewAppointmentModal; }
   set showNewAppointmentModal(value: boolean) { this._showNewAppointmentModal = value; }

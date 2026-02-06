@@ -17,6 +17,8 @@
         severity="primary"
         [iconStart]="PlusIcon"
         [iconSize]="18"
+        [disabled]="isPastDate()"
+        [title]="isPastDate() ? 'No se pueden crear turnos en fechas pasadas' : 'Crear nuevo turno'"
         (onClick)="newAppointment()"
       />
     </div>
@@ -179,6 +181,8 @@
                   severity="outlined"
                   [iconStart]="EditIcon"
                   [iconSize]="18"
+                  [disabled]="isPastDate()"
+                  [title]="isPastDate() ? 'No se pueden editar turnos de fechas pasadas' : 'Editar turno'"
                   customClass="btn-action btn-edit"
                   (onClick)="editAppointment(appointment.id)"
                 />
@@ -186,6 +190,8 @@
                   severity="danger"
                   [iconStart]="TrashIcon"
                   [iconSize]="18"
+                  [disabled]="isPastDate()"
+                  [title]="isPastDate() ? 'No se pueden eliminar turnos de fechas pasadas' : 'Eliminar turno'"
                   customClass="btn-action btn-delete"
                   (onClick)="deleteAppointment(appointment.id, appointment.customerName)"
                 />

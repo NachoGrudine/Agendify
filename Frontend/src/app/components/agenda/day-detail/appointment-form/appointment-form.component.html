@@ -138,6 +138,15 @@
       </div>
 
       <!-- ALERTAS -->
+      @if (isDateTimeInPast()) {
+        <div class="alert alert-warning">
+          <i-lucide [img]="AlertCircleIcon" [size]="20"></i-lucide>
+          <div class="alert-content">
+            <strong>Fecha/hora no válida</strong>
+            <p>No se puede crear o editar un turno en una fecha u hora pasada</p>
+          </div>
+        </div>
+      }
       @if (errorMessage()) {
         <div class="alert alert-error">
           <i-lucide [img]="AlertCircleIcon" [size]="20"></i-lucide>
@@ -165,21 +174,13 @@
           severity="outlined"
           (onClick)="onCancel()"
         />
-        <div class="footer-actions">
-          <app-button
-            type="button"
-            label="Limpiar"
-            severity="secondary"
-            (onClick)="appointmentForm.reset()"
-          />
-          <app-button
-            type="submit"
-            [label]="submitButtonLabel()"
-            severity="primary"
-            [loading]="isSaving()"
-            [disabled]="isSaving() || !appointmentForm.valid"
-          />
-        </div>
+        <app-button
+          type="submit"
+          [label]="submitButtonLabel()"
+          severity="primary"
+          [loading]="isSaving()"
+          [disabled]="isSaving() || !appointmentForm.valid || isDateTimeInPast()"
+        />
     </div>
 
   </form>

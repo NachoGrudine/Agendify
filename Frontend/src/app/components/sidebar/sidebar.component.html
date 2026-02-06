@@ -10,7 +10,7 @@
 
   <nav class="sidebar-nav">
     <a
-      *ngFor="let item of menuItems"
+      *ngFor="let item of menuItems; let i = index"
       [routerLink]="item.route"
       routerLinkActive="active"
       class="nav-item"
@@ -20,6 +20,7 @@
         <i-lucide [img]="item.icon" [size]="20"></i-lucide>
       </span>
       <span class="nav-label">{{ item.label }}</span>
+      <span class="nav-shortcut" title="Usa la tecla Alt + número">Alt+{{ i + 1 }}</span>
     </a>
   </nav>
 

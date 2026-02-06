@@ -10,6 +10,19 @@ public class AppointmentRepository : Repository<Appointment>, IAppointmentReposi
     {
     }
 
+    /// <summary>
+    /// Obtiene un appointment por ID incluyendo las relaciones de navegación
+    /// (Provider, Customer, Service) para que el DTO tenga los nombres correctos
+    /// </summary>
+    public override async Task<Appointment?> GetByIdAsync(int id)
+    {
+        return await _dbSet
+            .Include(a => a.Provider)
+            .Include(a => a.Customer)
+            .Include(a => a.Service)
+            .FirstOrDefaultAsync(a => a.Id == id);
+    }
+
     public async Task<IEnumerable<Appointment>> GetByBusinessIdAsync(int businessId)
     {
         return await _dbSet

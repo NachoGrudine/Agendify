@@ -57,8 +57,9 @@ export class AgendaComponent implements OnInit {
     buttonText: {
       today: 'Hoy'
     },
-    height: 'auto',
-    contentHeight: 500, // Reducido de 480 a 380 para evitar scroll
+    height: '100%',
+    contentHeight: '100%',
+    expandRows: true,
     fixedWeekCount: false,
     showNonCurrentDates: true,
     editable: false,
@@ -286,24 +287,24 @@ export class AgendaComponent implements OnInit {
     }
 
     // Crear badges con los datos
-    let badgesHtml = '<div class="day-badges-container" style="margin-top: 28px; position: relative;">';
+    let badgesHtml = '<div class="badges-container">';
 
-    // Badge de turnos - celeste minimalista
-    badgesHtml += `<div style="background: #e0f2fe; border-left: 3px solid #0ea5e9; padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">`;
-    badgesHtml += `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0369a1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
-    badgesHtml += `<span style="color: #0369a1; font-size: 0.75rem; font-weight: 600; line-height: 1;">${dayData.appointmentsCount} Turnos</span>`;
+    // Badge de turnos - TAMAÑO MEDIANO Y CENTRADO
+    badgesHtml += `<div style="background: #e0f2fe; border-left: 3px solid #bae6fd; padding: 4px 7px; border-radius: 4px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">`;
+    badgesHtml += `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+    badgesHtml += `<span style="color: #3b82f6; font-size: 0.72rem; font-weight: 600; line-height: 1;">${dayData.appointmentsCount} Turnos</span>`;
     badgesHtml += `</div>`;
 
-    // Badge de tiempo disponible - naranja o verde minimalista
+    // Badge de tiempo disponible - amarillo o verde suave pero visible
     const isWarning = dayData.totalAvailableMinutes < 60;
-    const bgColor = isWarning ? '#ffedd5' : '#d1fae5';
-    const borderColor = isWarning ? '#fb923c' : '#34d399';
-    const textColor = isWarning ? '#c2410c' : '#047857';
+    const bgColor = isWarning ? '#fef3c7' : '#d1fae5';
+    const borderColor = isWarning ? '#fcd34d' : '#6ee7b7';
+    const textColor = isWarning ? '#f59e0b' : '#10b981';
     const formattedTime = this.formatMinutes(dayData.totalAvailableMinutes);
 
-    badgesHtml += `<div style="background: ${bgColor}; border-left: 3px solid ${borderColor}; padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; gap: 4px;">`;
+    badgesHtml += `<div style="background: ${bgColor}; border-left: 3px solid ${borderColor}; padding: 4px 7px; border-radius: 4px; display: flex; align-items: center; gap: 4px;">`;
     badgesHtml += `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="${textColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg>`;
-    badgesHtml += `<span style="color: ${textColor}; font-size: 0.75rem; font-weight: 600; line-height: 1;">${formattedTime} libres</span>`;
+    badgesHtml += `<span style="color: ${textColor}; font-size: 0.72rem; font-weight: 600; line-height: 1;">${formattedTime} libres</span>`;
     badgesHtml += `</div>`;
 
     badgesHtml += '</div>';

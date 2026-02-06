@@ -1,4 +1,4 @@
-?.dashboard-layout {
+.dashboard-layout {
   display: flex;
   min-height: 100vh;
   background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%); /* Fondo azul degradado */
@@ -8,19 +8,21 @@
 .dashboard-content {
   flex: 1;
   margin-left: 240px;
-  padding: 2rem;
-  padding-left: 5rem; /* Más padding a la izquierda para no superponerse con el botón */
+  padding: clamp(0.75rem, 1.5vw, 1rem) clamp(1rem, 2vw, 1.5rem);
+  padding-left: clamp(3rem, 5vw, 4rem); /* Espacio para el botÃ³n de toggle */
   min-height: 100vh;
   transition: margin-left 0.3s ease, padding-left 0.3s ease;
+  box-sizing: border-box;
+  width: 100%;
 }
 
-/* Cuando el sidebar está cerrado */
+/* Cuando el sidebar estÃ¡ cerrado */
 .dashboard-layout.sidebar-closed .dashboard-content {
   margin-left: 0;
-  padding-left: 5rem; /* Mantener espacio para el botón incluso cuando está cerrado */
+  padding-left: clamp(3rem, 5vw, 4rem); /* Mantener espacio para el botÃ³n incluso cuando estÃ¡ cerrado */
 }
 
-/* Botón toggle sidebar - VISIBLE SIEMPRE */
+/* Botï¿½n toggle sidebar - VISIBLE SIEMPRE */
 .sidebar-toggle-btn {
   position: fixed;
   top: 1.25rem;
@@ -45,7 +47,7 @@
   border-color: var(--primary-color);
 }
 
-/* Cuando sidebar está abierto, mover el botón */
+/* Cuando sidebar estï¿½ abierto, mover el botï¿½n */
 .sidebar-toggle-btn.sidebar-open {
   left: 250px;
 }
@@ -84,14 +86,14 @@
 
   .dashboard-content {
     margin-left: 0;
-    padding: 1rem;
-    padding-top: 5rem;
+    padding: 0.75rem;
+    padding-top: 4rem;
   }
 }
 
 @media (max-width: 480px) {
   .dashboard-content {
-    padding: 0.75rem;
-    padding-top: 5rem;
+    padding: 0.5rem;
+    padding-top: 4rem;
   }
 }

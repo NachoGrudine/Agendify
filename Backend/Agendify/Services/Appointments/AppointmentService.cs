@@ -24,6 +24,13 @@ public class AppointmentService : IAppointmentService
 
     public async Task<Result<AppointmentResponseDto>> CreateAsync(int businessId, CreateAppointmentDto dto)
     {
+        // Validar que no sea una fecha/hora pasada
+        var now = DateTime.Now;
+        if (dto.StartTime < now)
+        {
+            return Result.Fail(new ValidationError("No se puede crear un turno en una fecha u hora pasada"));
+        }
+
         // Validar que no haya conflictos de horarios
         var hasConflict = await _appointmentRepository.HasConflictAsync(
             dto.ProviderId, dto.StartTime, dto.EndTime);
@@ -64,6 +71,13 @@ public class AppointmentService : IAppointmentService
         if (appointment == null || appointment.BusinessId != businessId)
         {
             return Result.Fail(new NotFoundError("Turno no encontrado"));
+        }
+
+        // Validar que no sea una fecha/hora pasada
+        var now = DateTime.Now;
+        if (dto.StartTime < now)
+        {
+            return Result.Fail(new ValidationError("No se puede actualizar un turno a una fecha u hora pasada"));
         }
 
         // Validar que no haya conflictos de horarios (excluyendo este turno)

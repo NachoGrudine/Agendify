@@ -1,11 +1,12 @@
 /* Container Principal - ULTRA COMPACTO */
 .schedule-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 1rem 1.5rem;
+  width: 100%;
+  margin: 0;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  box-sizing: border-box;
 }
 
-/* Page Header - MÁS COMPACTO */
+/* Page Header - Mï¿½S COMPACTO */
 .page-header {
   display: flex;
   align-items: center;
@@ -44,7 +45,7 @@
   margin-top: 0.125rem;
 }
 
-/* Header - MÁS COMPACTO */
+/* Header - Mï¿½S COMPACTO */
 .schedule-header {
   display: flex;
   justify-content: space-between;
@@ -100,7 +101,7 @@
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Animación cuando aparece/desaparece el botón Descartar */
+/* Animaciï¿½n cuando aparece/desaparece el botï¿½n Descartar */
 .header-actions app-button:first-child {
   animation: slideInRight 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -116,7 +117,7 @@
   }
 }
 
-/* Alerts - MÁS COMPACTAS Y RÁPIDAS */
+/* Alerts - Mï¿½S COMPACTAS Y Rï¿½PIDAS */
 .alert {
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
@@ -147,7 +148,7 @@
   color: #991b1b;
 }
 
-/* Animación de entrada más rápida y suave */
+/* Animaciï¿½n de entrada mï¿½s rï¿½pida y suave */
 @keyframes slideDownFade {
   from {
     opacity: 0;
@@ -159,7 +160,7 @@
   }
 }
 
-/* Animación de salida */
+/* Animaciï¿½n de salida */
 .alert.fade-out {
   animation: fadeOut 0.2s ease forwards;
 }
@@ -217,7 +218,7 @@
   margin: 0;
 }
 
-/* Toggle Switch - MÁS PEQUEÑO */
+/* Toggle Switch - Mï¿½S PEQUEï¿½O */
 .toggle-switch-compact {
   position: relative;
   display: inline-block;
@@ -265,7 +266,7 @@
   transform: translateX(14px);
 }
 
-/* Botón Copy - MINI */
+/* Botï¿½n Copy - MINI */
 .btn-copy-compact {
   padding: 4px 8px;
   background: white;
@@ -310,7 +311,7 @@
   background: white;
 }
 
-/* Slot Inline - TODO EN UNA LÍNEA */
+/* Slot Inline - TODO EN UNA Lï¿½NEA */
 .slot-inline {
   display: flex;
   align-items: center;
@@ -318,7 +319,7 @@
   flex-wrap: nowrap;
 }
 
-/* Time Input - MÁS GRANDE Y PROFESIONAL */
+/* Time Input - Mï¿½S GRANDE Y PROFESIONAL */
 .time-input-compact {
   padding: 8px 12px;
   border: 1px solid #d1d5db;
@@ -356,7 +357,7 @@
   flex-shrink: 0;
 }
 
-/* Botón Icono - MÁS PEQUEÑO */
+/* Botï¿½n Icono - Mï¿½S PEQUEï¿½O */
 .btn-icon-compact {
   padding: 6px;
   background: white;
@@ -377,7 +378,7 @@
   transform: scale(1.05);
 }
 
-/* Botón Add - MÁS COMPACTO */
+/* Botï¿½n Add - Mï¿½S COMPACTO */
 .btn-add-compact {
   padding: 6px 10px;
   background: white;
@@ -409,7 +410,7 @@
   margin-top: 2px;
 }
 
-/* Schedule Footer - MÁS COMPACTO */
+/* Schedule Footer - Mï¿½S COMPACTO */
 .schedule-footer {
   margin-top: 12px;
   padding: 10px 12px;

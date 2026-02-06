@@ -1,9 +1,11 @@
 .agenda-container {
-  max-width: 100%;
   width: 100%;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+  height: calc(100vh - 80px);
+  margin: 0;
+  padding: 0 clamp(0.75rem, 2vw, 2rem);
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ============================================
@@ -12,8 +14,9 @@
 
 .top-header {
   background: transparent;
-  margin-bottom: 0.75rem;
-  padding: 0.5rem 0;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0;
+  flex-shrink: 0;
 }
 
 .header-content {
@@ -72,9 +75,12 @@
 
 .main-layout {
   display: grid;
-  grid-template-columns: 1fr 280px;
-  gap: 1.25rem;
+  grid-template-columns: 1fr minmax(260px, 280px);
+  gap: clamp(0.75rem, 1.5vw, 1rem);
   align-items: start;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
 }
 
 /* ============================================
@@ -90,6 +96,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  min-height: 0;
 }
 
 /* Contenedor de controles - Layout con 3 columnas */
@@ -97,7 +105,8 @@
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
 }
 
 /* Botón Hoy - Primera columna (izquierda) */
@@ -174,13 +183,13 @@
 .sidebar-panel {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
   position: sticky;
   top: 1rem;
-  /* Alineado exactamente con el inicio del calendario grande */
-  /* Calculado: padding selector (0.5rem) + margen selector (0.75rem) + altura selector (~34px + 1rem padding) = ~3.25rem */
-  margin-top: 3.25rem;
   align-self: start;
+  /* Alineado exactamente con los días de la semana (LUN, MAR, MIÉ...) */
+  /* Cálculo: calendar-controls + su margin-bottom = aprox 3rem */
+  margin-top: 3.8rem;
 }
 
 /* ============================================
@@ -189,19 +198,42 @@
 
 
 .calendar-wrapper {
-  /* El calendario ocupa todo */
+  /* El calendario ocupa todo el espacio disponible */
   cursor: grab;
   user-select: none;
   transition: opacity 0.2s ease;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .calendar-wrapper:active {
   cursor: grabbing;
 }
 
-/* Eliminar m�rgenes del FullCalendar */
+/* Eliminar márgenes del FullCalendar y forzar altura 100% */
 :host ::ng-deep .fc {
   margin: 0;
+  height: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+
+:host ::ng-deep .fc-view-harness {
+  position: relative !important;
+  flex: 1 !important;
+  height: 100% !important;
+}
+
+:host ::ng-deep .fc-daygrid {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+:host ::ng-deep .fc-scrollgrid {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* ============================================
@@ -321,32 +353,38 @@
 
 /* ============================================
    FIX PRINCIPAL: ALTURA Y ESTRUCTURA DE CELDAS
-   OPTIMIZADO: Sin scroll, celdas prolijas y grandes
+   OPTIMIZADO: Celdas que se estiran verticalmente
    ============================================ */
 
-/* Forzar altura fija en las filas del calendario */
+/* Hacer que el body de la tabla ocupe el 100% de altura */
 :host ::ng-deep .fc .fc-scrollgrid-sync-table {
-  height: auto !important;
+  height: 100% !important;
 }
 
 :host ::ng-deep .fc .fc-daygrid-body {
+  height: 100% !important;
+}
+
+:host ::ng-deep .fc .fc-daygrid-body table {
+  height: 100% !important;
+  table-layout: fixed !important;
+}
+
+:host ::ng-deep .fc .fc-daygrid-body tbody {
+  height: 100% !important;
+}
+
+/* Las filas se distribuyen equitativamente */
+:host ::ng-deep .fc .fc-daygrid-body tr {
   height: auto !important;
 }
 
-/* ALTURA DIN�MICA - Se adapta seg�n cantidad de filas del mes */
-/* Cuando hay 5 semanas (Enero, etc) ? Celdas m�s grandes */
-:host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(5):last-child) tr {
-  height: 130px !important;
-}
-
-/* Cuando hay 6 semanas (Marzo, Mayo, etc) ? Celdas normales */
-:host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(6)) tr {
-  height: 110px !important;
-}
-
-/* Fallback para 4 semanas (raro pero posible) ? Celdas extra grandes */
-:host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(4):last-child) tr {
-  height: 150px !important;
+/* IMPORTANTE: Las celdas se estiran verticalmente */
+:host ::ng-deep .fc .fc-daygrid-day-frame {
+  height: 100% !important;
+  min-height: 100px !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 /* Celdas de días - estructura base MEJORADA Y PROLIJA */
@@ -435,12 +473,10 @@
   padding: 0 4px;
   box-sizing: border-box;
 }
-/* Frame de la celda - ALTURA DIN�MICA */
-/* Por defecto (6 semanas) */
+/* Frame de la celda - SE ESTIRA DINÁMICAMENTE */
 :host ::ng-deep .fc .fc-daygrid-day-frame {
   height: 100% !important;
-  min-height: 110px !important;
-  max-height: 110px !important;
+  min-height: 100px !important;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -448,17 +484,6 @@
   overflow: hidden !important;
 }
 
-/* 5 semanas ? frames m�s grandes */
-:host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(5):last-child) .fc-daygrid-day-frame {
-  min-height: 130px !important;
-  max-height: 130px !important;
-}
-
-/* 4 semanas ? frames extra grandes */
-:host ::ng-deep .fc .fc-daygrid-body:has(tr:nth-child(4):last-child) .fc-daygrid-day-frame {
-  min-height: 150px !important;
-  max-height: 150px !important;
-}
 
 /* Top de la celda - aqu� va TODO el contenido */
 :host ::ng-deep .fc .fc-daygrid-day-top {
@@ -491,12 +516,15 @@
 .custom-day-cell {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
   height: 100%;
   width: 100%;
-  padding: 10px;
-  gap: 8px;
+  padding: 6px;
+  gap: 4px;
   box-sizing: border-box;
   overflow: hidden;
+  min-height: 100%;
 }
 
 .day-number-wrapper {
@@ -505,6 +533,15 @@
   justify-content: flex-end;
   flex-shrink: 0;
   min-height: 28px;
+}
+
+.badges-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
+  align-items: stretch;
+  flex: 1;
 }
 
 .day-number-wrapper .fc-daygrid-day-number {
@@ -521,7 +558,9 @@
 }
 
 .day-number-wrapper .fc-daygrid-day-number:hover {
-  background: rgba(29, 67, 111, 0.08) !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 2px #e0e7ef;
+  color: #0a3a7c !important;
 }
 
 /* Contenedor de badges - ALTURA DIN�MICA */
@@ -583,57 +622,60 @@
 
 /* ========== BADGE TURNOS - CELESTE ========== */
 .badge-turnos {
-  background: #cffafe !important;
-  border: 1px solid #06b6d4 !important;
-  color: #0c4a6e !important;
+  background: #fafdff !important; /* casi blanco */
+  border: 1px solid #f1f5f9 !important; /* gris azulado muy pálido */
+  color: #93c5fd !important; /* azul muy claro */
 }
 
 .badge-turnos .badge-icon,
 .badge-turnos .badge-text {
-  color: #0c4a6e !important;
+  color: #93c5fd !important;
 }
 
 /* ========== BADGE MINUTOS - ADVERTENCIA (< 60 min) NARANJA ========== */
 .badge-minutos-warning {
-  background: #fed7aa !important;
-  border: 1px solid #f97316 !important;
-  color: #7c2d12 !important;
+  background: #fffdfa !important; /* casi blanco */
+  border: 1px solid #fef9c3 !important; /* amarillo muy pálido */
+  color: #fde68a !important; /* amarillo muy claro */
 }
 
 .badge-minutos-warning .badge-icon,
 .badge-minutos-warning .badge-text {
-  color: #7c2d12 !important;
+  color: #fde68a !important;
 }
 
 /* ========== BADGE MINUTOS - �XITO (>= 60 min) VERDE ========== */
 .badge-minutos-success {
-  background: #d1fae5 !important;
-  border: 1px solid #10b981 !important;
-  color: #065f46 !important;
+  background: #f6fef9 !important; /* casi blanco */
+  border: 1px solid #d1fae5 !important; /* verde muy pálido */
+  color: #6ee7b7 !important; /* verde muy claro */
 }
 
 .badge-minutos-success .badge-icon,
 .badge-minutos-success .badge-text {
-  color: #065f46 !important;
+  color: #6ee7b7 !important;
 }
 
 /* D�a actual - COLOR CORRECTO DEL SISTEMA */
 :host ::ng-deep .fc-day-today {
-  background: rgba(29, 67, 111, 0.06) !important;
-  border: 2px solid rgba(29, 67, 111, 0.2) !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  z-index: auto;
 }
 
 :host ::ng-deep .fc-day-today .day-number-wrapper .fc-daygrid-day-number {
-  background: #030132 !important;
-  color: white !important;
-  border-radius: 50%;
+  background: #fff !important;
+  color: var(--primary-color) !important;
+  border: 2px solid var(--primary-color) !important;
+  border-radius: 50% !important;
   width: 32px;
   height: 32px;
   display: flex !important;
   align-items: center;
   justify-content: center;
   padding: 0 !important;
-  box-shadow: 0 2px 8px rgba(29, 67, 111, 0.3);
+  box-shadow: none;
   font-weight: 700 !important;
 }
 
@@ -821,12 +863,12 @@
   }
 
   :host ::ng-deep .fc .fc-daygrid-body tr {
-    height: 105px !important;
+    height: clamp(90px, 10vh, 105px) !important;
   }
 
   :host ::ng-deep .fc .fc-daygrid-day-frame {
-    min-height: 105px !important;
-    max-height: 105px !important;
+    min-height: clamp(90px, 10vh, 105px) !important;
+    max-height: clamp(90px, 10vh, 105px) !important;
   }
 
   .custom-day-cell {
@@ -835,7 +877,7 @@
   }
 
   .day-badges-container {
-    max-height: calc(105px - 34px);
+    max-height: calc(clamp(90px, 10vh, 105px) - 34px);
   }
 }
 

@@ -1,10 +1,10 @@
 .day-detail-container {
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 1.5rem;
+  margin: 0;
+  padding: clamp(1rem, 2vw, 1.5rem);
   background-color: #ffffff;
   min-height: 100vh;
+  box-sizing: border-box;
 }
 
 /* Header - MÁS PROFESIONAL Y PROLIJO */
