@@ -8,6 +8,7 @@ import { ButtonComponent, InputComponent, ToastComponent, DialogComponent } from
 import { ServiceService } from '../../services/service-catalog/service.service';
 import { ServiceResponse } from '../../models/service.model';
 import { ServiceCardComponent } from './service-card/service-card.component';
+import { ConfirmService } from '../../shared/services/confirm.service';
 
 @Component({
   selector: 'app-servicios',
@@ -19,7 +20,6 @@ import { ServiceCardComponent } from './service-card/service-card.component';
     ButtonComponent,
     InputComponent,
     ToastComponent,
-    DialogComponent,
     ServiceCardComponent
   ],
   templateUrl: './servicios.component.html',
@@ -30,6 +30,7 @@ export class ServiciosComponent implements OnInit {
   private readonly serviceService = inject(ServiceService);
   private readonly messageService = inject(MessageService);
   private readonly router = inject(Router);
+  private readonly confirmService = inject(ConfirmService);
 
   // Icons
   readonly ScissorsIcon = Scissors;
@@ -41,8 +42,6 @@ export class ServiciosComponent implements OnInit {
   filteredServices = signal<ServiceResponse[]>([]);
   isLoading = signal<boolean>(false);
   searchTerm = signal<string>('');
-  showDeleteDialog = signal<boolean>(false);
-  selectedService = signal<ServiceResponse | null>(null);
 
   ngOnInit(): void {
     this.loadServices();
@@ -89,14 +88,12 @@ export class ServiciosComponent implements OnInit {
     this.router.navigate(['/dashboard/servicios/editar', service.id]);
   }
 
-  onDeleteService(service: ServiceResponse): void {
-    this.selectedService.set(service);
-    this.showDeleteDialog.set(true);
-  }
+  async onDeleteService(service: ServiceResponse): Promise<void> {
+    const confirmed = await this.confirmService.confirmDelete(service.name);
 
-  confirmDelete(): void {
-    const service = this.selectedService();
-    if (!service) return;
+    if (!confirmed) {
+      return;
+    }
 
     this.serviceService.delete(service.id).subscribe({
       next: () => {
@@ -105,8 +102,6 @@ export class ServiciosComponent implements OnInit {
           summary: 'Éxito',
           detail: 'Servicio eliminado correctamente'
         });
-        this.showDeleteDialog.set(false);
-        this.selectedService.set(null);
         this.loadServices();
       },
       error: (error) => {
@@ -116,13 +111,7 @@ export class ServiciosComponent implements OnInit {
           summary: 'Error',
           detail: 'No se pudo eliminar el servicio'
         });
-        this.showDeleteDialog.set(false);
       }
     });
-  }
-
-  cancelDelete(): void {
-    this.showDeleteDialog.set(false);
-    this.selectedService.set(null);
   }
 }

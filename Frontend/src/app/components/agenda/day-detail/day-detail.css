@@ -476,38 +476,38 @@
   border-style: solid !important;
 }
 
-/* Botón de EDITAR - Azul claro */
+/* Botón de EDITAR y ELIMINAR estilo SERVICE-CARD */
 .actions-group ::ng-deep app-button.btn-edit button,
 .actions-group ::ng-deep app-button.btn-action.btn-edit button {
-  background-color: #eff6ff !important;
-  border-color: #bfdbfe !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   color: #3b82f6 !important;
+  backdrop-filter: blur(10px) !important;
+  transition: all 0.15s ease !important;
 }
-
 .actions-group ::ng-deep app-button.btn-edit button:hover,
 .actions-group ::ng-deep app-button.btn-action.btn-edit button:hover {
-  background-color: #dbeafe !important;
-  border-color: #3b82f6 !important;
+  background: rgba(59, 130, 246, 0.3) !important;
+  border-color: rgba(59, 130, 246, 0.5) !important;
   color: #2563eb !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2) !important;
+  transform: scale(1.05) !important;
+  box-shadow: none !important;
 }
-
-/* Botón de ELIMINAR - Rojo claro MUY VISIBLE */
 .actions-group ::ng-deep app-button.btn-delete button,
 .actions-group ::ng-deep app-button.btn-action.btn-delete button {
-  background-color: #fee2e2 !important;
-  border-color: #fca5a5 !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   color: #dc2626 !important;
+  backdrop-filter: blur(10px) !important;
+  transition: all 0.15s ease !important;
 }
-
 .actions-group ::ng-deep app-button.btn-delete button:hover,
 .actions-group ::ng-deep app-button.btn-action.btn-delete button:hover {
-  background-color: #fecaca !important;
-  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.3) !important;
+  border-color: rgba(239, 68, 68, 0.5) !important;
   color: #b91c1c !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2) !important;
+  transform: scale(1.05) !important;
+  box-shadow: none !important;
 }
 
 
@@ -563,10 +563,21 @@
   gap: 20px;
 }
 
+.pagination-left {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
 .pagination-info {
   font-size: 0.875rem;
   font-weight: 500;
   color: #6b7280;
+}
+
+.pagination-info strong {
+  color: #111827;
+  font-weight: 600;
 }
 
 .page-size-selector {
@@ -744,4 +755,3 @@
     height: 100%;
   }
 }
-

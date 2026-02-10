@@ -613,3 +613,93 @@
 .alert-success i-lucide {
   color: #16a34a;
 }
+
+/* ============================================
+   PAGINACIÓN DE CLIENTES
+   ============================================ */
+.dropdown-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.pagination-info {
+  color: #6b7280;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid #e5e7eb;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: #374151;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-page {
+  color: #374151;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  min-width: 50px;
+  text-align: center;
+}
+
+.pagination-size {
+  display: flex;
+  align-items: center;
+}
+
+.pagination-select {
+  padding: 0.375rem 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: white;
+  color: #374151;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.pagination-select:hover {
+  border-color: #d1d5db;
+}
+
+.pagination-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Ajustar el tamaño máximo del dropdown cuando tiene paginación */
+.dropdown-results {
+  max-height: 320px;
+}

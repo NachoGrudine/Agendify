@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { LucideAngularModule, User, Briefcase, X, CalendarCheck, CalendarPlus, Clock, AlertCircle, CheckCircle } from 'lucide-angular';
+import { LucideAngularModule, User, Briefcase, X, CalendarCheck, CalendarPlus, Clock, AlertCircle, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-angular';
 import { AppointmentService } from '../../../../services/appointment/appointment.service';
 import { ProviderService } from '../../../../services/provider/provider.service';
 import { CustomerService } from '../../../../services/customer/customer.service';
@@ -55,6 +55,11 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
   readonly ClockIcon = Clock;
   readonly AlertCircleIcon = AlertCircle;
   readonly CheckCircleIcon = CheckCircle;
+  readonly ChevronLeftIcon = ChevronLeft;
+  readonly ChevronRightIcon = ChevronRight;
+
+  // Para usar Math en el template
+  readonly Math = Math;
 
   // Form
   appointmentForm!: FormGroup;
@@ -72,6 +77,11 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
   errorMessage = signal('');
   successMessage = signal('');
   showProviderField = signal(true);
+
+  // Paginación de clientes
+  customerPageSize = signal(5);
+  customerCurrentPage = signal(1);
+  customerPageSizeOptions = [5, 10, 15];
 
   // Computed
   readonly isEditMode = computed(() => this.mode === 'edit');
@@ -105,6 +115,27 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
   get showCustomerDropdown() { return this.formService.showCustomerDropdown; }
   get showServiceDropdown() { return this.formService.showServiceDropdown; }
 
+  // Computed para paginación de clientes
+  readonly paginatedCustomers = computed(() => {
+    const customers = this.filteredCustomers();
+    const pageSize = this.customerPageSize();
+    const currentPage = this.customerCurrentPage();
+
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+
+    return customers.slice(startIndex, endIndex);
+  });
+
+  readonly totalCustomerPages = computed(() => {
+    const total = this.filteredCustomers().length;
+    const pageSize = this.customerPageSize();
+    return Math.ceil(total / pageSize);
+  });
+
+  readonly hasCustomerPreviousPage = computed(() => this.customerCurrentPage() > 1);
+  readonly hasCustomerNextPage = computed(() => this.customerCurrentPage() < this.totalCustomerPages());
+
   ngOnInit(): void {
     this.clearMessages();
     this.initForm();
@@ -130,6 +161,11 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
         this.loadInitialData();
       }
     }
+
+    // Si cambia la fecha seleccionada en modo crear, resetear el formulario
+    if (!this.isEditMode() && changes['selectedDate'] && this.appointmentForm) {
+      this.resetForm();
+    }
   }
 
   private initForm(): void {
@@ -145,6 +181,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
       .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe(value => {
         this.formService.filterCustomers(value, this.customers());
+        this.customerCurrentPage.set(1); // Resetear a página 1 al filtrar
       });
 
     // Service search
@@ -340,6 +377,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
         this.successMessage.set('¡Turno creado exitosamente!');
         this.isSaving.set(false);
         setTimeout(() => {
+          this.resetForm(); // Limpiar el formulario antes de cerrar
           this.success.emit();
         }, 1500);
       },
@@ -380,12 +418,54 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
 
   onCancel(): void {
     this.clearMessages();
+    // Resetear el formulario en modo crear para que quede limpio
+    if (!this.isEditMode()) {
+      this.resetForm();
+    }
     this.cancel.emit();
   }
 
   private clearMessages(): void {
     this.errorMessage.set('');
     this.successMessage.set('');
+  }
+
+  /**
+   * Resetea el formulario a sus valores iniciales
+   * Solo se usa en modo crear
+   */
+  private resetForm(): void {
+    if (this.isEditMode()) return;
+
+    // Reinicializar el formulario completamente
+    this.appointmentForm.reset({
+      providerId: null,
+      customerSearch: '',
+      customerId: null,
+      customerName: '',
+      serviceSearch: '',
+      serviceId: null,
+      serviceName: '',
+      startTime: '09:00',
+      endTime: '10:00',
+      notes: ''
+    });
+
+    // Si solo hay un proveedor, pre-seleccionarlo
+    if (this.providers().length === 1) {
+      this.appointmentForm.patchValue({ providerId: this.providers()[0].id });
+    } else if (this.providers().length > 1) {
+      const currentProviderId = this.authService.getProviderId();
+      if (currentProviderId) {
+        const currentProvider = this.providers().find(p => p.id === currentProviderId);
+        if (currentProvider) {
+          this.appointmentForm.patchValue({ providerId: currentProviderId });
+        }
+      }
+    }
+
+    // Limpiar los filtros del servicio de formulario
+    this.formService.clearFilters();
   }
 
   getCalculatedDuration(): string {
@@ -443,5 +523,29 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
 
     const now = new Date();
     return startDateTime < now;
+  }
+
+  // Métodos de paginación de clientes
+  goToCustomerPage(page: number): void {
+    if (page >= 1 && page <= this.totalCustomerPages()) {
+      this.customerCurrentPage.set(page);
+    }
+  }
+
+  changeCustomerPageSize(event: any): void {
+    this.customerPageSize.set(event.value);
+    this.customerCurrentPage.set(1); // Resetear a página 1 al cambiar tamaño
+  }
+
+  previousCustomerPage(): void {
+    if (this.hasCustomerPreviousPage()) {
+      this.customerCurrentPage.update(page => page - 1);
+    }
+  }
+
+  nextCustomerPage(): void {
+    if (this.hasCustomerNextPage()) {
+      this.customerCurrentPage.update(page => page + 1);
+    }
   }
 }

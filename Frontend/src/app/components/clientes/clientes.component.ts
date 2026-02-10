@@ -1,4 +1,4 @@
-﻿import { Component, inject, OnInit, signal } from '@angular/core';
+﻿import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
@@ -6,6 +6,7 @@ import { LucideAngularModule, UserPlus, Search, Edit, Trash2, Mail, Phone, Users
 import { ButtonComponent, InputComponent, ToastComponent, DialogComponent, TableComponent, TableColumn, TableAction } from '../../shared/components';
 import { CustomerService } from '../../services/customer/customer.service';
 import { CustomerResponse, CreateCustomerDto, UpdateCustomerDto } from '../../models/appointment.model';
+import { ConfirmService } from '../../shared/services/confirm.service';
 
 @Component({
   selector: 'app-clientes',
@@ -27,6 +28,7 @@ import { CustomerResponse, CreateCustomerDto, UpdateCustomerDto } from '../../mo
 export class ClientesComponent implements OnInit {
   private readonly customerService = inject(CustomerService);
   private readonly messageService = inject(MessageService);
+  private readonly confirmService = inject(ConfirmService);
 
   // Icons
   readonly UsersIcon = Users;
@@ -43,9 +45,13 @@ export class ClientesComponent implements OnInit {
   isLoading = signal<boolean>(false);
   searchTerm = signal<string>('');
 
+  // Paginación
+  currentPage = signal<number>(1);
+  pageSize = signal<number>(5);
+  readonly pageSizeOptions = [5, 10, 15, 25, 50];
+
   // Dialog states
   showFormDialog = signal<boolean>(false);
-  showDeleteDialog = signal<boolean>(false);
   isEditMode = signal<boolean>(false);
   isSaving = signal<boolean>(false);
 
@@ -82,6 +88,27 @@ export class ClientesComponent implements OnInit {
     }
   ];
 
+  // Computed properties para paginación
+  paginatedCustomers = computed(() => {
+    const customers = this.filteredCustomers();
+    const page = this.currentPage();
+    const size = this.pageSize();
+
+    const startIndex = (page - 1) * size;
+    const endIndex = startIndex + size;
+
+    return customers.slice(startIndex, endIndex);
+  });
+
+  totalPages = computed(() => {
+    const total = this.filteredCustomers().length;
+    const size = this.pageSize();
+    return Math.ceil(total / size);
+  });
+
+  hasPreviousPage = computed(() => this.currentPage() > 1);
+  hasNextPage = computed(() => this.currentPage() < this.totalPages());
+
   ngOnInit(): void {
     this.loadCustomers();
   }
@@ -110,15 +137,16 @@ export class ClientesComponent implements OnInit {
     const term = this.searchTerm().toLowerCase().trim();
     if (!term) {
       this.filteredCustomers.set(this.customers());
-      return;
+    } else {
+      const filtered = this.customers().filter(customer =>
+        customer.name.toLowerCase().includes(term) ||
+        customer.email?.toLowerCase().includes(term) ||
+        customer.phone?.includes(term)
+      );
+      this.filteredCustomers.set(filtered);
     }
-
-    const filtered = this.customers().filter(customer =>
-      customer.name.toLowerCase().includes(term) ||
-      customer.email?.toLowerCase().includes(term) ||
-      customer.phone?.includes(term)
-    );
-    this.filteredCustomers.set(filtered);
+    // Resetear a página 1 al buscar
+    this.currentPage.set(1);
   }
 
   onCreateCustomer(): void {
@@ -137,9 +165,31 @@ export class ClientesComponent implements OnInit {
     this.showFormDialog.set(true);
   }
 
-  onDelete(customer: CustomerResponse): void {
-    this.selectedCustomer.set(customer);
-    this.showDeleteDialog.set(true);
+  async onDelete(customer: CustomerResponse): Promise<void> {
+    const confirmed = await this.confirmService.confirmDelete(customer.name);
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.customerService.delete(customer.id).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Cliente eliminado correctamente'
+        });
+        this.loadCustomers();
+      },
+      error: (error) => {
+        console.error('Error al eliminar cliente:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo eliminar el cliente'
+        });
+      }
+    });
   }
 
   validateForm(): boolean {
@@ -242,42 +292,11 @@ export class ClientesComponent implements OnInit {
     });
   }
 
-  confirmDelete(): void {
-    const customer = this.selectedCustomer();
-    if (!customer) return;
-
-    this.customerService.delete(customer.id).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Cliente eliminado correctamente'
-        });
-        this.showDeleteDialog.set(false);
-        this.selectedCustomer.set(null);
-        this.loadCustomers();
-      },
-      error: (error) => {
-        console.error('Error al eliminar cliente:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'No se pudo eliminar el cliente'
-        });
-        this.showDeleteDialog.set(false);
-      }
-    });
-  }
-
   cancelForm(): void {
     this.showFormDialog.set(false);
     this.clearForm();
   }
 
-  cancelDelete(): void {
-    this.showDeleteDialog.set(false);
-    this.selectedCustomer.set(null);
-  }
 
   clearForm(): void {
     this.customerName.set('');
@@ -288,5 +307,52 @@ export class ClientesComponent implements OnInit {
 
   getDialogTitle(): string {
     return this.isEditMode() ? 'Editar Cliente' : 'Nuevo Cliente';
+  }
+
+  // Métodos de paginación
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages()) {
+      this.currentPage.set(page);
+    }
+  }
+
+  previousPage(): void {
+    if (this.hasPreviousPage()) {
+      this.currentPage.update(page => page - 1);
+    }
+  }
+
+  nextPage(): void {
+    if (this.hasNextPage()) {
+      this.currentPage.update(page => page + 1);
+    }
+  }
+
+  changePageSize(newSize: number): void {
+    this.pageSize.set(newSize);
+    this.currentPage.set(1);
+  }
+
+  getPageNumbers(): number[] {
+    const total = this.totalPages();
+    const current = this.currentPage();
+    const pages: number[] = [];
+
+    let startPage = Math.max(1, current - 2);
+    let endPage = Math.min(total, current + 2);
+
+    if (endPage - startPage < 4) {
+      if (startPage === 1) {
+        endPage = Math.min(5, total);
+      } else if (endPage === total) {
+        startPage = Math.max(1, total - 4);
+      }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
   }
 }

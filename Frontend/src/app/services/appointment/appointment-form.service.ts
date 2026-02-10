@@ -118,6 +118,16 @@ export class AppointmentFormService {
   }
 
   /**
+   * Limpia todos los filtros de búsqueda
+   */
+  clearFilters(): void {
+    this.filteredCustomers.set([]);
+    this.filteredServices.set([]);
+    this.showCustomerDropdown.set(false);
+    this.showServiceDropdown.set(false);
+  }
+
+  /**
    * Valida el formulario y marca todos los campos como touched si es inválido
    */
   validateForm(form: FormGroup): boolean {

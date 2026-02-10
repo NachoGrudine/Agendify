@@ -35,11 +35,67 @@
   <!-- Tabla de clientes -->
   <div class="table-section" *ngIf="!isLoading()">
     <app-table
-      [data]="filteredCustomers()"
+      [data]="paginatedCustomers()"
       [columns]="tableColumns"
       [actions]="tableActions"
       [emptyMessage]="searchTerm() ? 'No se encontraron clientes' : 'No hay clientes registrados'"
     />
+
+    <!-- Pagination -->
+    @if (filteredCustomers().length > 0) {
+      <div class="pagination">
+        <div class="pagination-left">
+          <div class="pagination-info">
+            Mostrando
+            <strong>{{ ((currentPage() - 1) * pageSize()) + 1 }}</strong>
+            a
+            <strong>{{ currentPage() * pageSize() > filteredCustomers().length ? filteredCustomers().length : currentPage() * pageSize() }}</strong>
+            de
+            <strong>{{ filteredCustomers().length }}</strong>
+            clientes
+          </div>
+          <div class="page-size-selector">
+            <label for="page-size">Mostrar:</label>
+            <select
+              id="page-size"
+              [ngModel]="pageSize()"
+              (ngModelChange)="changePageSize($event)"
+            >
+              <option *ngFor="let size of pageSizeOptions" [ngValue]="size">{{ size }}</option>
+            </select>
+            <span>por página</span>
+          </div>
+        </div>
+
+        <div class="pagination-controls">
+          <button
+            class="btn-page btn-nav"
+            (click)="previousPage()"
+            [disabled]="!hasPreviousPage()"
+            title="Página anterior"
+          >
+            <span>&lsaquo;</span>
+          </button>
+
+          <button
+            *ngFor="let page of getPageNumbers()"
+            class="btn-page btn-number"
+            [class.active]="page === currentPage()"
+            (click)="goToPage(page)"
+            [title]="'Ir a página ' + page"
+          >{{ page }}</button>
+
+          <button
+            class="btn-page btn-nav"
+            (click)="nextPage()"
+            [disabled]="!hasNextPage()"
+            title="Página siguiente"
+          >
+            <span>&rsaquo;</span>
+          </button>
+        </div>
+      </div>
+    }
   </div>
 
   <!-- Loading state -->
@@ -125,27 +181,3 @@
   </div>
 </app-dialog>
 
-<!-- Dialog de confirmación de eliminación -->
-<app-dialog
-  [(visible)]="showDeleteDialog"
-  [header]="'Confirmar Eliminación'"
-  [width]="'450px'"
->
-  <div class="delete-dialog-content">
-    <p>¿Estás seguro de que deseas eliminar al cliente <strong>{{ selectedCustomer()?.name }}</strong>?</p>
-    <p class="warning-text">Esta acción no se puede deshacer.</p>
-  </div>
-
-  <div dialogFooter class="dialog-actions">
-    <app-button
-      label="Cancelar"
-      severity="outlined"
-      (onClick)="cancelDelete()"
-    />
-    <app-button
-      label="Eliminar"
-      severity="primary"
-      (onClick)="confirmDelete()"
-    />
-  </div>
-</app-dialog>

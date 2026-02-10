@@ -307,6 +307,133 @@
 }
 
 /* ============================================
+   PAGINACIÓN - MISMO DISEÑO QUE DAY-DETAIL
+   ============================================ */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-top: 1px solid #f3f4f6;
+  background: #fafbfc;
+  gap: 20px;
+}
+
+.pagination-left {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.pagination-info {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.pagination-info strong {
+  color: #111827;
+  font-weight: 600;
+}
+
+.page-size-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.page-size-selector select {
+  padding: 8px 32px 8px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  background: white;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 10px center;
+  background-repeat: no-repeat;
+  background-size: 18px;
+}
+
+.page-size-selector select:hover {
+  border-color: #9ca3af;
+  background-color: #f9fafb;
+}
+
+.page-size-selector select:focus {
+  outline: none;
+  border-color: #030132;
+  box-shadow: 0 0 0 3px rgba(29, 67, 111, 0.1);
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn-page {
+  min-width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0 12px;
+}
+
+.btn-page:hover:not(:disabled):not(.active) {
+  background: white;
+  border-color: #030132;
+  color: #030132;
+}
+
+.btn-page.active {
+  background: #030132;
+  border-color: #030132;
+  color: white;
+  font-weight: 600;
+}
+
+.btn-page:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: white;
+  color: #d1d5db;
+}
+
+.btn-nav {
+  font-size: 20px;
+  font-weight: 600;
+  padding: 0;
+  width: 40px;
+}
+
+.btn-nav span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-number {
+  min-width: 40px;
+}
+
+/* ============================================
    RESPONSIVE
    ============================================ */
 
@@ -341,5 +468,30 @@
     min-width: 320px;
     margin: 0.5rem;
     padding: 1rem 1.25rem;
+  }
+
+  .pagination {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .pagination-left {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .pagination-info {
+    text-align: center;
+  }
+
+  .page-size-selector {
+    justify-content: center;
+  }
+
+  .pagination-controls {
+    justify-content: center;
+    flex-wrap: wrap;
   }
 }

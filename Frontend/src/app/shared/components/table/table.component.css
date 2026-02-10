@@ -1,5 +1,5 @@
 /* ============================================
-   TABLE COMPONENT - DISEÑO LIMPIO
+   TABLE COMPONENT - DISEï¿½O LIMPIO
    ============================================ */
 
 .table-container {
@@ -117,30 +117,56 @@
   width: 32px;
   height: 32px;
   border-radius: 6px;
-  border: 1px solid #e5e7eb;
-  background: white;
+  border: none;
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.15s ease;
-  color: #6b7280;
+  color: #030132;
+  box-shadow: none;
+  padding: 0;
+}
+
+.action-btn svg {
+  color: #030132;
+  fill: none;
+  stroke: #030132;
+  transition: color 0.15s, stroke 0.15s, fill 0.15s;
 }
 
 .action-btn:hover {
-  transform: scale(1.05);
+  background: #030132;
+  color: #fff;
+  border: none;
 }
 
-.action-btn.btn-primary:hover {
-  background: #dbeafe;
-  border-color: #3b82f6;
-  color: #1d4ed8;
+.action-btn:hover svg {
+  color: #fff;
+  stroke: #fff;
+}
+
+.action-btn.btn-danger {
+  border: none;
+  color: #fff;
+  background: #dc2626;
+}
+
+.action-btn.btn-danger svg {
+  color: #fff;
+  stroke: #fff;
 }
 
 .action-btn.btn-danger:hover {
-  background: #fee2e2;
-  border-color: #ef4444;
-  color: #dc2626;
+  background: #b91c1c;
+  color: #fff;
+  border: none;
+}
+
+.action-btn.btn-danger:hover svg {
+  color: #fff;
+  stroke: #fff;
 }
 
 /* Empty State */

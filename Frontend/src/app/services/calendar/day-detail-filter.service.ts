@@ -9,7 +9,7 @@
 export class DayDetailFilterService {
   // Paginación
   currentPage = signal(1);
-  pageSize = signal(15);
+  pageSize = signal(5);
   readonly pageSizeOptions = [5, 10, 15, 25, 50];
 
   // Filtros

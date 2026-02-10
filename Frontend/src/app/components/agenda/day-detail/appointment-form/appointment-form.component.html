@@ -1,4 +1,4 @@
-﻿<!-- Header con Icono + Fecha -->
+﻿﻿<!-- Header con Icono + Fecha -->
 <div class="modal-header">
   <div class="header-left">
     <app-section-icon [icon]="modalIcon()" [size]="24" />
@@ -51,13 +51,66 @@
           />
           @if (showCustomerDropdown() && filteredCustomers().length > 0) {
             <div class="dropdown-results">
-              @for (customer of filteredCustomers(); track customer.id) {
+              @for (customer of paginatedCustomers(); track customer.id) {
                 <button type="button" class="dropdown-item" (click)="selectCustomer(customer)">
                   <strong>{{ customer.name }}</strong>
                   @if (customer.phone || customer.email) {
                     <span class="item-meta">{{ customer.phone || customer.email }}</span>
                   }
                 </button>
+              }
+
+              <!-- Paginación de clientes -->
+              @if (filteredCustomers().length > customerPageSize()) {
+                <div class="dropdown-pagination">
+                  <div class="pagination-info">
+                    @if (customerCurrentPage() * customerPageSize() < filteredCustomers().length) {
+                      Mostrando {{ (customerCurrentPage() - 1) * customerPageSize() + 1 }}
+                      - {{ customerCurrentPage() * customerPageSize() }}
+                      de {{ filteredCustomers().length }}
+                    } @else {
+                      Mostrando {{ (customerCurrentPage() - 1) * customerPageSize() + 1 }}
+                      - {{ filteredCustomers().length }}
+                      de {{ filteredCustomers().length }}
+                    }
+                  </div>
+
+                  <div class="pagination-controls">
+                    <button
+                      type="button"
+                      class="pagination-btn"
+                      [disabled]="!hasCustomerPreviousPage()"
+                      (click)="previousCustomerPage()"
+                    >
+                      <i-lucide [img]="ChevronLeftIcon" [size]="16"></i-lucide>
+                    </button>
+
+                    <span class="pagination-page">
+                      {{ customerCurrentPage() }} / {{ totalCustomerPages() }}
+                    </span>
+
+                    <button
+                      type="button"
+                      class="pagination-btn"
+                      [disabled]="!hasCustomerNextPage()"
+                      (click)="nextCustomerPage()"
+                    >
+                      <i-lucide [img]="ChevronRightIcon" [size]="16"></i-lucide>
+                    </button>
+                  </div>
+
+                  <div class="pagination-size">
+                    <select
+                      class="pagination-select"
+                      [value]="customerPageSize()"
+                      (change)="changeCustomerPageSize($event.target)"
+                    >
+                      @for (size of customerPageSizeOptions; track size) {
+                        <option [value]="size">{{ size }} por página</option>
+                      }
+                    </select>
+                  </div>
+                </div>
               }
             </div>
           }
