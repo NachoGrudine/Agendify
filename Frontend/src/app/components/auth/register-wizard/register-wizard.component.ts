@@ -88,13 +88,13 @@ export class RegisterWizardComponent {
       return;
     }
 
-    const registerDto: any = {
+    const registerDto: RegisterDto = {
       email: data.email.trim(),
       password: data.password,
-      business_name: data.businessName.trim(),
+      businessName: data.businessName.trim(),
       industry: data.industry.trim(),
-      provider_name: data.providerName.trim(),
-      provider_specialty: data.providerSpecialty?.trim() || ''
+      providerName: data.providerName.trim(),
+      providerSpecialty: data.providerSpecialty?.trim() || ''
     };
 
     this.authService.register(registerDto).subscribe({

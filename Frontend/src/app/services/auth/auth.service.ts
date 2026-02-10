@@ -47,13 +47,13 @@ export class AuthService {
       return throwError(() => new Error('No refresh token available'));
     }
 
-    const refreshDto: RefreshTokenDto = { refresh_token: refreshToken };
+    const refreshDto: RefreshTokenDto = { refreshToken: refreshToken };
 
     return this.http.post<AuthResponseDto>(`${this.API_URL}/refresh`, refreshDto).pipe(
       tap(response => {
         this.handleAuthResponse(response);
         this.refreshTokenInProgress = false;
-        this.refreshTokenSubject.next(response.access_token);
+        this.refreshTokenSubject.next(response.accessToken);
       }),
       catchError(error => {
         this.refreshTokenInProgress = false;
@@ -75,7 +75,7 @@ export class AuthService {
   // MANEJO DE RESPUESTA DE AUTH
   // ============================================
   private handleAuthResponse(response: AuthResponseDto): void {
-    this.saveTokens(response.access_token, response.refresh_token);
+    this.saveTokens(response.accessToken, response.refreshToken);
     this.isAuthenticated.set(true);
     this.currentUser.set(this.getDecodedToken());
   }

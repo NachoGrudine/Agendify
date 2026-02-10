@@ -18,21 +18,31 @@ export class LoginComponent {
 
   registerClick = output<void>();
 
-  email = 'string';
-  password = 'string';
+  email = '';
+  password = '';
   errorMessage = '';
 
   onSubmit(): void {
     this.errorMessage = '';
 
+    console.log('Intentando login con:', { email: this.email, password: this.password });
+
     this.authService.login({ email: this.email, password: this.password }).subscribe({
       next: (response) => {
+        console.log('Login exitoso:', response);
         if (response) {
           this.router.navigate(['/dashboard']);
         }
       },
       error: (error) => {
-        this.errorMessage = 'Error al iniciar sesión';
+        console.error('Error en login:', error);
+        if (error.status === 401) {
+          this.errorMessage = 'Credenciales incorrectas';
+        } else if (error.status === 400) {
+          this.errorMessage = 'Por favor, completa todos los campos';
+        } else {
+          this.errorMessage = error.error?.message || 'Error al iniciar sesión';
+        }
       }
     });
   }

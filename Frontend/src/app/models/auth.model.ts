@@ -4,12 +4,12 @@ export interface LoginDto {
 }
 
 export interface AuthResponseDto {
-  access_token: string;
-  refresh_token: string;
-  access_token_expires_at: string;
-  user_id: number;
+  accessToken: string;
+  refreshToken: string;
+  accessTokenExpiresAt: string;
+  userId: number;
   email: string;
-  business_id: number;
+  businessId: number;
 }
 
 export interface RegisterDto {
@@ -30,5 +30,5 @@ export interface DecodedToken {
 }
 
 export interface RefreshTokenDto {
-  refresh_token: string;
+  refreshToken: string;
 }
