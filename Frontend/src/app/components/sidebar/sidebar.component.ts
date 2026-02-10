@@ -2,7 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
-import { LucideAngularModule, Calendar, Users, Briefcase, BarChart3, Settings, LogOut, Clock, Wrench } from 'lucide-angular';
+import { LucideAngularModule, Calendar, Users, Briefcase, Settings, LogOut, Clock, Wrench } from 'lucide-angular';
 
 @Component({
   selector: 'app-sidebar',
@@ -23,7 +23,6 @@ export class SidebarComponent {
   readonly CalendarIcon = Calendar;
   readonly UsersIcon = Users;
   readonly BriefcaseIcon = Briefcase;
-  readonly BarChart3Icon = BarChart3;
   readonly ClockIcon = Clock;
   readonly WrenchIcon = Wrench;
   readonly SettingsIcon = Settings;
@@ -34,8 +33,7 @@ export class SidebarComponent {
     { icon: this.ClockIcon, label: 'Mis Horarios', route: '/dashboard/horarios', active: false },
     { icon: this.WrenchIcon, label: 'Servicios', route: '/dashboard/servicios', active: false },
     { icon: this.UsersIcon, label: 'Clientes', route: '/dashboard/clientes', active: false },
-    { icon: this.BriefcaseIcon, label: 'Empleados', route: '/dashboard/empleados', active: false },
-    { icon: this.BarChart3Icon, label: 'Reportes', route: '/dashboard/reportes', active: false }
+    { icon: this.BriefcaseIcon, label: 'Empleados', route: '/dashboard/empleados', active: false }
   ];
 
   /**
@@ -63,7 +61,7 @@ export class SidebarComponent {
 
   /**
    * Maneja atajos de teclado:
-   * - Alt + (1-6) para navegar por las secciones
+   * - Alt + (1-5) para navegar por las secciones
    * - Alt + ↑ para subir a la sección anterior
    * - Alt + ↓ para bajar a la siguiente sección
    */
@@ -98,9 +96,9 @@ export class SidebarComponent {
       return;
     }
 
-    // Alt + número (1-6): ir a la sección específica
+    // Alt + número (1-5): ir a la sección específica
     const keyNumber = parseInt(event.key);
-    if (!isNaN(keyNumber) && keyNumber >= 1 && keyNumber <= 6) {
+    if (!isNaN(keyNumber) && keyNumber >= 1 && keyNumber <= 5) {
       event.preventDefault();
       this.navigateToMenuIndex(keyNumber - 1);
     }
