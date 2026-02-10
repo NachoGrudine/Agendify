@@ -11,5 +11,6 @@ public class User
     // Navigation properties
     public Business? Business { get; set; }
     public Provider? Provider { get; set; }
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }
 

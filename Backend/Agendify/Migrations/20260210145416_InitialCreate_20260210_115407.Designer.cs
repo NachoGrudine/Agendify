@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Agendify.Migrations
 {
     [DbContext(typeof(AgendifyDbContext))]
-    [Migration("20260210132154_InitialCreate_20260210_102136")]
-    partial class InitialCreate_20260210_102136
+    [Migration("20260210145416_InitialCreate_20260210_115407")]
+    partial class InitialCreate_20260210_115407
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -245,6 +245,48 @@ namespace Agendify.Migrations
                     b.ToTable("ProviderSchedules", (string)null);
                 });
 
+            modelBuilder.Entity("Agendify.Models.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeviceInfo")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IpAddress")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExpiresAt");
+
+                    b.HasIndex("UserId", "Token");
+
+                    b.ToTable("RefreshTokens", (string)null);
+                });
+
             modelBuilder.Entity("Agendify.Models.Entities.Service", b =>
                 {
                     b.Property<int>("Id")
@@ -390,6 +432,17 @@ namespace Agendify.Migrations
                     b.Navigation("Provider");
                 });
 
+            modelBuilder.Entity("Agendify.Models.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("Agendify.Models.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Agendify.Models.Entities.Service", b =>
                 {
                     b.HasOne("Agendify.Models.Entities.Business", "Business")
@@ -448,6 +501,11 @@ namespace Agendify.Migrations
             modelBuilder.Entity("Agendify.Models.Entities.Service", b =>
                 {
                     b.Navigation("Appointments");
+                });
+
+            modelBuilder.Entity("Agendify.Models.Entities.User", b =>
+                {
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

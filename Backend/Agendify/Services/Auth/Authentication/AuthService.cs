@@ -1,4 +1,4 @@
-﻿using BusinessEntity = Agendify.Models.Entities.Business;
+﻿﻿﻿using BusinessEntity = Agendify.Models.Entities.Business;
 using Agendify.Models.Entities;
 using Agendify.DTOs.Auth;
 using Agendify.Common.Errors;
@@ -15,6 +15,7 @@ public class AuthService : IAuthService
     private readonly IRepository<User> _userRepository;
     private readonly IRepository<BusinessEntity> _businessRepository;
     private readonly IRepository<Provider> _providerRepository;
+    private readonly IRepository<RefreshToken> _refreshTokenRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtService _jwtService;
     private readonly IProviderScheduleService _providerScheduleService;
@@ -23,6 +24,7 @@ public class AuthService : IAuthService
         IRepository<User> userRepository,
         IRepository<BusinessEntity> businessRepository,
         IRepository<Provider> providerRepository,
+        IRepository<RefreshToken> refreshTokenRepository,
         IPasswordHasher passwordHasher,
         IJwtService jwtService,
         IProviderScheduleService providerScheduleService)
@@ -30,6 +32,7 @@ public class AuthService : IAuthService
         _userRepository = userRepository;
         _businessRepository = businessRepository;
         _providerRepository = providerRepository;
+        _refreshTokenRepository = refreshTokenRepository;
         _passwordHasher = passwordHasher;
         _jwtService = jwtService;
         _providerScheduleService = providerScheduleService;
@@ -75,12 +78,24 @@ public class AuthService : IAuthService
         // 4. Crear horarios por defecto (lunes a viernes de 09:00 a 18:00)
         await _providerScheduleService.CreateDefaultSchedulesAsync(provider.Id);
 
-        // 5. Generar token
-        var token = _jwtService.GenerateToken(user);
+        // 5. Generar par de tokens
+        var tokenPair = _jwtService.GenerateTokenPair(user);
+        
+        // 6. Guardar el refresh token en la tabla RefreshTokens
+        var refreshToken = new RefreshToken
+        {
+            UserId = user.Id,
+            Token = tokenPair.RefreshToken,
+            ExpiresAt = tokenPair.RefreshTokenExpiresAt,
+            CreatedAt = DateTime.UtcNow
+        };
+        await _refreshTokenRepository.AddAsync(refreshToken);
 
         return Result.Ok(new AuthResponseDto
         {
-            Token = token,
+            AccessToken = tokenPair.AccessToken,
+            RefreshToken = tokenPair.RefreshToken,
+            AccessTokenExpiresAt = tokenPair.AccessTokenExpiresAt,
             UserId = user.Id,
             Email = user.Email,
             BusinessId = user.BusinessId
@@ -104,12 +119,92 @@ public class AuthService : IAuthService
             return Result.Fail(new UnauthorizedError("Email o contraseña incorrectos"));
         }
 
-        // Generar token
-        var token = _jwtService.GenerateToken(user);
+        // Generar par de tokens
+        var tokenPair = _jwtService.GenerateTokenPair(user);
+        
+        // Guardar el nuevo refresh token en la tabla RefreshTokens
+        var refreshToken = new RefreshToken
+        {
+            UserId = user.Id,
+            Token = tokenPair.RefreshToken,
+            ExpiresAt = tokenPair.RefreshTokenExpiresAt,
+            CreatedAt = DateTime.UtcNow
+        };
+        await _refreshTokenRepository.AddAsync(refreshToken);
 
         return Result.Ok(new AuthResponseDto
         {
-            Token = token,
+            AccessToken = tokenPair.AccessToken,
+            RefreshToken = tokenPair.RefreshToken,
+            AccessTokenExpiresAt = tokenPair.AccessTokenExpiresAt,
+            UserId = user.Id,
+            Email = user.Email,
+            BusinessId = user.BusinessId
+        });
+    }
+
+    public async Task<Result<AuthResponseDto>> RefreshTokenAsync(RefreshTokenDto refreshTokenDto)
+    {
+        // 1. Validar el formato del refresh token
+        var userId = _jwtService.ValidateRefreshToken(refreshTokenDto.RefreshToken);
+        if (userId == null)
+        {
+            return Result.Fail(new UnauthorizedError("Refresh token inválido o expirado"));
+        }
+
+        // 2. Buscar el refresh token en la base de datos
+        var storedTokens = await _refreshTokenRepository.FindAsync(rt => 
+            rt.UserId == userId.Value && 
+            rt.Token == refreshTokenDto.RefreshToken);
+        
+        var storedToken = storedTokens.FirstOrDefault();
+        
+        if (storedToken == null)
+        {
+            return Result.Fail(new UnauthorizedError("Refresh token no encontrado"));
+        }
+
+        // 3. Verificar que el token no esté revocado
+        if (storedToken.IsRevoked)
+        {
+            return Result.Fail(new UnauthorizedError("Refresh token revocado"));
+        }
+
+        // 4. Verificar que no haya expirado
+        if (storedToken.IsExpired)
+        {
+            return Result.Fail(new UnauthorizedError("Refresh token expirado"));
+        }
+
+        // 5. Buscar el usuario
+        var user = await _userRepository.GetByIdAsync(userId.Value);
+        if (user == null)
+        {
+            return Result.Fail(new UnauthorizedError("Usuario no encontrado"));
+        }
+
+        // 6. Revocar el refresh token antiguo (rotación de tokens)
+        storedToken.RevokedAt = DateTime.UtcNow;
+        await _refreshTokenRepository.UpdateAsync(storedToken);
+
+        // 7. Generar nuevo par de tokens
+        var tokenPair = _jwtService.GenerateTokenPair(user);
+        
+        // 8. Guardar el nuevo refresh token
+        var newRefreshToken = new RefreshToken
+        {
+            UserId = user.Id,
+            Token = tokenPair.RefreshToken,
+            ExpiresAt = tokenPair.RefreshTokenExpiresAt,
+            CreatedAt = DateTime.UtcNow
+        };
+        await _refreshTokenRepository.AddAsync(newRefreshToken);
+
+        return Result.Ok(new AuthResponseDto
+        {
+            AccessToken = tokenPair.AccessToken,
+            RefreshToken = tokenPair.RefreshToken,
+            AccessTokenExpiresAt = tokenPair.AccessTokenExpiresAt,
             UserId = user.Id,
             Email = user.Email,
             BusinessId = user.BusinessId

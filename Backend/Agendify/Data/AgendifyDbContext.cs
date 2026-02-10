@@ -18,6 +18,7 @@ public class AgendifyDbContext : DbContext
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Service> Services { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
