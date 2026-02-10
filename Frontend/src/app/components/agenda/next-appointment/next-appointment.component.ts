@@ -29,7 +29,7 @@ export class NextAppointmentComponent implements OnInit {
   }
 
   /**
-   * Carga el próximo turno programado
+   * Carga el pr�ximo turno programado
    */
   loadNextAppointment(): void {
     this.isLoading.set(true);
@@ -40,13 +40,14 @@ export class NextAppointmentComponent implements OnInit {
 
     this.appointmentService.getNext(currentDateTime).subscribe({
       next: (response) => {
+        // response puede ser NextAppointmentResponse o null (si no hay próximos turnos)
         this.nextAppointment.set(response);
         this.isLoading.set(false);
       },
       error: (error) => {
-        console.log('Error al cargar próximo turno:', error);
+        // Solo errores reales del servidor llegan aquí (500, 503, etc.)
         this.hasError.set(true);
-        this.errorMessage.set(error.error?.message || 'No hay próximos turnos programados');
+        this.errorMessage.set('Error al cargar próximo turno');
         this.isLoading.set(false);
       }
     });

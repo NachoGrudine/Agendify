@@ -25,17 +25,13 @@ export class LoginComponent {
   onSubmit(): void {
     this.errorMessage = '';
 
-    console.log('Intentando login con:', { email: this.email, password: this.password });
-
     this.authService.login({ email: this.email, password: this.password }).subscribe({
       next: (response) => {
-        console.log('Login exitoso:', response);
         if (response) {
           this.router.navigate(['/dashboard']);
         }
       },
       error: (error) => {
-        console.error('Error en login:', error);
         if (error.status === 401) {
           this.errorMessage = 'Credenciales incorrectas';
         } else if (error.status === 400) {

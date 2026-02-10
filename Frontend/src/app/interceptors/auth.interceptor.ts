@@ -25,6 +25,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(clonedRequest).pipe(
     catchError((error: HttpErrorResponse) => {
+
       // Si es un error 401 y NO es del endpoint de auth
       if (error.status === 401 && !isAuthEndpoint) {
         // Verificar si hay un refresh token disponible

@@ -1,4 +1,4 @@
-ï»¿import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { LucideAngularModule, User, Briefcase, X, CalendarCheck, CalendarPlus, Clock, AlertCircle, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-angular';
@@ -78,7 +78,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
   successMessage = signal('');
   showProviderField = signal(true);
 
-  // PaginaciÃ³n de clientes
+  // Paginación de clientes
   customerPageSize = signal(5);
   customerCurrentPage = signal(1);
   customerPageSizeOptions = [5, 10, 15];
@@ -89,9 +89,9 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
   readonly modalIcon = computed(() => this.isEditMode() ? this.CalendarCheckIcon : this.CalendarPlusIcon);
   readonly submitButtonLabel = computed(() => this.isEditMode() ? 'Actualizar Turno' : 'Crear Turno');
 
-  // Computed para verificar si la fecha/hora es pasada - SOLO en modo ediciÃ³n
+  // Computed para verificar si la fecha/hora es pasada - SOLO en modo edición
   readonly isPastDateTime = computed(() => {
-    // Solo validar en modo ediciÃ³n
+    // Solo validar en modo edición
     if (!this.isEditMode()) return false;
 
     if (!this.appointmentForm) return false;
@@ -115,7 +115,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
   get showCustomerDropdown() { return this.formService.showCustomerDropdown; }
   get showServiceDropdown() { return this.formService.showServiceDropdown; }
 
-  // Computed para paginaciÃ³n de clientes
+  // Computed para paginación de clientes
   readonly paginatedCustomers = computed(() => {
     const customers = this.filteredCustomers();
     const pageSize = this.customerPageSize();
@@ -142,12 +142,12 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
     this.setupSearchListeners();
 
     if (this.isEditMode()) {
-      // Modo ediciÃ³n: cargar datos
+      // Modo edición: cargar datos
       if (this.appointmentId) {
         this.loadInitialData();
       }
     } else {
-      // Modo creaciÃ³n: cargar listas
+      // Modo creación: cargar listas
       this.loadProviders();
       this.loadCustomers();
       this.loadServices();
@@ -181,7 +181,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
       .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe(value => {
         this.formService.filterCustomers(value, this.customers());
-        this.customerCurrentPage.set(1); // Resetear a pÃ¡gina 1 al filtrar
+        this.customerCurrentPage.set(1); // Resetear a página 1 al filtrar
       });
 
     // Service search
@@ -194,7 +194,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
 
   private loadInitialData(): void {
     if (!this.appointmentId) {
-      this.errorMessage.set('ID de turno no vÃ¡lido');
+      this.errorMessage.set('ID de turno no válido');
       return;
     }
 
@@ -208,13 +208,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
       this.serviceService.getAll().toPromise(),
       this.appointmentService.getById(this.appointmentId!).toPromise()
     ]).then(([providers, customers, services, appointment]) => {
-      console.log('ðŸ”„ Datos cargados en modo ediciÃ³n:');
-      console.log('  - Providers:', providers?.length);
-      console.log('  - Customers:', customers?.length);
-      console.log('  - Services:', services?.length);
-      console.log('  - Appointment:', appointment);
-
-      // Guardar las listas
+// Guardar las listas
       this.providers.set((providers || []).filter(p => p.isActive));
       this.customers.set(customers || []);
       this.services.set(services || []);
@@ -255,7 +249,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
       startTime: startTime,
       endTime: endTime,
       notes: appointment.notes || ''
-    }, { emitEvent: false }); // No emitir eventos para evitar bÃºsquedas innecesarias
+    }, { emitEvent: false }); // No emitir eventos para evitar búsquedas innecesarias
   }
 
   private loadProviders(): void {
@@ -340,7 +334,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
     const startDateTime = DateTimeHelper.createDateTime(baseDate, startHour, startMinute);
     const endDateTime = DateTimeHelper.createDateTime(baseDate, endHour, endMinute);
 
-    // Validar que no sea una fecha/hora pasada SOLO en modo ediciÃ³n
+    // Validar que no sea una fecha/hora pasada SOLO en modo edición
     // En modo crear, permitimos crear turnos para cualquier fecha seleccionada
     const now = new Date();
     if (this.isEditMode() && startDateTime < now) {
@@ -355,7 +349,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
     }
 
     if (!ScheduleValidator.isWithinProviderSchedule(startDateTime, endDateTime, this.providerSchedules())) {
-      this.errorMessage.set('El horario seleccionado estÃ¡ fuera del horario laboral del provider');
+      this.errorMessage.set('El horario seleccionado está fuera del horario laboral del provider');
       return;
     }
 
@@ -374,7 +368,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
 
     this.appointmentService.create(dto).subscribe({
       next: () => {
-        this.successMessage.set('Â¡Turno creado exitosamente!');
+        this.successMessage.set('¡Turno creado exitosamente!');
         this.isSaving.set(false);
         setTimeout(() => {
           this.resetForm(); // Limpiar el formulario antes de cerrar
@@ -398,7 +392,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
 
     this.appointmentService.update(this.appointmentId!, dto).subscribe({
       next: () => {
-        this.successMessage.set('Â¡Turno actualizado exitosamente!');
+        this.successMessage.set('¡Turno actualizado exitosamente!');
         this.isSaving.set(false);
         setTimeout(() => {
           this.success.emit();
@@ -479,7 +473,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
 
     const totalMinutes = (endHour * 60 + endMin) - (startHour * 60 + startMin);
 
-    if (totalMinutes <= 0) return 'Hora invÃ¡lida';
+    if (totalMinutes <= 0) return 'Hora inválida';
 
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
@@ -504,11 +498,11 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Verifica si la fecha/hora seleccionada estÃ¡ en el pasado
-   * Solo aplica en modo ediciÃ³n
+   * Verifica si la fecha/hora seleccionada está en el pasado
+   * Solo aplica en modo edición
    */
   isDateTimeInPast(): boolean {
-    // Solo validar en modo ediciÃ³n
+    // Solo validar en modo edición
     if (!this.isEditMode()) return false;
 
     const startTime = this.appointmentForm.get('startTime')?.value;
@@ -525,7 +519,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
     return startDateTime < now;
   }
 
-  // MÃ©todos de paginaciÃ³n de clientes
+  // Métodos de paginación de clientes
   goToCustomerPage(page: number): void {
     if (page >= 1 && page <= this.totalCustomerPages()) {
       this.customerCurrentPage.set(page);
@@ -534,7 +528,7 @@ export class AppointmentFormComponent implements OnInit, OnChanges {
 
   changeCustomerPageSize(event: any): void {
     this.customerPageSize.set(event.value);
-    this.customerCurrentPage.set(1); // Resetear a pÃ¡gina 1 al cambiar tamaÃ±o
+    this.customerCurrentPage.set(1); // Resetear a página 1 al cambiar tamaño
   }
 
   previousCustomerPage(): void {

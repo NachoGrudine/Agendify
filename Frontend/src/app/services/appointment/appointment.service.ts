@@ -1,6 +1,7 @@
 ﻿import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { CreateAppointmentDto, UpdateAppointmentDto, AppointmentResponse, NextAppointmentResponse } from '../../models/appointment.model';
 import { DateTimeHelper } from '../../helpers/date-time.helper';
@@ -43,11 +44,21 @@ export class AppointmentService {
   /**
    * Obtener el próximo turno programado
    * @param currentDateTime Fecha y hora actual del sistema
+   * @returns Observable con el próximo turno o null si no hay ninguno (404 es tratado como caso normal)
    */
-  getNext(currentDateTime: Date): Observable<NextAppointmentResponse> {
+  getNext(currentDateTime: Date): Observable<NextAppointmentResponse | null> {
     // Usar toLocalISOString para enviar en hora local sin conversión UTC
     // Formato: "2026-02-06T11:12:47" (sin Z)
     const params = new HttpParams().set('currentDateTime', DateTimeHelper.toLocalISOString(currentDateTime));
-    return this.http.get<NextAppointmentResponse>(`${this.API_URL}/next`, { params });
+    return this.http.get<NextAppointmentResponse>(`${this.API_URL}/next`, { params }).pipe(
+      catchError((error) => {
+        // 404 significa que no hay próximos turnos, no es un error
+        if (error.status === 404) {
+          return of(null);
+        }
+        // Otros errores se propagan
+        return throwError(() => error);
+      })
+    );
   }
 }

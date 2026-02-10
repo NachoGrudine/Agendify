@@ -264,11 +264,8 @@ export class DayDetailComponent implements OnInit {
    * Editar un appointment - ABRE MODAL
    */
   editAppointment(appointmentId: number): void {
-    console.log('📝 Editando appointment con ID:', appointmentId);
     this.selectedAppointmentId.set(appointmentId);
-    console.log('📝 selectedAppointmentId después de set:', this.selectedAppointmentId());
     this.showEditAppointmentModal = true;
-    console.log('📝 Modal abierto:', this.showEditAppointmentModal);
   }
 
   /**
