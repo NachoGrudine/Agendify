@@ -1,4 +1,4 @@
-﻿﻿using Agendify.DTOs.Auth;
+﻿using Agendify.DTOs.Auth;
 using Agendify.Models.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

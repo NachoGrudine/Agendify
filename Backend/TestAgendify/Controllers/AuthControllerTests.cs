@@ -34,7 +34,9 @@ public class AuthControllerTests
         
         var expectedResponse = new AuthResponseDto
         {
-            Token = "test.jwt.token",
+            AccessToken = "test.access.token",
+            RefreshToken = "test.refresh.token",
+            AccessTokenExpiresAt = DateTime.UtcNow.AddMinutes(15),
             UserId = 1,
             Email = registerDto.Email,
             BusinessId = 1
@@ -124,7 +126,9 @@ public class AuthControllerTests
         
         var expectedResponse = new AuthResponseDto
         {
-            Token = "test.jwt.token",
+            AccessToken = "test.access.token",
+            RefreshToken = "test.refresh.token",
+            AccessTokenExpiresAt = DateTime.UtcNow.AddMinutes(15),
             UserId = 1,
             Email = loginDto.Email,
             BusinessId = 1
@@ -244,6 +248,114 @@ public class AuthControllerTests
         
         _mockAuthService.Verify(
             s => s.LoginAsync(loginDto),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task RefreshToken_WithValidToken_ReturnsOkWithNewTokens()
+    {
+        // Arrange
+        var refreshTokenDto = new RefreshTokenDto
+        {
+            RefreshToken = "valid.refresh.token"
+        };
+        
+        var expectedResponse = new AuthResponseDto
+        {
+            AccessToken = "new.access.token",
+            RefreshToken = "new.refresh.token",
+            AccessTokenExpiresAt = DateTime.UtcNow.AddMinutes(15),
+            UserId = 1,
+            Email = "test@example.com",
+            BusinessId = 1
+        };
+        
+        _mockAuthService
+            .Setup(s => s.RefreshTokenAsync(refreshTokenDto))
+            .ReturnsAsync(Result.Ok(expectedResponse));
+
+        // Act
+        var result = await _sut.RefreshToken(refreshTokenDto);
+
+        // Assert
+        result.Result.Should().BeOfType<OkObjectResult>();
+        var okResult = result.Result as OkObjectResult;
+        okResult!.Value.Should().BeEquivalentTo(expectedResponse);
+        
+        _mockAuthService.Verify(
+            s => s.RefreshTokenAsync(refreshTokenDto),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task RefreshToken_WithInvalidToken_ReturnsUnauthorized()
+    {
+        // Arrange
+        var refreshTokenDto = new RefreshTokenDto
+        {
+            RefreshToken = "invalid.refresh.token"
+        };
+        
+        _mockAuthService
+            .Setup(s => s.RefreshTokenAsync(refreshTokenDto))
+            .ReturnsAsync(Result.Fail(new UnauthorizedError("Refresh token inválido o expirado")));
+
+        // Act
+        var result = await _sut.RefreshToken(refreshTokenDto);
+
+        // Assert
+        result.Result.Should().BeOfType<UnauthorizedObjectResult>();
+        
+        _mockAuthService.Verify(
+            s => s.RefreshTokenAsync(refreshTokenDto),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task RefreshToken_WithExpiredToken_ReturnsUnauthorized()
+    {
+        // Arrange
+        var refreshTokenDto = new RefreshTokenDto
+        {
+            RefreshToken = "expired.refresh.token"
+        };
+        
+        _mockAuthService
+            .Setup(s => s.RefreshTokenAsync(refreshTokenDto))
+            .ReturnsAsync(Result.Fail(new UnauthorizedError("Refresh token expirado")));
+
+        // Act
+        var result = await _sut.RefreshToken(refreshTokenDto);
+
+        // Assert
+        result.Result.Should().BeOfType<UnauthorizedObjectResult>();
+        
+        _mockAuthService.Verify(
+            s => s.RefreshTokenAsync(refreshTokenDto),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task RefreshToken_WithMismatchedToken_ReturnsUnauthorized()
+    {
+        // Arrange
+        var refreshTokenDto = new RefreshTokenDto
+        {
+            RefreshToken = "mismatched.refresh.token"
+        };
+        
+        _mockAuthService
+            .Setup(s => s.RefreshTokenAsync(refreshTokenDto))
+            .ReturnsAsync(Result.Fail(new UnauthorizedError("Refresh token no coincide")));
+
+        // Act
+        var result = await _sut.RefreshToken(refreshTokenDto);
+
+        // Assert
+        result.Result.Should().BeOfType<UnauthorizedObjectResult>();
+        
+        _mockAuthService.Verify(
+            s => s.RefreshTokenAsync(refreshTokenDto),
             Times.Once);
     }
 }

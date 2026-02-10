@@ -18,6 +18,7 @@ public class AuthServiceTests
     private readonly Mock<IRepository<User>> _mockUserRepository;
     private readonly Mock<IRepository<BusinessEntity>> _mockBusinessRepository;
     private readonly Mock<IRepository<Provider>> _mockProviderRepository;
+    private readonly Mock<IRepository<RefreshToken>> _mockRefreshTokenRepository;
     private readonly Mock<IPasswordHasher> _mockPasswordHasher;
     private readonly Mock<IJwtService> _mockJwtService;
     private readonly Mock<IProviderScheduleService> _mockProviderScheduleService;
@@ -28,6 +29,7 @@ public class AuthServiceTests
         _mockUserRepository = new Mock<IRepository<User>>();
         _mockBusinessRepository = new Mock<IRepository<BusinessEntity>>();
         _mockProviderRepository = new Mock<IRepository<Provider>>();
+        _mockRefreshTokenRepository = new Mock<IRepository<RefreshToken>>();
         _mockPasswordHasher = new Mock<IPasswordHasher>();
         _mockJwtService = new Mock<IJwtService>();
         _mockProviderScheduleService = new Mock<IProviderScheduleService>();
@@ -36,6 +38,7 @@ public class AuthServiceTests
             _mockUserRepository.Object,
             _mockBusinessRepository.Object,
             _mockProviderRepository.Object,
+            _mockRefreshTokenRepository.Object,
             _mockPasswordHasher.Object,
             _mockJwtService.Object,
             _mockProviderScheduleService.Object
@@ -134,9 +137,28 @@ public class AuthServiceTests
             .Setup(x => x.CreateDefaultSchedulesAsync(createdProvider.Id))
             .ReturnsAsync(FluentResults.Result.Ok());
 
+        var tokenPair = new TokenPairDto
+        {
+            AccessToken = "generated-access-token",
+            RefreshToken = "generated-refresh-token",
+            AccessTokenExpiresAt = DateTime.UtcNow.AddMinutes(15),
+            RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7)
+        };
+
         _mockJwtService
-            .Setup(x => x.GenerateToken(It.IsAny<User>()))
-            .Returns("generated-jwt-token");
+            .Setup(x => x.GenerateTokenPair(It.IsAny<User>()))
+            .Returns(tokenPair);
+
+        _mockRefreshTokenRepository
+            .Setup(x => x.AddAsync(It.IsAny<RefreshToken>()))
+            .ReturnsAsync(new RefreshToken 
+            { 
+                Id = 1, 
+                UserId = createdUser.Id, 
+                Token = tokenPair.RefreshToken,
+                ExpiresAt = tokenPair.RefreshTokenExpiresAt,
+                CreatedAt = DateTime.UtcNow
+            });
 
         // Act
         var result = await _authService.RegisterAsync(registerDto);
@@ -144,7 +166,8 @@ public class AuthServiceTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeNull();
-        result.Value.Token.Should().Be("generated-jwt-token");
+        result.Value.AccessToken.Should().Be("generated-access-token");
+        result.Value.RefreshToken.Should().Be("generated-refresh-token");
         result.Value.UserId.Should().Be(createdUser.Id);
         result.Value.Email.Should().Be(createdUser.Email);
         result.Value.BusinessId.Should().Be(1);
@@ -158,7 +181,11 @@ public class AuthServiceTests
         _mockPasswordHasher.Verify(x => x.HashPassword(registerDto.Password), Times.Once);
         _mockUserRepository.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
         _mockProviderScheduleService.Verify(x => x.CreateDefaultSchedulesAsync(createdProvider.Id), Times.Once);
-        _mockJwtService.Verify(x => x.GenerateToken(It.IsAny<User>()), Times.Once);
+        _mockJwtService.Verify(x => x.GenerateTokenPair(It.IsAny<User>()), Times.Once);
+        _mockRefreshTokenRepository.Verify(x => x.AddAsync(It.Is<RefreshToken>(rt =>
+            rt.UserId == createdUser.Id && 
+            rt.Token == tokenPair.RefreshToken && 
+            rt.ExpiresAt == tokenPair.RefreshTokenExpiresAt)), Times.Once);
     }
 
     [Fact]
@@ -196,9 +223,23 @@ public class AuthServiceTests
             .Setup(x => x.AddAsync(It.IsAny<User>()))
             .ReturnsAsync(new User { Id = 1, Email = registerDto.Email, PasswordHash = hashedPassword, BusinessId = 1, ProviderId = 1 });
 
+        _mockProviderScheduleService
+            .Setup(x => x.CreateDefaultSchedulesAsync(It.IsAny<int>()))
+            .ReturnsAsync(FluentResults.Result.Ok());
+
         _mockJwtService
-            .Setup(x => x.GenerateToken(It.IsAny<User>()))
-            .Returns("token");
+            .Setup(x => x.GenerateTokenPair(It.IsAny<User>()))
+            .Returns(new TokenPairDto
+            {
+                AccessToken = "token",
+                RefreshToken = "refresh-token",
+                AccessTokenExpiresAt = DateTime.UtcNow.AddMinutes(15),
+                RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7)
+            });
+
+        _mockRefreshTokenRepository
+            .Setup(x => x.AddAsync(It.IsAny<RefreshToken>()))
+            .ReturnsAsync(new RefreshToken { Id = 1, UserId = 1, Token = "refresh-token" });
 
         // Act
         await _authService.RegisterAsync(registerDto);
@@ -300,9 +341,26 @@ public class AuthServiceTests
             .Setup(x => x.VerifyPassword(loginDto.Password, existingUser.PasswordHash))
             .Returns(true);
 
+        var tokenPair = new TokenPairDto
+        {
+            AccessToken = "generated-access-token",
+            RefreshToken = "generated-refresh-token",
+            AccessTokenExpiresAt = DateTime.UtcNow.AddMinutes(15),
+            RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7)
+        };
+
         _mockJwtService
-            .Setup(x => x.GenerateToken(existingUser))
-            .Returns("generated-jwt-token");
+            .Setup(x => x.GenerateTokenPair(existingUser))
+            .Returns(tokenPair);
+
+        _mockRefreshTokenRepository
+            .Setup(x => x.AddAsync(It.IsAny<RefreshToken>()))
+            .ReturnsAsync(new RefreshToken 
+            { 
+                Id = 1, 
+                UserId = existingUser.Id, 
+                Token = tokenPair.RefreshToken 
+            });
 
         // Act
         var result = await _authService.LoginAsync(loginDto);
@@ -310,13 +368,18 @@ public class AuthServiceTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeNull();
-        result.Value.Token.Should().Be("generated-jwt-token");
+        result.Value.AccessToken.Should().Be("generated-access-token");
+        result.Value.RefreshToken.Should().Be("generated-refresh-token");
         result.Value.UserId.Should().Be(existingUser.Id);
         result.Value.Email.Should().Be(existingUser.Email);
         result.Value.BusinessId.Should().Be(existingUser.BusinessId);
 
         _mockPasswordHasher.Verify(x => x.VerifyPassword(loginDto.Password, existingUser.PasswordHash), Times.Once);
-        _mockJwtService.Verify(x => x.GenerateToken(existingUser), Times.Once);
+        _mockJwtService.Verify(x => x.GenerateTokenPair(existingUser), Times.Once);
+        _mockRefreshTokenRepository.Verify(x => x.AddAsync(It.Is<RefreshToken>(rt => 
+            rt.UserId == existingUser.Id && 
+            rt.Token == tokenPair.RefreshToken && 
+            rt.ExpiresAt == tokenPair.RefreshTokenExpiresAt)), Times.Once);
     }
 
     [Fact]
@@ -346,14 +409,320 @@ public class AuthServiceTests
             .Returns(true);
 
         _mockJwtService
-            .Setup(x => x.GenerateToken(It.IsAny<User>()))
-            .Returns("token");
+            .Setup(x => x.GenerateTokenPair(It.IsAny<User>()))
+            .Returns(new TokenPairDto
+            {
+                AccessToken = "token",
+                RefreshToken = "refresh-token",
+                AccessTokenExpiresAt = DateTime.UtcNow.AddMinutes(15),
+                RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7)
+            });
+
+        _mockRefreshTokenRepository
+            .Setup(x => x.AddAsync(It.IsAny<RefreshToken>()))
+            .ReturnsAsync(new RefreshToken { Id = 1, UserId = existingUser.Id, Token = "refresh-token" });
 
         // Act
         await _authService.LoginAsync(loginDto);
 
         // Assert
         _mockPasswordHasher.Verify(x => x.VerifyPassword(loginDto.Password, existingUser.PasswordHash), Times.Once);
+    }
+
+    #endregion
+
+    #region RefreshTokenAsync Tests
+
+    [Fact]
+    public async Task RefreshTokenAsync_Should_Return_Fail_When_Token_Format_Invalid()
+    {
+        // Arrange
+        var refreshTokenDto = new RefreshTokenDto
+        {
+            RefreshToken = "invalid-token-format"
+        };
+
+        _mockJwtService
+            .Setup(x => x.ValidateRefreshToken(refreshTokenDto.RefreshToken))
+            .Returns((int?)null);
+
+        // Act
+        var result = await _authService.RefreshTokenAsync(refreshTokenDto);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().ContainSingle()
+            .Which.Should().BeOfType<UnauthorizedError>()
+            .Which.Message.Should().Be("Refresh token inválido o expirado");
+    }
+
+    [Fact]
+    public async Task RefreshTokenAsync_Should_Return_Fail_When_Token_Not_Found_In_Database()
+    {
+        // Arrange
+        var refreshTokenDto = new RefreshTokenDto
+        {
+            RefreshToken = "valid.refresh.token"
+        };
+
+        _mockJwtService
+            .Setup(x => x.ValidateRefreshToken(refreshTokenDto.RefreshToken))
+            .Returns(1); // UserId válido
+
+        _mockRefreshTokenRepository
+            .Setup(x => x.FindAsync(It.IsAny<Expression<Func<RefreshToken, bool>>>()))
+            .ReturnsAsync(new List<RefreshToken>()); // No existe en la BD
+
+        // Act
+        var result = await _authService.RefreshTokenAsync(refreshTokenDto);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().ContainSingle()
+            .Which.Should().BeOfType<UnauthorizedError>()
+            .Which.Message.Should().Be("Refresh token no encontrado");
+    }
+
+    [Fact]
+    public async Task RefreshTokenAsync_Should_Return_Fail_When_Token_Is_Revoked()
+    {
+        // Arrange
+        var refreshTokenDto = new RefreshTokenDto
+        {
+            RefreshToken = "revoked.refresh.token"
+        };
+
+        var revokedToken = new RefreshToken
+        {
+            Id = 1,
+            UserId = 1,
+            Token = "revoked.refresh.token",
+            ExpiresAt = DateTime.UtcNow.AddDays(7),
+            CreatedAt = DateTime.UtcNow.AddDays(-1),
+            RevokedAt = DateTime.UtcNow.AddHours(-1) // Token revocado
+        };
+
+        _mockJwtService
+            .Setup(x => x.ValidateRefreshToken(refreshTokenDto.RefreshToken))
+            .Returns(1);
+
+        _mockRefreshTokenRepository
+            .Setup(x => x.FindAsync(It.IsAny<Expression<Func<RefreshToken, bool>>>()))
+            .ReturnsAsync(new List<RefreshToken> { revokedToken });
+
+        // Act
+        var result = await _authService.RefreshTokenAsync(refreshTokenDto);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().ContainSingle()
+            .Which.Should().BeOfType<UnauthorizedError>()
+            .Which.Message.Should().Be("Refresh token revocado");
+    }
+
+    [Fact]
+    public async Task RefreshTokenAsync_Should_Return_Fail_When_Token_Expired()
+    {
+        // Arrange
+        var refreshTokenDto = new RefreshTokenDto
+        {
+            RefreshToken = "expired.refresh.token"
+        };
+
+        var expiredToken = new RefreshToken
+        {
+            Id = 1,
+            UserId = 1,
+            Token = "expired.refresh.token",
+            ExpiresAt = DateTime.UtcNow.AddDays(-1), // Expirado
+            CreatedAt = DateTime.UtcNow.AddDays(-8)
+        };
+
+        _mockJwtService
+            .Setup(x => x.ValidateRefreshToken(refreshTokenDto.RefreshToken))
+            .Returns(1);
+
+        _mockRefreshTokenRepository
+            .Setup(x => x.FindAsync(It.IsAny<Expression<Func<RefreshToken, bool>>>()))
+            .ReturnsAsync(new List<RefreshToken> { expiredToken });
+
+        // Act
+        var result = await _authService.RefreshTokenAsync(refreshTokenDto);
+
+        // Assert
+        result.IsFailed.Should().BeTrue();
+        result.Errors.Should().ContainSingle()
+            .Which.Should().BeOfType<UnauthorizedError>()
+            .Which.Message.Should().Be("Refresh token expirado");
+    }
+
+    [Fact]
+    public async Task RefreshTokenAsync_Should_Return_New_Tokens_When_Valid()
+    {
+        // Arrange
+        var refreshTokenDto = new RefreshTokenDto
+        {
+            RefreshToken = "valid.refresh.token"
+        };
+
+        var storedToken = new RefreshToken
+        {
+            Id = 1,
+            UserId = 1,
+            Token = "valid.refresh.token",
+            ExpiresAt = DateTime.UtcNow.AddDays(7),
+            CreatedAt = DateTime.UtcNow.AddDays(-1)
+        };
+
+        var existingUser = new User
+        {
+            Id = 1,
+            Email = "user@example.com",
+            BusinessId = 1,
+            ProviderId = 1
+        };
+
+        var newTokenPair = new TokenPairDto
+        {
+            AccessToken = "new.access.token",
+            RefreshToken = "new.refresh.token",
+            AccessTokenExpiresAt = DateTime.UtcNow.AddMinutes(15),
+            RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7)
+        };
+
+        _mockJwtService
+            .Setup(x => x.ValidateRefreshToken(refreshTokenDto.RefreshToken))
+            .Returns(1);
+
+        _mockRefreshTokenRepository
+            .Setup(x => x.FindAsync(It.IsAny<Expression<Func<RefreshToken, bool>>>()))
+            .ReturnsAsync(new List<RefreshToken> { storedToken });
+
+        _mockUserRepository
+            .Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(existingUser);
+
+        _mockRefreshTokenRepository
+            .Setup(x => x.UpdateAsync(It.IsAny<RefreshToken>()))
+            .ReturnsAsync(storedToken);
+
+        _mockJwtService
+            .Setup(x => x.GenerateTokenPair(existingUser))
+            .Returns(newTokenPair);
+
+        _mockRefreshTokenRepository
+            .Setup(x => x.AddAsync(It.IsAny<RefreshToken>()))
+            .ReturnsAsync(new RefreshToken 
+            { 
+                Id = 2, 
+                UserId = 1, 
+                Token = newTokenPair.RefreshToken,
+                ExpiresAt = newTokenPair.RefreshTokenExpiresAt,
+                CreatedAt = DateTime.UtcNow
+            });
+
+        // Act
+        var result = await _authService.RefreshTokenAsync(refreshTokenDto);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().NotBeNull();
+        result.Value.AccessToken.Should().Be("new.access.token");
+        result.Value.RefreshToken.Should().Be("new.refresh.token");
+        result.Value.UserId.Should().Be(existingUser.Id);
+        result.Value.Email.Should().Be(existingUser.Email);
+        result.Value.BusinessId.Should().Be(existingUser.BusinessId);
+
+        _mockJwtService.Verify(x => x.ValidateRefreshToken(refreshTokenDto.RefreshToken), Times.Once);
+        _mockRefreshTokenRepository.Verify(x => x.FindAsync(It.IsAny<Expression<Func<RefreshToken, bool>>>()), Times.Once);
+        _mockUserRepository.Verify(x => x.GetByIdAsync(1), Times.Once);
+        _mockRefreshTokenRepository.Verify(x => x.UpdateAsync(It.Is<RefreshToken>(rt => rt.RevokedAt != null)), Times.Once);
+        _mockJwtService.Verify(x => x.GenerateTokenPair(existingUser), Times.Once);
+        _mockRefreshTokenRepository.Verify(x => x.AddAsync(It.Is<RefreshToken>(rt =>
+            rt.UserId == existingUser.Id &&
+            rt.Token == newTokenPair.RefreshToken &&
+            rt.ExpiresAt == newTokenPair.RefreshTokenExpiresAt)), Times.Once);
+    }
+
+    [Fact]
+    public async Task RefreshTokenAsync_Should_Revoke_Old_Token_And_Create_New_One()
+    {
+        // Arrange
+        var refreshTokenDto = new RefreshTokenDto
+        {
+            RefreshToken = "old.refresh.token"
+        };
+
+        var storedToken = new RefreshToken
+        {
+            Id = 1,
+            UserId = 1,
+            Token = "old.refresh.token",
+            ExpiresAt = DateTime.UtcNow.AddDays(7),
+            CreatedAt = DateTime.UtcNow.AddDays(-1)
+        };
+
+        var existingUser = new User
+        {
+            Id = 1,
+            Email = "user@example.com",
+            BusinessId = 1,
+            ProviderId = 1
+        };
+
+        var newTokenPair = new TokenPairDto
+        {
+            AccessToken = "new.access.token",
+            RefreshToken = "new.refresh.token",
+            AccessTokenExpiresAt = DateTime.UtcNow.AddMinutes(15),
+            RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7)
+        };
+
+        _mockJwtService
+            .Setup(x => x.ValidateRefreshToken(refreshTokenDto.RefreshToken))
+            .Returns(1);
+
+        _mockRefreshTokenRepository
+            .Setup(x => x.FindAsync(It.IsAny<Expression<Func<RefreshToken, bool>>>()))
+            .ReturnsAsync(new List<RefreshToken> { storedToken });
+
+        _mockUserRepository
+            .Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(existingUser);
+
+        _mockRefreshTokenRepository
+            .Setup(x => x.UpdateAsync(It.IsAny<RefreshToken>()))
+            .ReturnsAsync(storedToken);
+
+        _mockJwtService
+            .Setup(x => x.GenerateTokenPair(existingUser))
+            .Returns(newTokenPair);
+
+        _mockRefreshTokenRepository
+            .Setup(x => x.AddAsync(It.IsAny<RefreshToken>()))
+            .ReturnsAsync(new RefreshToken 
+            { 
+                Id = 2, 
+                UserId = 1, 
+                Token = newTokenPair.RefreshToken,
+                ExpiresAt = newTokenPair.RefreshTokenExpiresAt,
+                CreatedAt = DateTime.UtcNow
+            });
+
+        // Act
+        await _authService.RefreshTokenAsync(refreshTokenDto);
+
+        // Assert
+        // Verificar que se revocó el token antiguo
+        _mockRefreshTokenRepository.Verify(x => x.UpdateAsync(It.Is<RefreshToken>(rt => 
+            rt.Id == storedToken.Id && 
+            rt.RevokedAt != null)), Times.Once);
+        
+        // Verificar que se creó un nuevo token
+        _mockRefreshTokenRepository.Verify(x => x.AddAsync(It.Is<RefreshToken>(rt =>
+            rt.UserId == existingUser.Id &&
+            rt.Token == newTokenPair.RefreshToken &&
+            rt.ExpiresAt == newTokenPair.RefreshTokenExpiresAt)), Times.Once);
     }
 
     #endregion
