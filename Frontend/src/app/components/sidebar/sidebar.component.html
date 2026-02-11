@@ -1,4 +1,4 @@
-﻿<aside class="sidebar" [class.open]="isOpen">
+﻿﻿<aside class="sidebar" [class.open]="isOpen">
   <div class="sidebar-header">
     <div class="logo">
       <div class="logo-icon">
@@ -25,10 +25,6 @@
   </nav>
 
   <div class="sidebar-footer">
-    <button class="btn-config" routerLink="/dashboard/configuracion" (click)="onNavItemClick()">
-      <i-lucide [img]="SettingsIcon" [size]="20"></i-lucide>
-      <span>Configuración</span>
-    </button>
     <button class="btn-logout" (click)="logout()">
       <i-lucide [img]="LogOutIcon" [size]="20"></i-lucide>
       <span>Cerrar sesión</span>

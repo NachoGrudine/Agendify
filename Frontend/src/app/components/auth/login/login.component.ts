@@ -25,6 +25,22 @@ export class LoginComponent {
   onSubmit(): void {
     this.errorMessage = '';
 
+    // Validaciones antes de enviar
+    if (!this.email || !this.password) {
+      this.errorMessage = 'Por favor, completa todos los campos';
+      return;
+    }
+
+    if (!this.isValidEmail(this.email)) {
+      this.errorMessage = 'Por favor, ingresa un email válido';
+      return;
+    }
+
+    if (this.password.length < 6) {
+      this.errorMessage = 'La contraseña debe tener al menos 6 caracteres';
+      return;
+    }
+
     this.authService.login({ email: this.email, password: this.password }).subscribe({
       next: (response) => {
         if (response) {
@@ -35,12 +51,19 @@ export class LoginComponent {
         if (error.status === 401) {
           this.errorMessage = 'Credenciales incorrectas';
         } else if (error.status === 400) {
-          this.errorMessage = 'Por favor, completa todos los campos';
+          this.errorMessage = 'Por favor, completa todos los campos correctamente';
+        } else if (error.status === 500) {
+          this.errorMessage = 'Error del servidor. Intenta de nuevo más tarde';
         } else {
           this.errorMessage = error.error?.message || 'Error al iniciar sesión';
         }
       }
     });
+  }
+
+  private isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   }
 
   onRegisterClick(): void {
