@@ -180,8 +180,8 @@ public class AppointmentServiceTests
             ProviderId = 10,
             CustomerId = 5,
             ServiceId = 3,
-            StartTime = new DateTime(2026, 2, 10, 14, 0, 0),
-            EndTime = new DateTime(2026, 2, 10, 15, 0, 0),
+            StartTime = new DateTime(2026, 2, 15, 14, 0, 0), // Fecha futura
+            EndTime = new DateTime(2026, 2, 15, 15, 0, 0),
             Notes = "Updated notes"
         };
 
@@ -190,8 +190,8 @@ public class AppointmentServiceTests
             Id = appointmentId,
             BusinessId = businessId,
             ProviderId = 10,
-            StartTime = new DateTime(2026, 2, 10, 10, 0, 0),
-            EndTime = new DateTime(2026, 2, 10, 11, 0, 0)
+            StartTime = new DateTime(2026, 2, 12, 10, 0, 0), // Fecha futura
+            EndTime = new DateTime(2026, 2, 12, 11, 0, 0)
         };
 
         _mockAppointmentRepository
@@ -246,8 +246,8 @@ public class AppointmentServiceTests
         var dto = new UpdateAppointmentDto
         {
             ProviderId = 10,
-            StartTime = new DateTime(2026, 2, 10, 14, 0, 0),
-            EndTime = new DateTime(2026, 2, 10, 15, 0, 0),
+            StartTime = new DateTime(2026, 2, 15, 14, 0, 0), // Fecha futura
+            EndTime = new DateTime(2026, 2, 15, 15, 0, 0),
         };
 
         _mockAppointmentRepository
@@ -275,8 +275,8 @@ public class AppointmentServiceTests
         var dto = new UpdateAppointmentDto
         {
             ProviderId = 10,
-            StartTime = new DateTime(2026, 2, 10, 14, 0, 0),
-            EndTime = new DateTime(2026, 2, 10, 15, 0, 0),
+            StartTime = new DateTime(2026, 2, 15, 14, 0, 0), // Fecha futura
+            EndTime = new DateTime(2026, 2, 15, 15, 0, 0),
         };
 
         var existingAppointment = new Appointment
@@ -307,8 +307,8 @@ public class AppointmentServiceTests
         var dto = new UpdateAppointmentDto
         {
             ProviderId = 10,
-            StartTime = new DateTime(2026, 2, 10, 14, 0, 0),
-            EndTime = new DateTime(2026, 2, 10, 15, 0, 0),
+            StartTime = new DateTime(2026, 3, 15, 14, 0, 0), // Fecha futura en marzo
+            EndTime = new DateTime(2026, 3, 15, 15, 0, 0),
         };
 
         var existingAppointment = new Appointment
