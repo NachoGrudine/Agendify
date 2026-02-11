@@ -1,0 +1,298 @@
+﻿/* ============================================
+   BOTONES DE ACCIÓN ESTANDARIZADOS - GLOBAL
+   Estilos minimalistas y modernos para botones de Editar y Eliminar
+   DISEÑO: 36x36px, border-radius 8px, sin bordes
+
+   COLORES DE LA APP:
+   - Azul principal: #030132
+   - Rojo danger: #dc2626
+   ============================================ */
+
+/* ============================================
+   CONTENEDORES
+   ============================================ */
+.action-buttons,
+.card-actions,
+.actions-group {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================
+   BOTÓN BASE - TODOS LOS ESTILOS COMUNES
+   ============================================ */
+.action-btn,
+.btn-icon-action,
+button.action-btn,
+.card-actions .action-btn,
+.action-buttons .action-btn {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  max-width: 36px !important;
+  max-height: 36px !important;
+  border-radius: 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  flex-shrink: 0 !important;
+  border: none !important;
+}
+
+/* ============================================
+   BOTÓN DE EDITAR (PRIMARY/BLUE) - FONDO CLARO
+   Estilo: Fondo gris claro, sin borde, icono azul app
+   ============================================ */
+.action-btn.edit-btn,
+.action-btn.btn-primary,
+.btn-edit,
+button.edit-btn,
+button.btn-primary:not(.p-button),
+.card-actions .edit-btn,
+.action-buttons .btn-primary {
+  background: #f3f4f6 !important;
+  border: none !important;
+  color: #030132 !important;
+}
+
+/* Iconos del botón de editar */
+.action-btn.edit-btn svg,
+.action-btn.btn-primary svg,
+.btn-edit svg,
+button.edit-btn svg,
+button.btn-primary:not(.p-button) svg,
+.card-actions .edit-btn svg,
+.action-buttons .btn-primary svg,
+.action-btn.edit-btn lucide-icon,
+.action-btn.btn-primary lucide-icon,
+.btn-edit lucide-icon,
+.card-actions .edit-btn lucide-icon,
+.action-buttons .btn-primary lucide-icon,
+.action-btn.edit-btn i-lucide,
+.action-btn.btn-primary i-lucide,
+.btn-edit i-lucide,
+.card-actions .edit-btn i-lucide,
+.action-buttons .btn-primary i-lucide {
+  color: #030132 !important;
+  stroke: #030132 !important;
+  fill: none !important;
+}
+
+/* Hover del botón de editar - FONDO CLARO */
+.action-btn.edit-btn:hover,
+.action-btn.btn-primary:hover,
+.btn-edit:hover,
+button.edit-btn:hover,
+button.btn-primary:not(.p-button):hover,
+.card-actions .edit-btn:hover,
+.action-buttons .btn-primary:hover {
+  background: #030132 !important;
+  color: #ffffff !important;
+  transform: scale(1.05) !important;
+}
+
+.action-btn.edit-btn:hover svg,
+.action-btn.btn-primary:hover svg,
+.btn-edit:hover svg,
+button.edit-btn:hover svg,
+button.btn-primary:not(.p-button):hover svg,
+.card-actions .edit-btn:hover svg,
+.action-buttons .btn-primary:hover svg,
+.action-btn.edit-btn:hover lucide-icon,
+.action-btn.edit-btn:hover i-lucide,
+.card-actions .edit-btn:hover lucide-icon,
+.card-actions .edit-btn:hover i-lucide {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+/* ============================================
+   BOTÓN DE ELIMINAR (DANGER/RED) - FONDO CLARO
+   Estilo: Fondo gris claro, sin borde, icono rojo
+   ============================================ */
+.action-btn.delete-btn,
+.action-btn.btn-danger,
+.btn-delete,
+button.delete-btn,
+button.btn-danger:not(.p-button),
+.card-actions .delete-btn,
+.action-buttons .btn-danger {
+  background: #fef2f2 !important;
+  border: none !important;
+  color: #dc2626 !important;
+}
+
+/* Iconos del botón de eliminar */
+.action-btn.delete-btn svg,
+.action-btn.btn-danger svg,
+.btn-delete svg,
+button.delete-btn svg,
+button.btn-danger:not(.p-button) svg,
+.card-actions .delete-btn svg,
+.action-buttons .btn-danger svg,
+.action-btn.delete-btn lucide-icon,
+.action-btn.btn-danger lucide-icon,
+.btn-delete lucide-icon,
+.card-actions .delete-btn lucide-icon,
+.action-buttons .btn-danger lucide-icon,
+.action-btn.delete-btn i-lucide,
+.action-btn.btn-danger i-lucide,
+.btn-delete i-lucide,
+.card-actions .delete-btn i-lucide,
+.action-buttons .btn-danger i-lucide {
+  color: #dc2626 !important;
+  stroke: #dc2626 !important;
+  fill: none !important;
+}
+
+/* Hover del botón de eliminar - FONDO CLARO */
+.action-btn.delete-btn:hover,
+.action-btn.btn-danger:hover,
+.btn-delete:hover,
+button.delete-btn:hover,
+button.btn-danger:not(.p-button):hover,
+.card-actions .delete-btn:hover,
+.action-buttons .btn-danger:hover {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  transform: scale(1.05) !important;
+}
+
+.action-btn.delete-btn:hover svg,
+.action-btn.btn-danger:hover svg,
+.btn-delete:hover svg,
+button.delete-btn:hover svg,
+button.btn-danger:not(.p-button):hover svg,
+.card-actions .delete-btn:hover svg,
+.action-buttons .btn-danger:hover svg,
+.action-btn.delete-btn:hover lucide-icon,
+.action-btn.delete-btn:hover i-lucide,
+.card-actions .delete-btn:hover lucide-icon,
+.card-actions .delete-btn:hover i-lucide {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+/* ============================================
+   VARIANTE PARA FONDO OSCURO (.card-header)
+   Usar en cards con fondo azul oscuro
+   ============================================ */
+.card-header .action-btn.edit-btn,
+.card-header .action-btn.btn-primary,
+.card-header .card-actions .edit-btn,
+.card-header .edit-btn,
+.dark-bg .action-btn.edit-btn,
+.dark-bg .card-actions .edit-btn {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+
+.card-header .action-btn.edit-btn svg,
+.card-header .card-actions .edit-btn svg,
+.card-header .edit-btn svg,
+.card-header .action-btn.edit-btn i-lucide,
+.card-header .card-actions .edit-btn i-lucide,
+.card-header .edit-btn i-lucide,
+.dark-bg .action-btn.edit-btn svg,
+.dark-bg .card-actions .edit-btn svg,
+.dark-bg .action-btn.edit-btn i-lucide,
+.dark-bg .card-actions .edit-btn i-lucide {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+.card-header .action-btn.edit-btn:hover,
+.card-header .card-actions .edit-btn:hover,
+.card-header .edit-btn:hover,
+.dark-bg .action-btn.edit-btn:hover,
+.dark-bg .card-actions .edit-btn:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+  transform: scale(1.05) !important;
+}
+
+.card-header .action-btn.delete-btn,
+.card-header .action-btn.btn-danger,
+.card-header .card-actions .delete-btn,
+.card-header .delete-btn,
+.dark-bg .action-btn.delete-btn,
+.dark-bg .card-actions .delete-btn {
+  background: rgba(220, 38, 38, 0.15) !important;
+  border: none !important;
+  color: #fca5a5 !important;
+}
+
+.card-header .action-btn.delete-btn svg,
+.card-header .card-actions .delete-btn svg,
+.card-header .delete-btn svg,
+.card-header .action-btn.delete-btn i-lucide,
+.card-header .card-actions .delete-btn i-lucide,
+.card-header .delete-btn i-lucide,
+.dark-bg .action-btn.delete-btn svg,
+.dark-bg .card-actions .delete-btn svg,
+.dark-bg .action-btn.delete-btn i-lucide,
+.dark-bg .card-actions .delete-btn i-lucide {
+  color: #fca5a5 !important;
+  stroke: #fca5a5 !important;
+}
+
+.card-header .action-btn.delete-btn:hover,
+.card-header .card-actions .delete-btn:hover,
+.card-header .delete-btn:hover,
+.dark-bg .action-btn.delete-btn:hover,
+.dark-bg .card-actions .delete-btn:hover {
+  background: rgba(220, 38, 38, 0.3) !important;
+  transform: scale(1.05) !important;
+}
+
+/* ============================================
+   ESTADO DESHABILITADO
+   ============================================ */
+.action-btn:disabled,
+button.action-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  pointer-events: auto !important;
+}
+
+.action-btn:disabled:hover,
+button.action-btn:disabled:hover {
+  transform: none !important;
+}
+
+/* ============================================
+   BOTONES COMPACTOS PARA HORARIOS
+   Del mismo tamaño que las cajas de horarios
+   ============================================ */
+.btn-icon-compact {
+  padding: 8px 12px !important;
+  min-width: 40px !important;
+  height: 38px !important;
+  border-radius: 6px !important;
+  background: rgba(220, 38, 38, 0.1) !important;
+  border: 1px solid rgba(220, 38, 38, 0.2) !important;
+  color: #dc2626 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.btn-icon-compact:hover {
+  background: rgba(220, 38, 38, 0.2) !important;
+  border-color: rgba(220, 38, 38, 0.4) !important;
+  transform: scale(1.05) !important;
+}
+
+.btn-icon-compact svg {
+  color: #dc2626 !important;
+  stroke: #dc2626 !important;
+}

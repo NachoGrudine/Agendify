@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { LucideAngularModule, Plus, Search, Scissors } from 'lucide-angular';
+import { LucideAngularModule, Plus, Search, Wrench } from 'lucide-angular';
 import { ButtonComponent, InputComponent, ToastComponent, DialogComponent } from '../../shared/components';
 import { ServiceService } from '../../services/service-catalog/service.service';
 import { ServiceResponse } from '../../models/service.model';
@@ -33,7 +33,7 @@ export class ServiciosComponent implements OnInit {
   private readonly confirmService = inject(ConfirmService);
 
   // Icons
-  readonly ScissorsIcon = Scissors;
+  readonly WrenchIcon = Wrench;
   readonly PlusIcon = Plus;
   readonly SearchIcon = Search;
 

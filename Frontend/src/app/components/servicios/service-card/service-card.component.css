@@ -17,7 +17,7 @@
 }
 
 /* ============================================
-   CARD HEADER
+   CARD HEADER (FONDO OSCURO)
    ============================================ */
 
 .card-header {
@@ -38,40 +38,64 @@
   line-height: 1.4;
 }
 
+/* ============================================
+   BOTONES DE ACCIÓN (FONDO OSCURO)
+   Diseño minimalista sin bordes
+   ============================================ */
 .card-actions {
-  display: flex;
+  display: inline-flex;
   gap: 0.5rem;
+  align-items: center;
 }
 
-.action-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.1);
-  display: flex;
+.card-actions .action-btn {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 8px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
+  padding: 0;
+  box-shadow: none;
+  border: none;
+}
+
+/* Botón EDITAR - Fondo oscuro */
+.card-actions .edit-btn {
+  background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
-  backdrop-filter: blur(10px);
 }
 
-.action-btn:hover {
+.card-actions .edit-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
   transform: scale(1.05);
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
 }
 
-.edit-btn:hover {
-  background: rgba(59, 130, 246, 0.3);
-  border-color: rgba(59, 130, 246, 0.5);
+:host ::ng-deep .card-actions .edit-btn i-lucide,
+:host ::ng-deep .card-actions .edit-btn svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
 }
 
-.delete-btn:hover {
-  background: rgba(239, 68, 68, 0.3);
-  border-color: rgba(239, 68, 68, 0.5);
+/* Botón ELIMINAR - Fondo oscuro */
+.card-actions .delete-btn {
+  background: rgba(220, 38, 38, 0.15);
+  color: #fca5a5;
+}
+
+.card-actions .delete-btn:hover {
+  background: rgba(220, 38, 38, 0.3);
+  transform: scale(1.05);
+}
+
+:host ::ng-deep .card-actions .delete-btn i-lucide,
+:host ::ng-deep .card-actions .delete-btn svg {
+  color: #fca5a5 !important;
+  stroke: #fca5a5 !important;
 }
 
 /* ============================================
@@ -135,10 +159,5 @@
 
   .card-body {
     padding: 1rem;
-  }
-
-  .action-btn {
-    width: 28px;
-    height: 28px;
   }
 }

@@ -173,12 +173,7 @@
             </td>
 
             <td class="customer-cell">
-              <div class="customer-info">
-                <div class="customer-avatar">
-                  {{ appointment.customerName.substring(0, 2).toUpperCase() }}
-                </div>
-                <span class="customer-name">{{ appointment.customerName }}</span>
-              </div>
+              <span class="customer-name">{{ appointment.customerName }}</span>
             </td>
 
             <td class="service-cell">
@@ -191,6 +186,15 @@
 
             <td class="actions-cell">
               <div class="actions-group">
+                <app-button
+                  severity="outlined"
+                  [iconStart]="FileTextIcon"
+                  [iconSize]="18"
+                  [disabled]="!appointment.notes"
+                  [title]="appointment.notes ? 'Ver notas' : 'Sin notas'"
+                  customClass="btn-action btn-notes"
+                  (onClick)="openNotesModal(appointment.notes!)"
+                />
                 <app-button
                   severity="outlined"
                   [iconStart]="EditIcon"
@@ -305,3 +309,31 @@
     (success)="onAppointmentUpdated()"
   />
 </app-dialog>
+
+<!-- Modal de Notas -->
+<app-dialog
+  [(visible)]="showNotesModal"
+  width="500px"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  (onHide)="closeNotesModal()"
+>
+  <div class="notes-modal">
+    <div class="notes-header">
+      <i-lucide [img]="FileTextIcon" [size]="24" class="notes-icon"></i-lucide>
+      <h2>Notas del Turno</h2>
+    </div>
+    <div class="notes-content">
+      <p>{{ selectedNotes() }}</p>
+    </div>
+    <div class="notes-footer">
+      <app-button
+        label="Cerrar"
+        severity="secondary"
+        (onClick)="closeNotesModal()"
+      />
+    </div>
+  </div>
+</app-dialog>
+

@@ -219,7 +219,8 @@ public class CalendarDayDetailService : ICalendarDayDetailService
             ServiceName = appointment.Service?.Name,
             StartTime = appointment.StartTime.ToString("HH:mm"),
             EndTime = appointment.EndTime.ToString("HH:mm"),
-            DurationMinutes = (int)(appointment.EndTime - appointment.StartTime).TotalMinutes
+            DurationMinutes = (int)(appointment.EndTime - appointment.StartTime).TotalMinutes,
+            Notes = appointment.Notes
         };
     }
 

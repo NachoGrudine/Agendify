@@ -5,6 +5,11 @@
    ============================================ */
 @import 'primeicons/primeicons.css';
 
+/* ============================================
+   ESTILOS DE BOTONES DE ACCIÓN GLOBALES
+   ============================================ */
+@import './app/shared/styles/action-buttons.css';
+
 /* Los estilos de PrimeNG se aplicarán directamente en los componentes */
 
 /* Variables globales de color */

@@ -9,4 +9,5 @@ public class AppointmentDetailDto
     public string StartTime { get; set; } = string.Empty;  // HH:mm format
     public string EndTime { get; set; } = string.Empty;    // HH:mm format
     public int DurationMinutes { get; set; }
+    public string? Notes { get; set; }
 }

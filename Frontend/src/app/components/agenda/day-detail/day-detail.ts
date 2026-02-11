@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularModule, ArrowLeft, Calendar, Clock, Users, Filter, Plus, Eye, X, CheckCircle, XCircle, AlertCircle, Edit, Trash2 } from 'lucide-angular';
+import { LucideAngularModule, ArrowLeft, Calendar, Clock, Users, Filter, Plus, Eye, X, CheckCircle, XCircle, AlertCircle, Edit, Trash2, FileText } from 'lucide-angular';
 import { CalendarService } from '../../../services/calendar/calendar.service';
 import { DayDetailFilterService } from '../../../services/calendar/day-detail-filter.service';
 import { ProviderService } from '../../../services/provider/provider.service';
@@ -63,6 +63,7 @@ export class DayDetailComponent implements OnInit {
   readonly Users = Users;
   readonly EditIcon = Edit;
   readonly TrashIcon = Trash2;
+  readonly FileTextIcon = FileText;
 
   // Datos principales
   dayDetails = signal<DayDetailsDto | null>(null);
@@ -73,7 +74,9 @@ export class DayDetailComponent implements OnInit {
   // Modales - usando propiedades normales para compatibilidad con PrimeNG Dialog
   private _showNewAppointmentModal = false;
   private _showEditAppointmentModal = false;
+  private _showNotesModal = false;
   selectedAppointmentId = signal<number | null>(null);
+  selectedNotes = signal<string>('');
 
   // Computed para verificar si la fecha seleccionada es pasada
   isPastDate = computed(() => {
@@ -93,6 +96,9 @@ export class DayDetailComponent implements OnInit {
 
   get showEditAppointmentModal() { return this._showEditAppointmentModal; }
   set showEditAppointmentModal(value: boolean) { this._showEditAppointmentModal = value; }
+
+  get showNotesModal() { return this._showNotesModal; }
+  set showNotesModal(value: boolean) { this._showNotesModal = value; }
 
   // Delegados al filterService
   get currentPage() { return this.filterService.currentPage; }
@@ -315,5 +321,21 @@ export class DayDetailComponent implements OnInit {
         }
       });
     }
+  }
+
+  /**
+   * Abrir modal de notas
+   */
+  openNotesModal(notes: string): void {
+    this.selectedNotes.set(notes);
+    this.showNotesModal = true;
+  }
+
+  /**
+   * Cerrar modal de notas
+   */
+  closeNotesModal(): void {
+    this.showNotesModal = false;
+    this.selectedNotes.set('');
   }
 }

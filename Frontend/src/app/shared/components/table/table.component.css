@@ -1,5 +1,5 @@
 /* ============================================
-   TABLE COMPONENT - DISE�O LIMPIO
+   TABLE COMPONENT - DISEÑO LIMPIO
    ============================================ */
 
 .table-container {
@@ -101,72 +101,103 @@
   text-align: right;
 }
 
-/* Action Buttons */
+/* Action Buttons Cell */
 .actions-cell {
   text-align: center;
+  vertical-align: middle;
 }
 
-.action-buttons {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-  align-items: center;
+/* Contenedor de botones */
+:host ::ng-deep .action-buttons {
+  display: inline-flex !important;
+  gap: 0.5rem !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
-.action-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  border: none;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  color: #030132;
-  box-shadow: none;
-  padding: 0;
+/* BASE - Todos los botones de acción */
+:host ::ng-deep .action-buttons .action-btn,
+:host ::ng-deep button.action-btn {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  max-width: 36px !important;
+  max-height: 36px !important;
+  border-radius: 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
 }
 
-.action-btn svg {
-  color: #030132;
-  fill: none;
-  stroke: #030132;
-  transition: color 0.15s, stroke 0.15s, fill 0.15s;
+/* Botón de EDITAR (PRIMARY) - Azul de la app */
+:host ::ng-deep .action-buttons .action-btn.btn-primary,
+:host ::ng-deep button.action-btn.btn-primary {
+  background: #f3f4f6 !important;
+  border: none !important;
+  color: #030132 !important;
 }
 
-.action-btn:hover {
-  background: #030132;
-  color: #fff;
-  border: none;
+:host ::ng-deep .action-buttons .action-btn.btn-primary svg,
+:host ::ng-deep button.action-btn.btn-primary svg,
+:host ::ng-deep .action-buttons .action-btn.btn-primary lucide-angular,
+:host ::ng-deep button.action-btn.btn-primary lucide-angular {
+  color: #030132 !important;
+  stroke: #030132 !important;
+  fill: none !important;
 }
 
-.action-btn:hover svg {
-  color: #fff;
-  stroke: #fff;
+:host ::ng-deep .action-buttons .action-btn.btn-primary:hover,
+:host ::ng-deep button.action-btn.btn-primary:hover {
+  background: #030132 !important;
+  color: #ffffff !important;
+  transform: scale(1.05) !important;
 }
 
-.action-btn.btn-danger {
-  border: none;
-  color: #fff;
-  background: #dc2626;
+:host ::ng-deep .action-buttons .action-btn.btn-primary:hover svg,
+:host ::ng-deep button.action-btn.btn-primary:hover svg,
+:host ::ng-deep .action-buttons .action-btn.btn-primary:hover lucide-angular,
+:host ::ng-deep button.action-btn.btn-primary:hover lucide-angular {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
 }
 
-.action-btn.btn-danger svg {
-  color: #fff;
-  stroke: #fff;
+/* Botón de ELIMINAR (DANGER) - Rojo */
+:host ::ng-deep .action-buttons .action-btn.btn-danger,
+:host ::ng-deep button.action-btn.btn-danger {
+  background: #fef2f2 !important;
+  border: none !important;
+  color: #dc2626 !important;
 }
 
-.action-btn.btn-danger:hover {
-  background: #b91c1c;
-  color: #fff;
-  border: none;
+:host ::ng-deep .action-buttons .action-btn.btn-danger svg,
+:host ::ng-deep button.action-btn.btn-danger svg,
+:host ::ng-deep .action-buttons .action-btn.btn-danger lucide-angular,
+:host ::ng-deep button.action-btn.btn-danger lucide-angular {
+  color: #dc2626 !important;
+  stroke: #dc2626 !important;
+  fill: none !important;
 }
 
-.action-btn.btn-danger:hover svg {
-  color: #fff;
-  stroke: #fff;
+:host ::ng-deep .action-buttons .action-btn.btn-danger:hover,
+:host ::ng-deep button.action-btn.btn-danger:hover {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  transform: scale(1.05) !important;
+}
+
+:host ::ng-deep .action-buttons .action-btn.btn-danger:hover svg,
+:host ::ng-deep button.action-btn.btn-danger:hover svg,
+:host ::ng-deep .action-buttons .action-btn.btn-danger:hover lucide-angular,
+:host ::ng-deep button.action-btn.btn-danger:hover lucide-angular {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
 }
 
 /* Empty State */
@@ -187,10 +218,5 @@
   .data-table th,
   .data-table td {
     padding: 0.75rem 0.5rem;
-  }
-
-  .action-btn {
-    width: 28px;
-    height: 28px;
   }
 }

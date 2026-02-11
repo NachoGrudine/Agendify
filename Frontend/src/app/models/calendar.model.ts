@@ -29,5 +29,6 @@ export interface AppointmentDetailDto {
   endTime: string;
   durationMinutes: number;
   status: string;
+  notes?: string;
 }
 

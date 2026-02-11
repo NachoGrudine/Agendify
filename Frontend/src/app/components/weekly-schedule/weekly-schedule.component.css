@@ -1,4 +1,5 @@
 /* Container Principal - ULTRA COMPACTO */
+
 .schedule-container {
   width: 100%;
   margin: 0;
@@ -369,19 +370,21 @@
   flex-shrink: 0;
 }
 
-/* Bot�n Icono - M�S PEQUE�O */
+/* Botón Icono - DEL MISMO TAMAÑO QUE LAS CAJAS DE HORARIOS */
 .btn-icon-compact {
-  padding: 6px;
+  padding: 8px 12px;
   background: white;
   border: 1px solid #fca5a5;
   color: #dc2626;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  min-width: 40px;
+  height: 38px;
 }
 
 .btn-icon-compact:hover {

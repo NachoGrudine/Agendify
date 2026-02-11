@@ -383,32 +383,12 @@
 }
 
 /* ============================================
-   CUSTOMER CELL - CON AVATAR MEJORADO
+   CUSTOMER CELL - LIMPIO
    ============================================ */
 .customer-cell {
   min-width: 200px;
 }
 
-.customer-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.customer-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #030132, #3b82f6);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.875rem;
-  font-weight: 600;
-  flex-shrink: 0;
-  box-shadow: 0 2px 4px rgba(29, 67, 111, 0.15);
-}
 
 .customer-name {
   font-weight: 500;
@@ -455,7 +435,7 @@
   align-items: center;
 }
 
-/* Estilos para los botones - FORZAR VISIBILIDAD */
+/* Estilos para app-button en actions-group */
 .actions-group ::ng-deep app-button {
   display: inline-block;
 }
@@ -472,44 +452,110 @@
   border-radius: 8px !important;
   cursor: pointer !important;
   transition: all 0.15s ease !important;
-  border-width: 1px !important;
-  border-style: solid !important;
 }
 
-/* Botón de EDITAR y ELIMINAR estilo SERVICE-CARD */
+/* Botón EDITAR - Azul de la app */
 .actions-group ::ng-deep app-button.btn-edit button,
 .actions-group ::ng-deep app-button.btn-action.btn-edit button {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  color: #3b82f6 !important;
-  backdrop-filter: blur(10px) !important;
-  transition: all 0.15s ease !important;
+  background: #f3f4f6 !important;
+  border: none !important;
+  color: #030132 !important;
 }
+
+.actions-group ::ng-deep app-button.btn-edit button lucide-angular,
+.actions-group ::ng-deep app-button.btn-action.btn-edit button lucide-angular,
+.actions-group ::ng-deep app-button.btn-edit button svg,
+.actions-group ::ng-deep app-button.btn-action.btn-edit button svg {
+  color: #030132 !important;
+  stroke: #030132 !important;
+}
+
 .actions-group ::ng-deep app-button.btn-edit button:hover,
 .actions-group ::ng-deep app-button.btn-action.btn-edit button:hover {
-  background: rgba(59, 130, 246, 0.3) !important;
-  border-color: rgba(59, 130, 246, 0.5) !important;
-  color: #2563eb !important;
-  transform: scale(1.05) !important;
-  box-shadow: none !important;
-}
-.actions-group ::ng-deep app-button.btn-delete button,
-.actions-group ::ng-deep app-button.btn-action.btn-delete button {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  color: #dc2626 !important;
-  backdrop-filter: blur(10px) !important;
-  transition: all 0.15s ease !important;
-}
-.actions-group ::ng-deep app-button.btn-delete button:hover,
-.actions-group ::ng-deep app-button.btn-action.btn-delete button:hover {
-  background: rgba(239, 68, 68, 0.3) !important;
-  border-color: rgba(239, 68, 68, 0.5) !important;
-  color: #b91c1c !important;
+  background: #030132 !important;
+  color: #ffffff !important;
   transform: scale(1.05) !important;
   box-shadow: none !important;
 }
 
+.actions-group ::ng-deep app-button.btn-edit button:hover lucide-angular,
+.actions-group ::ng-deep app-button.btn-action.btn-edit button:hover lucide-angular,
+.actions-group ::ng-deep app-button.btn-edit button:hover svg,
+.actions-group ::ng-deep app-button.btn-action.btn-edit button:hover svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+/* Botón ELIMINAR - Rojo */
+.actions-group ::ng-deep app-button.btn-delete button,
+.actions-group ::ng-deep app-button.btn-action.btn-delete button {
+  background: #fef2f2 !important;
+  border: none !important;
+  color: #dc2626 !important;
+}
+
+.actions-group ::ng-deep app-button.btn-delete button lucide-angular,
+.actions-group ::ng-deep app-button.btn-action.btn-delete button lucide-angular,
+.actions-group ::ng-deep app-button.btn-delete button svg,
+.actions-group ::ng-deep app-button.btn-action.btn-delete button svg {
+  color: #dc2626 !important;
+  stroke: #dc2626 !important;
+}
+
+.actions-group ::ng-deep app-button.btn-delete button:hover,
+.actions-group ::ng-deep app-button.btn-action.btn-delete button:hover {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  transform: scale(1.05) !important;
+  box-shadow: none !important;
+}
+
+.actions-group ::ng-deep app-button.btn-delete button:hover lucide-angular,
+.actions-group ::ng-deep app-button.btn-action.btn-delete button:hover lucide-angular,
+.actions-group ::ng-deep app-button.btn-delete button:hover svg,
+.actions-group ::ng-deep app-button.btn-action.btn-delete button:hover svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+/* Botón NOTAS - Gris/Info */
+.actions-group ::ng-deep app-button.btn-notes button,
+.actions-group ::ng-deep app-button.btn-action.btn-notes button {
+  background: #f3f4f6 !important;
+  border: none !important;
+  color: #6b7280 !important;
+}
+
+.actions-group ::ng-deep app-button.btn-notes button lucide-angular,
+.actions-group ::ng-deep app-button.btn-action.btn-notes button lucide-angular,
+.actions-group ::ng-deep app-button.btn-notes button svg,
+.actions-group ::ng-deep app-button.btn-action.btn-notes button svg {
+  color: #6b7280 !important;
+  stroke: #6b7280 !important;
+}
+
+.actions-group ::ng-deep app-button.btn-notes button:hover:not(:disabled),
+.actions-group ::ng-deep app-button.btn-action.btn-notes button:hover:not(:disabled) {
+  background: #030132 !important;
+  color: #ffffff !important;
+  transform: scale(1.05) !important;
+  box-shadow: none !important;
+}
+
+.actions-group ::ng-deep app-button.btn-notes button:hover:not(:disabled) lucide-angular,
+.actions-group ::ng-deep app-button.btn-action.btn-notes button:hover:not(:disabled) lucide-angular,
+.actions-group ::ng-deep app-button.btn-notes button:hover:not(:disabled) svg,
+.actions-group ::ng-deep app-button.btn-action.btn-notes button:hover:not(:disabled) svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+/* Botón NOTAS deshabilitado (sin notas) */
+.actions-group ::ng-deep app-button.btn-notes button:disabled,
+.actions-group ::ng-deep app-button.btn-action.btn-notes button:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+}
 
 /* Loading and Empty States */
 .loading-row,
@@ -753,5 +799,73 @@
   :host ::ng-deep .appointment-dialog .p-dialog-content {
     max-height: none;
     height: 100%;
+  }
+}
+
+/* ============================================
+   MODAL DE NOTAS
+   ============================================ */
+.notes-modal {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.notes-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.notes-icon {
+  color: #030132;
+}
+
+.notes-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.notes-content {
+  padding: 1rem 0;
+  min-height: 100px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.notes-content p {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: #374151;
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.notes-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Responsive para modal de notas */
+@media (max-width: 640px) {
+  :host ::ng-deep .p-dialog[style*="width: 500px"] {
+    width: 95vw !important;
+    max-width: 95vw !important;
+  }
+
+  .notes-modal {
+    padding: 1rem;
+  }
+
+  .notes-content {
+    max-height: 300px;
   }
 }

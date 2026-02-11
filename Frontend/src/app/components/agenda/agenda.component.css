@@ -530,9 +530,10 @@
 .day-number-wrapper {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
+  min-height: 36px;
+  height: 36px;
   flex-shrink: 0;
-  min-height: 28px;
 }
 
 .badges-container {
@@ -542,6 +543,45 @@
   justify-content: center;
   align-items: stretch;
   flex: 1;
+}
+
+/* Asegurar que los badges del d�a actual est�n en la misma posici�n */
+:host ::ng-deep .fc-day-today .custom-day-cell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Forzar alineación vertical consistente para todos los días */
+:host ::ng-deep .custom-day-cell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+:host ::ng-deep .day-number-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+/* Asegurar que los badges tengan la misma posición en todos los días */
+:host ::ng-deep .badges-container {
+  margin-top: 0 !important;
+  padding-top: 2px;
+}
+
+:host ::ng-deep .fc-day-today .badges-container {
+  margin-top: 0 !important;
+  padding-top: 2px;
+}
+
+:host ::ng-deep .fc-day-today .day-badges-container {
+  margin-top: 0 !important;
 }
 
 .day-number-wrapper .fc-daygrid-day-number {
@@ -686,18 +726,36 @@
   height: 100%;
 }
 
+/* Forzar alineación vertical consistente para todos los días */
+:host ::ng-deep .custom-day-cell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+:host ::ng-deep .day-number-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+/* Asegurar que los badges tengan la misma posición en todos los días */
+:host ::ng-deep .badges-container {
+  margin-top: 0 !important;
+  padding-top: 2px;
+}
+
+:host ::ng-deep .fc-day-today .badges-container {
+  margin-top: 0 !important;
+  padding-top: 2px;
+}
+
 :host ::ng-deep .fc-day-today .day-badges-container {
-  margin-top: 28px !important;
-}
-
-/* D�as de otros meses - M�S SUTILES */
-:host ::ng-deep .fc-day-other {
-  background: #fafbfc !important;
-}
-
-:host ::ng-deep .fc-day-other .fc-daygrid-day-number {
-  color: #9ca3af;
-  opacity: 0.6;
+  margin-top: 0 !important;
 }
 
 /* Modal */

@@ -78,6 +78,7 @@ export class ClientesComponent implements OnInit {
     {
       icon: Edit,
       label: 'Editar',
+      severity: 'primary',
       onClick: (row: any) => this.onEdit(row)
     },
     {

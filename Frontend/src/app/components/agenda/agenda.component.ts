@@ -287,7 +287,7 @@ export class AgendaComponent implements OnInit {
     }
 
     // Crear badges con los datos
-    let badgesHtml = '<div class="badges-container" style="margin-top: 25px; display: flex; flex-direction: column; gap: 2px;">';
+    let badgesHtml = '<div class="badges-container" style="display: flex; flex-direction: column; gap: 6px; margin-top: 10px" >';
 
     // Badge de turnos - TAMAÑO MEDIANO Y CENTRADO
     badgesHtml += `<div style="background: #e0f2fe; border-left: 3px solid #bae6fd; padding: 4px 7px; border-radius: 4px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">`;
