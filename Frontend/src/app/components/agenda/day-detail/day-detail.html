@@ -19,8 +19,12 @@
         severity="primary"
         [iconStart]="PlusIcon"
         [iconSize]="18"
-        [disabled]="isPastDate()"
-        [title]="isPastDate() ? 'No se pueden crear turnos en fechas pasadas' : 'Crear nuevo turno'"
+        [disabled]="!canCreateAppointment()"
+        [title]="isPastDate()
+          ? 'No se pueden crear turnos en fechas pasadas'
+          : isDayFullyBooked()
+            ? 'Sin disponibilidad - Agenda completamente ocupada'
+            : 'Crear nuevo turno'"
         (onClick)="newAppointment()"
       />
     </div>
@@ -60,9 +64,15 @@
     </div>
 
     <!-- Card 3: Tiempo Ocupado con Progress Bar AZUL -->
-    <div class="summary-card card-green">
+    <div class="summary-card card-green" [class.fully-booked]="isDayFullyBooked()">
       <div class="card-content-left">
-        <div class="card-label">Tiempo Ocupado</div>
+        <div class="card-label-row">
+          <div class="card-label">Tiempo Ocupado</div>
+          <span class="fully-booked-badge" *ngIf="isDayFullyBooked()">
+            <i-lucide [img]="AlertCircleIcon" [size]="14"></i-lucide>
+            Agenda Llena
+          </span>
+        </div>
         <div class="card-value">{{ formatMinutesToHours(dayDetails()?.totalOccupiedMinutes || 0) }}</div>
         <app-progress-bar
           [progress]="(dayDetails()?.totalScheduledMinutes || 0) > 0
@@ -313,10 +323,11 @@
 <!-- Modal de Notas -->
 <app-dialog
   [(visible)]="showNotesModal"
-  width="500px"
+  width="550px"
   [modal]="true"
   [closable]="true"
   [draggable]="false"
+  customClass="notes-dialog"
   (onHide)="closeNotesModal()"
 >
   <div class="notes-modal">
@@ -325,12 +336,13 @@
       <h2>Notas del Turno</h2>
     </div>
     <div class="notes-content">
-      <p>{{ selectedNotes() }}</p>
+      <p *ngIf="selectedNotes()">{{ selectedNotes() }}</p>
+      <p *ngIf="!selectedNotes()" style="color: #9ca3af; font-style: italic;">Sin notas disponibles</p>
     </div>
     <div class="notes-footer">
       <app-button
         label="Cerrar"
-        severity="secondary"
+        severity="primary"
         (onClick)="closeNotesModal()"
       />
     </div>

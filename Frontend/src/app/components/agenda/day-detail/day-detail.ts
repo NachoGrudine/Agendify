@@ -91,6 +91,29 @@ export class DayDetailComponent implements OnInit {
     return selectedDay < today;
   });
 
+  // Computed para verificar si el día está completamente ocupado
+  isDayFullyBooked = computed(() => {
+    const details = this.dayDetails();
+    if (!details) return false;
+
+    // Si no hay tiempo programado, no está lleno
+    if (details.totalScheduledMinutes === 0) return false;
+
+    // Si el tiempo ocupado es igual o mayor al tiempo programado, está completamente lleno
+    return details.totalOccupiedMinutes >= details.totalScheduledMinutes;
+  });
+
+  // Computed para verificar si se puede crear un turno
+  canCreateAppointment = computed(() => {
+    // No se puede si es fecha pasada
+    if (this.isPastDate()) return false;
+
+    // No se puede si está completamente ocupado
+    if (this.isDayFullyBooked()) return false;
+
+    return true;
+  });
+
   get showNewAppointmentModal() { return this._showNewAppointmentModal; }
   set showNewAppointmentModal(value: boolean) { this._showNewAppointmentModal = value; }
 
@@ -248,6 +271,25 @@ export class DayDetailComponent implements OnInit {
    * Abrir modal de nuevo turno
    */
   newAppointment(): void {
+    // Validar si se puede crear un turno
+    if (this.isPastDate()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'No disponible',
+        detail: 'No se pueden crear turnos en fechas pasadas'
+      });
+      return;
+    }
+
+    if (this.isDayFullyBooked()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Sin disponibilidad',
+        detail: 'No hay horarios disponibles para este día. La agenda está completamente ocupada.'
+      });
+      return;
+    }
+
     this.showNewAppointmentModal = true;
   }
 
