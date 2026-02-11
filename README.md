@@ -9,7 +9,7 @@
 - [¿Qué es Agendify?](#-qué-es-agendify)
 - [Problemática que Resuelve](#-problemática-que-resuelve)
 - [Funcionalidades Clave](#-funcionalidades-clave)
-- [Capturas de Pantalla](#-capturas-de-pantalla)
+- [Imágenes de la Aplicación](#-imagenes-de-la-aplicación)
 - [Arquitectura y Stack Tecnológico](#-arquitectura-y-stack-tecnológico)
 - [Requisitos Previos](#-requisitos-previos)
 - [Instalación y Ejecución](#-instalación-y-ejecución)
@@ -206,32 +206,29 @@ cd Agendify
    Copy-Item .env.example .env
    ```
 
-2. Edita el archivo `.env` con tus valores:
+2. Edita el archivo `.env` y configura las variables requeridas:
+
+   **Variables Mínimas Requeridas:**
+   - `MSSQL_SA_PASSWORD`: Contraseña de SQL Server (mín. 8 caracteres, mayúsculas, minúsculas, números y símbolos)
+   - `DB_PASSWORD`: Debe ser **idéntica** a `MSSQL_SA_PASSWORD`
+   - `JWT_SECRET`: Clave secreta de al menos 64 caracteres (ver comandos de generación en el archivo)
+
+   **💡 Tip:** El archivo `.env.example` está completamente documentado con:
+   - Explicación de cada variable
+   - Valores recomendados
+   - Comandos para generar claves seguras
+   - Notas de seguridad y troubleshooting
+
+   **Ejemplo de configuración rápida:**
    ```dotenv
-   # SQL Server
-   MSSQL_SA_PASSWORD=TuPasswordSegura123!
-   MSSQL_PID=Express
-   SQL_PORT=1433
+   # SQL Server (cambiar la contraseña)
+   MSSQL_SA_PASSWORD=MiPassword123!
+   DB_PASSWORD=MiPassword123!
 
-   # Database
-   DB_SERVER=sqlserver
-   DB_PORT=1433
-   DB_NAME=AgendifyDb
-   DB_USER=sa
-   DB_PASSWORD=TuPasswordSegura123!
+   # JWT (generar una clave segura de 64+ caracteres)
+   JWT_SECRET=tu-clave-super-secreta-de-al-menos-64-caracteres-aqui-cambiar-esto!
 
-   # API
-   API_HTTP_PORT=5000
-   ASPNETCORE_ENVIRONMENT=Development
-   ASPNETCORE_URLS=http://+:8080
-
-   # JWT (Generar una clave segura de al menos 64 caracteres)
-   JWT_SECRET=TuClaveSecretaSuperLargaYSeguraDeAlMenos64CaracteresParaJWT123456789!
-   JWT_ISSUER=Agendify
-   JWT_AUDIENCE=AgendifyUsers
-
-   # Frontend
-   FRONTEND_PORT=4200
+   # Las demás variables pueden dejarse con los valores por defecto
    ```
 
 ### **Paso 3: Levantar la Aplicación con Docker Compose**
