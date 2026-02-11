@@ -52,7 +52,7 @@ export class RegisterWizardComponent {
     providerSpecialty: ''
   });
 
-  progressPercentage = computed(() => Math.round((this.currentStep() / 3) * 100));
+  progressPercentage = computed(() => Math.round(((this.currentStep() - 1) / 3) * 100));
 
   nextStep(): void {
     if (this.currentStep() < 3) {
