@@ -22,4 +22,8 @@ export class ScheduleService {
   bulkUpdateMySchedules(dto: BulkUpdateScheduleDto): Observable<ProviderScheduleResponse[]> {
     return this.http.put<ProviderScheduleResponse[]>(`${this.API_URL}/me/bulk-update`, dto);
   }
+
+  bulkUpdateProviderSchedules(providerId: number, dto: BulkUpdateScheduleDto): Observable<ProviderScheduleResponse[]> {
+    return this.http.put<ProviderScheduleResponse[]>(`${this.API_URL}/provider/${providerId}/bulk-update`, dto);
+  }
 }

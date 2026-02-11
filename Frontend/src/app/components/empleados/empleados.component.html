@@ -1,28 +1,122 @@
-﻿<div class="empleados-container">
+﻿﻿<div class="empleados-container">
+  <!-- Page Header -->
   <div class="page-header">
     <div class="header-left">
       <div class="header-icon">
         <i-lucide [img]="BriefcaseIcon" [size]="32"></i-lucide>
       </div>
       <div class="header-title-section">
-        <h1>Gestión de Empleados</h1>
-        <p class="subtitle">Administra tu equipo de trabajo</p>
+        <h1>Miembros del Equipo</h1>
+        <p class="subtitle">Gestiona el acceso y disponibilidad de tu personal.</p>
       </div>
     </div>
+    <app-button
+      label="Nuevo Miembro"
+      severity="primary"
+      [iconStart]="PlusIcon"
+      (onClick)="openCreateDialog()"
+    />
   </div>
 
-  <div class="feature-unavailable">
-    <div class="unavailable-content">
-      <span class="unavailable-icon">
-        <i-lucide [img]="BriefcaseIcon" [size]="80" [strokeWidth]="1.5"></i-lucide>
-      </span>
-      <h2>Gestión de Empleados</h2>
-      <p class="unavailable-message">
-        Esta funcionalidad no está disponible por el momento.
-      </p>
-      <p class="unavailable-note">
-        Nuestro equipo está trabajando en esta característica. Pronto podrás gestionar tus empleados y sus horarios aquí.
-      </p>
-    </div>
+  <!-- Buscador -->
+  <div class="search-section">
+    <app-input
+      inputId="searchProvider"
+      placeholder="Buscar miembro por nombre o especialidad..."
+      [(ngModel)]="searchTerm"
+      [iconStart]="SearchIcon"
+      type="text"
+    />
   </div>
+
+  <!-- Messages -->
+  @if (successMessage()) {
+    <div class="alert alert-success">
+      <i-lucide [img]="CheckCircleIcon" [size]="20"></i-lucide>
+      <span>{{ successMessage() }}</span>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="alert alert-error">
+      <i-lucide [img]="XCircleIcon" [size]="20"></i-lucide>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <app-loading-spinner message="Cargando empleados..." />
+  } @else {
+    <!-- Providers Grid -->
+    <div class="providers-grid">
+      @for (provider of filteredProviders(); track provider.id) {
+        <app-card customClass="provider-card">
+          <!-- Card Header -->
+          <div class="provider-header">
+            <div class="provider-avatar">
+              <i-lucide [img]="UserIcon" [size]="28"></i-lucide>
+              @if (provider.isActive) {
+                <span class="status-indicator active"></span>
+              }
+            </div>
+            <div class="provider-info">
+              <h3>{{ provider.name }}</h3>
+              <p class="specialty">{{ provider.specialty }}</p>
+              @if (provider.isActive) {
+                <span class="badge badge-active">Activo</span>
+              } @else {
+                <span class="badge badge-inactive">Inactivo</span>
+              }
+            </div>
+          </div>
+
+          <!-- Manage Button -->
+          <button class="btn-manage" (click)="openManageDialog(provider)">
+            <i-lucide [img]="BriefcaseIcon" [size]="18"></i-lucide>
+            <span>Gestionar</span>
+          </button>
+        </app-card>
+      }
+
+      @if (filteredProviders().length === 0 && !searchTerm()) {
+        <div class="empty-state">
+          <i-lucide [img]="BriefcaseIcon" [size]="64" [strokeWidth]="1"></i-lucide>
+          <h3>No hay empleados registrados</h3>
+          <p>Comienza agregando tu primer miembro del equipo</p>
+          <app-button
+            label="Agregar Empleado"
+            severity="primary"
+            [iconStart]="PlusIcon"
+            (onClick)="openCreateDialog()"
+          />
+        </div>
+      }
+
+      @if (filteredProviders().length === 0 && searchTerm()) {
+        <div class="empty-state">
+          <i-lucide [img]="SearchIcon" [size]="64" [strokeWidth]="1"></i-lucide>
+          <h3>No se encontraron resultados</h3>
+          <p>Intenta con otros términos de búsqueda</p>
+        </div>
+      }
+    </div>
+  }
 </div>
+
+<!-- Manage Dialog - Ahora usa el subcomponente -->
+<app-dialog
+  [visible]="showManageDialog()"
+  [width]="'95vw'"
+  [closable]="false"
+  (onHide)="closeManageDialog()"
+>
+  @if (currentProvider()) {
+    <app-manage-provider
+      [provider]="currentProvider()!"
+      (providerUpdated)="onProviderUpdated($event)"
+      (providerDeleted)="onProviderDeleted($event)"
+      (close)="closeManageDialog()"
+    />
+  }
+</app-dialog>

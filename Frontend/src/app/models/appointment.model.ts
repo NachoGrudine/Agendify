@@ -47,6 +47,18 @@ export interface ProviderResponse {
   isActive: boolean;  // camelCase porque el interceptor convierte la respuesta
 }
 
+export interface CreateProviderDto {
+  name: string;
+  specialty: string;
+  isActive?: boolean;
+}
+
+export interface UpdateProviderDto {
+  name: string;
+  specialty: string;
+  isActive: boolean;
+}
+
 // DTOs para Customer
 export interface CustomerResponse {
   id: number;

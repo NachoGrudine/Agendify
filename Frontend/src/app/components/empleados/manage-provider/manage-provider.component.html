@@ -1,0 +1,282 @@
+﻿<!-- Header del Modal -->
+<div class="manage-header">
+  <div class="header-left">
+    <div class="provider-avatar-large">
+      <i-lucide [img]="UserIcon" [size]="32"></i-lucide>
+    </div>
+    <div class="provider-info-header">
+      <h2>{{ provider.name }}</h2>
+      <p class="provider-specialty">{{ provider.specialty }}</p>
+    </div>
+  </div>
+  <button type="button" class="btn-close-modal" (click)="onClose()">
+    <i-lucide [img]="XIcon" [size]="24"></i-lucide>
+  </button>
+</div>
+
+<!-- Tabs Navigation -->
+<div class="tabs-navigation">
+  <button
+    type="button"
+    class="tab-btn"
+    [class.active]="activeTab() === 'profile'"
+    (click)="setActiveTab('profile')"
+  >
+    <i-lucide [img]="UserIcon" [size]="18"></i-lucide>
+    Perfil
+  </button>
+  <button
+    type="button"
+    class="tab-btn"
+    [class.active]="activeTab() === 'schedule'"
+    (click)="setActiveTab('schedule')"
+  >
+    <i-lucide [img]="ClockIcon" [size]="18"></i-lucide>
+    Disponibilidad
+  </button>
+  <button
+    type="button"
+    class="tab-btn"
+    disabled
+  >
+    <i-lucide [img]="BriefcaseIcon" [size]="18"></i-lucide>
+    Servicios
+  </button>
+</div>
+
+<!-- Tab Content -->
+<div class="tab-content-wrapper">
+  <!-- Profile Tab -->
+  @if (activeTab() === 'profile') {
+    <div class="profile-content">
+      <div class="profile-section">
+        <h3 class="section-title">INFORMACIÓN DEL EMPLEADO</h3>
+
+        <!-- Messages -->
+        @if (successMessage()) {
+          <div class="alert alert-success">
+            <i-lucide [img]="CheckCircleIcon" [size]="18"></i-lucide>
+            <span>{{ successMessage() }}</span>
+          </div>
+        }
+
+        @if (errorMessage()) {
+          <div class="alert alert-error">
+            <i-lucide [img]="XCircleIcon" [size]="18"></i-lucide>
+            <span>{{ errorMessage() }}</span>
+          </div>
+        }
+
+        <div class="form-grid">
+          <div class="form-field">
+            <app-input
+              inputId="providerName"
+              label="NOMBRE COMPLETO"
+              placeholder="Nombre del empleado"
+              [(ngModel)]="providerForm().name"
+              (ngModelChange)="updateFormField('name', $event)"
+              [iconStart]="UserIcon"
+            />
+          </div>
+
+          <div class="form-field">
+            <app-input
+              inputId="providerSpecialty"
+              label="ESPECIALIDAD / ROL"
+              placeholder="Ej: Barbero, Estilista"
+              [(ngModel)]="providerForm().specialty"
+              (ngModelChange)="updateFormField('specialty', $event)"
+              [iconStart]="BriefcaseIcon"
+            />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <div class="checkbox-container">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [checked]="providerForm().isActive"
+                (change)="updateFormField('isActive', $any($event.target).checked)"
+              />
+              <span>Empleado activo</span>
+            </label>
+            <p class="field-hint">Los empleados inactivos no aparecerán en las asignaciones</p>
+          </div>
+        </div>
+
+        <div class="profile-actions">
+          <app-button
+            label="Guardar Cambios"
+            severity="primary"
+            [iconStart]="SaveIcon"
+            [loading]="isSaving()"
+            [disabled]="isSaving()"
+            (onClick)="updateProvider()"
+          />
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="danger-section">
+        <h3 class="danger-title">ZONA PELIGROSA</h3>
+        <p class="danger-description">
+          Eliminar este empleado es una acción permanente y no se puede deshacer.
+        </p>
+        <app-button
+          label="Eliminar Empleado"
+          severity="outlined"
+          [iconStart]="TrashIcon"
+          customClass="btn-danger"
+          (onClick)="deleteProvider()"
+        />
+      </div>
+    </div>
+  }
+
+  <!-- Schedule Tab -->
+  @if (activeTab() === 'schedule') {
+    <div class="schedule-layout">
+      <!-- Main Schedule Area -->
+      <div class="schedule-main">
+        <!-- Schedule Header -->
+        <div class="schedule-header">
+          <div class="header-title-group">
+            <h3>HORARIO SEMANAL</h3>
+            @if (hasUnsavedScheduleChanges()) {
+              <span class="unsaved-badge">Cambios sin guardar</span>
+            }
+          </div>
+          <div class="header-actions">
+            @if (hasUnsavedScheduleChanges()) {
+              <app-button
+                label="Descartar"
+                severity="outlined"
+                [iconStart]="XIcon"
+                [disabled]="isSaving()"
+                (onClick)="discardSchedule()"
+              />
+            }
+            <app-button
+              label="Guardar Cambios"
+              severity="primary"
+              [iconStart]="SaveIcon"
+              [loading]="isSaving()"
+              [disabled]="isSaving() || hasValidationErrors() || !hasUnsavedScheduleChanges()"
+              (onClick)="saveSchedule()"
+            />
+          </div>
+        </div>
+
+        <!-- Messages -->
+        @if (successMessage()) {
+          <div class="alert alert-success">
+            <i-lucide [img]="CheckCircleIcon" [size]="18"></i-lucide>
+            <span>{{ successMessage() }}</span>
+          </div>
+        }
+
+        @if (errorMessage()) {
+          <div class="alert alert-error">
+            <i-lucide [img]="XCircleIcon" [size]="18"></i-lucide>
+            <span>{{ errorMessage() }}</span>
+          </div>
+        }
+
+        <!-- Days Grid -->
+        <div class="days-grid">
+          @for (day of weekSchedule(); track day.dayOfWeek; let dayIndex = $index) {
+            <div class="day-card">
+              <!-- Day Header -->
+              <div class="day-card-header" (click)="toggleDay(dayIndex)">
+                <div class="day-header-content">
+                  <label class="toggle-switch" (click)="$event.stopPropagation()">
+                    <input
+                      type="checkbox"
+                      [checked]="day.isOpen"
+                      (change)="toggleDay(dayIndex)"
+                    />
+                    <span class="slider"></span>
+                  </label>
+                  <span class="day-label">{{ day.dayName }}</span>
+                </div>
+                <button
+                  type="button"
+                  class="btn-copy-day"
+                  (click)="$event.stopPropagation(); copyToAll(dayIndex)"
+                  [disabled]="!day.isOpen"
+                  title="Copiar a todos"
+                >
+                  <i-lucide [img]="CopyIcon" [size]="16"></i-lucide>
+                </button>
+              </div>
+
+              <!-- Day Content -->
+              <div class="day-card-body">
+                @if (day.isOpen) {
+                  <div class="slots-list">
+                    @for (slot of day.slots; track $index; let slotIndex = $index) {
+                      <div class="time-slot">
+                        <input
+                          type="time"
+                          [value]="slot.start"
+                          (change)="updateSlot(dayIndex, slotIndex, 'start', $any($event.target).value)"
+                          class="time-input"
+                          [class.error]="!isValidTimeRange(slot)"
+                        />
+                        <span class="time-separator">—</span>
+                        <input
+                          type="time"
+                          [value]="slot.end"
+                          (change)="updateSlot(dayIndex, slotIndex, 'end', $any($event.target).value)"
+                          class="time-input"
+                          [class.error]="!isValidTimeRange(slot)"
+                        />
+                        <button
+                          type="button"
+                          class="btn-remove-slot"
+                          (click)="removeSlot(dayIndex, slotIndex)"
+                        >
+                          <i-lucide [img]="TrashIcon" [size]="16"></i-lucide>
+                        </button>
+                      </div>
+                      @if (!isValidTimeRange(slot)) {
+                        <span class="error-text">⚠️ Hora de inicio debe ser menor que hora de fin</span>
+                      }
+                    }
+                    <button
+                      type="button"
+                      class="btn-add-slot"
+                      (click)="addSlot(dayIndex)"
+                    >
+                      <i-lucide [img]="PlusIcon" [size]="14"></i-lucide>
+                      Agregar corte horario
+                    </button>
+                  </div>
+                } @else {
+                  <div class="day-closed">
+                    <span>No disponible</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="schedule-sidebar">
+        <div class="sidebar-card">
+          <div class="sidebar-header">
+            <i-lucide [img]="ClockIcon" [size]="18"></i-lucide>
+            <span>COPIAR HORARIO</span>
+          </div>
+          <button type="button" class="sidebar-option" disabled>
+            <span>Semana pasada</span>
+            <i-lucide [img]="CopyIcon" [size]="16"></i-lucide>
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
