@@ -1,7 +1,7 @@
 ﻿import { Component, signal, inject, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularModule, Briefcase, Plus, Trash2, Save, X, Clock, Copy, CheckCircle, XCircle, Search, User } from 'lucide-angular';
+import { LucideAngularModule, Briefcase, Plus, Save, X, CheckCircle, XCircle, Search, User, UserPlus } from 'lucide-angular';
 import { ProviderService } from '../../services/provider/provider.service';
 import { ProviderResponse, CreateProviderDto } from '../../models/appointment.model';
 import { ErrorHelper } from '../../helpers/error.helper';
@@ -25,6 +25,7 @@ export class EmpleadosComponent implements OnInit {
   readonly XCircleIcon = XCircle;
   readonly SearchIcon = Search;
   readonly UserIcon = User;
+  readonly UserPlusIcon = UserPlus;
 
   // Services
   private readonly providerService = inject(ProviderService);
@@ -161,4 +162,3 @@ export class EmpleadosComponent implements OnInit {
     this.errorMessage.set('');
   }
 }
-

@@ -1,4 +1,4 @@
-﻿﻿<div class="empleados-container">
+﻿<div class="empleados-container">
   <!-- Page Header -->
   <div class="page-header">
     <div class="header-left">
@@ -6,8 +6,8 @@
         <i-lucide [img]="BriefcaseIcon" [size]="32"></i-lucide>
       </div>
       <div class="header-title-section">
-        <h1>Miembros del Equipo</h1>
-        <p class="subtitle">Gestiona el acceso y disponibilidad de tu personal.</p>
+        <h1>Gestión de Empleados</h1>
+        <p class="subtitle">Administra el acceso y disponibilidad de tu personal</p>
       </div>
     </div>
     <app-button
@@ -104,11 +104,97 @@
   }
 </div>
 
-<!-- Manage Dialog - Ahora usa el subcomponente -->
+<!-- Create Provider Dialog -->
+<app-dialog
+  [visible]="showProviderDialog()"
+  [width]="'600px'"
+  [closable]="true"
+  [modal]="true"
+  (onHide)="closeProviderDialog()"
+>
+  <div class="dialog-content">
+    <!-- Header (con icono) -->
+    <div class="create-dialog-header">
+      <div class="create-dialog-header-left">
+        <div class="create-dialog-icon">
+          <i-lucide [img]="UserPlusIcon" [size]="20"></i-lucide>
+        </div>
+        <div class="create-dialog-titles">
+          <h3 class="create-dialog-title">Nuevo Miembro del Equipo</h3>
+          <p class="create-dialog-subtitle">Agregá un nuevo empleado a tu negocio</p>
+        </div>
+      </div>
+
+      <button type="button" class="create-dialog-close" (click)="closeProviderDialog()">
+        <i-lucide [img]="XIcon" [size]="18"></i-lucide>
+      </button>
+    </div>
+
+    <!-- Messages -->
+    @if (successMessage()) {
+      <div class="alert alert-success">
+        <i-lucide [img]="CheckCircleIcon" [size]="18"></i-lucide>
+        <span>{{ successMessage() }}</span>
+      </div>
+    }
+
+    @if (errorMessage()) {
+      <div class="alert alert-error">
+        <i-lucide [img]="XCircleIcon" [size]="18"></i-lucide>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <!-- Form Fields -->
+    <div class="form-field">
+      <app-input
+        inputId="providerName"
+        label="NOMBRE COMPLETO"
+        placeholder="Nombre del empleado"
+        [(ngModel)]="providerForm().name"
+        (ngModelChange)="updateFormField('name', $event)"
+        [iconStart]="UserIcon"
+      />
+    </div>
+
+    <div class="form-field">
+      <app-input
+        inputId="providerSpecialty"
+        label="ESPECIALIDAD / ROL"
+        placeholder="Ej: Barbero, Estilista, Recepción"
+        [(ngModel)]="providerForm().specialty"
+        (ngModelChange)="updateFormField('specialty', $event)"
+        [iconStart]="BriefcaseIcon"
+      />
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <app-button
+        label="Cancelar"
+        severity="secondary"
+        (onClick)="closeProviderDialog()"
+        [disabled]="isSaving()"
+      />
+      <app-button
+        label="Crear Empleado"
+        severity="primary"
+        [iconStart]="SaveIcon"
+        (onClick)="saveProvider()"
+        [loading]="isSaving()"
+        [disabled]="isSaving()"
+      />
+    </div>
+  </div>
+</app-dialog>
+
+<!-- Manage Dialog - Ahora usa el subcomponente como sidebar -->
 <app-dialog
   [visible]="showManageDialog()"
-  [width]="'95vw'"
+  [width]="'900px'"
   [closable]="false"
+  [modal]="true"
+  customClass="sidebar-dialog"
   (onHide)="closeManageDialog()"
 >
   @if (currentProvider()) {

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Agendify.Migrations
 {
     [DbContext(typeof(AgendifyDbContext))]
-    [Migration("20260210145416_InitialCreate_20260210_115407")]
-    partial class InitialCreate_20260210_115407
+    [Migration("20260211143927_InitialCreate_20260211_113836")]
+    partial class InitialCreate_20260211_113836
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -11,38 +11,51 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  padding: 0.25rem 0;
   gap: 1rem;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.875rem;
 }
 
 .header-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #030132 0%, #152f4d 100%);
-  border-radius: var(--radius-md);
-  color: white;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border-radius: 10px;
+  color: #030132;
+  box-shadow: none;
+  border: none;
+  flex-shrink: 0;
+}
+
+.header-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
 .header-title-section h1 {
-  font-size: 1.75rem;
+  font-size: 1.35rem;
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
+  line-height: 1;
 }
 
 .subtitle {
-  font-size: 0.875rem;
   color: var(--text-secondary);
-  margin: 0.25rem 0 0 0;
+  font-size: 0.8125rem;
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.2;
 }
 
 /* ============================================
@@ -50,6 +63,7 @@
    ============================================ */
 .search-section {
   margin-bottom: 2rem;
+  max-width: min(600px, 100%);
 }
 
 /* ============================================
@@ -238,56 +252,81 @@
 }
 
 /* ============================================
-   PROVIDER FORM - Diseño estándar mejorado
+   PROVIDER FORM - Diseño limpio y simple
    ============================================ */
 
-/* Modal Header - Estilo profesional como appointments */
-.modal-header {
+/* Contenido del diálogo */
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0;
+}
+
+.form-field {
+  margin-bottom: 0;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 0.25rem;
+  padding-top: 0.875rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* ---------- App Dialog overrides (para sacar el azul feo del header) ---------- */
+:host ::ng-deep app-dialog .p-dialog-header {
+  display: none !important; /* usamos nuestro header custom */
+}
+
+.create-dialog-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.5rem;
+  padding: 0.875rem 1.25rem;
   border-bottom: 1px solid #e5e7eb;
   background: #ffffff;
+  border-radius: 12px 12px 0 0;
 }
 
-.header-left {
+.create-dialog-header-left {
   display: flex;
   align-items: center;
-  gap: 0.875rem;
-  flex: 1;
+  gap: 0.75rem;
+  min-width: 0;
 }
 
-.header-icon-badge {
+.create-dialog-icon {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, #030132 0%, #152f4d 100%);
-  border-radius: 8px;
-  color: white;
+  border-radius: 10px;
+  background: #f3f4f6;
+  color: #111827;
   flex-shrink: 0;
 }
 
-.modal-title {
-  font-size: 1.125rem;
+.create-dialog-title {
+  margin: 0;
+  font-size: 1rem;
   font-weight: 600;
   color: #111827;
-  margin: 0;
   letter-spacing: -0.01em;
 }
 
-.modal-subtitle {
-  font-size: 0.8125rem;
-  color: #6b7280;
+.create-dialog-subtitle {
   margin: 0.125rem 0 0 0;
-  font-weight: 400;
+  font-size: 0.75rem;
+  color: #6b7280;
 }
 
-.btn-icon-close {
-  width: 32px;
-  height: 32px;
+.create-dialog-close {
+  width: 28px;
+  height: 28px;
   border-radius: 6px;
   border: 1px solid transparent;
   background: transparent;
@@ -297,64 +336,23 @@
   align-items: center;
   justify-content: center;
   transition: all 0.15s ease;
-  padding: 0;
 }
 
-.btn-icon-close:hover {
+.create-dialog-close:hover {
   background: #f3f4f6;
   color: #111827;
 }
 
-/* Modal Body */
-.modal-body {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+/* Ajuste del contenido para que no quede pegado al header */
+.dialog-content > :not(.create-dialog-header) {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
 }
 
-.form-group {
-  margin-bottom: 0;
-}
-
-.checkbox-wrapper {
-  padding: 1rem;
-  background: #f9fafb;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-}
-
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  cursor: pointer;
-  font-weight: 500;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
-}
-
-.checkbox-label input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  accent-color: var(--primary-color);
-}
-
-.checkbox-hint {
-  font-size: 0.8125rem;
-  color: var(--text-secondary);
-  margin: 0;
-  padding-left: 1.875rem;
-}
-
-.dialog-actions {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: flex-end;
-  margin-top: 1rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e5e7eb;
+.dialog-content .form-actions {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  padding-bottom: 1.25rem;
 }
 
 /* ============================================
@@ -883,4 +881,92 @@
   .modal-subtitle {
     font-size: 0.75rem;
   }
+
+  .search-section {
+    max-width: 100%;
+  }
 }
+
+/* ===== SIDEBAR DIALOG STYLES ===== */
+:host ::ng-deep .sidebar-dialog .p-dialog-mask {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: flex-end !important;
+  padding: 0 !important;
+}
+
+:host ::ng-deep .sidebar-dialog .p-dialog {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  margin: 0 !important;
+  width: 800px !important;
+  max-width: 800px !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  border-radius: 0 !important;
+  transform: none !important;
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.15) !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+:host ::ng-deep .sidebar-dialog .p-dialog-content {
+  padding: 0 !important;
+  flex: 1 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+}
+
+:host ::ng-deep .sidebar-dialog .p-dialog-header {
+  display: none !important;
+}
+
+/* Animation for sidebar */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+:host ::ng-deep .sidebar-dialog.p-component-overlay-enter {
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+:host ::ng-deep .sidebar-dialog .p-dialog {
+  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Responsive sidebar */
+@media (max-width: 1200px) {
+  :host ::ng-deep .sidebar-dialog .p-dialog {
+    width: 650px !important;
+    max-width: 650px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  :host ::ng-deep .sidebar-dialog .p-dialog {
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+}
+

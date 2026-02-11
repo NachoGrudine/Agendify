@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Agendify.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate_20260210_115407 : Migration
+    public partial class InitialCreate_20260211_113836 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
