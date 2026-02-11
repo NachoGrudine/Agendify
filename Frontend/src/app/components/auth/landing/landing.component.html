@@ -1,134 +1,435 @@
-﻿﻿<div class="landing-page">
+<!-- Landing: Agendify (SaaS multi-tenant) -->
+
+<div class="landing-page">
   <!-- Header Navigation -->
   <header class="header">
     <div class="header-container">
-      <div class="logo">
-        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <div class="logo" aria-label="Agendify">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none">
           <path d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1046 21 21 20.1046 21 19V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V19C3 20.1046 3.89543 21 5 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <span class="logo-text">Agendify</span>
       </div>
-      <nav class="nav">
-        <button class="btn-secondary" (click)="showAuthModal('login')">Ingresar</button>
-        <button class="btn-primary" (click)="showAuthModal('register')">Crear Cuenta Gratis</button>
+
+      <nav class="nav" aria-label="Navegación principal">
+        <div class="nav-actions">
+          <button class="nav-btn nav-btn-login" (click)="showAuthModal('login')">
+            <i-lucide [img]="LogInIcon" [size]="18"></i-lucide>
+            Iniciar Sesión
+          </button>
+          <button class="nav-btn nav-btn-register" (click)="showAuthModal('register')">
+            <i-lucide [img]="UserPlusIcon" [size]="18"></i-lucide>
+            Registrarse
+          </button>
+        </div>
       </nav>
     </div>
   </header>
 
   <!-- Hero Section -->
-  <section class="hero">
+  <section class="hero" aria-label="Introducción">
     <div class="hero-container">
       <div class="hero-content">
+        <div class="hero-badges">
+          <span class="badge">SaaS multi-tenant</span>
+          <span class="badge badge-soft">Turnos · Clientes · Servicios</span>
+        </div>
+
         <h1 class="hero-title">
-          Tu negocio, organizado.<br>
-          Tu cabeza, tranquila.
+          Plataforma SaaS para gestionar turnos y servicios
+          <span class="hero-title-accent">sin caos ni solapamientos</span>
         </h1>
+
         <p class="hero-description">
-          Olvídate del cuaderno y el lápiz. Gestioná turnos, clientes y recordatorios en un solo lugar, diseñado para crecer con vos.
+          Agendify centraliza la disponibilidad del staff, el catálogo de servicios y tu base de clientes.
+          Visualizá el mes, trabajá el día con métricas en tiempo real y escalá de forma segura por negocio.
         </p>
-        <button class="btn-cta" (click)="showAuthModal('register')">
-          Crear mi Agenda Gratis
-        </button>
-        <p class="hero-note">No requiere tarjeta de crédito</p>
+
+        <div class="hero-ctas">
+          <button class="btn-cta" (click)="showAuthModal('register')">Crear mi cuenta gratis</button>
+          <a class="btn-ghost" href="#producto" (click)="scrollToSection($event, 'producto')">Ver funcionalidades</a>
+        </div>
+
+        <div class="hero-note-row">
+          <span class="hero-note">
+            <i class="pi pi-shield"></i>
+            Sin tarjeta · Datos aislados por negocio
+          </span>
+          <span class="hero-note">
+            <i class="pi pi-clock"></i>
+            Configuración en minutos
+          </span>
+        </div>
+
+        <div class="hero-industries" aria-label="Rubros">
+          <span class="pill">Barberías</span>
+          <span class="pill">Peluquerías</span>
+          <span class="pill">Consultorios</span>
+          <span class="pill">Estética</span>
+          <span class="pill">Fitness</span>
+        </div>
       </div>
 
-      <div class="hero-visual">
-        <div class="calendar-mockup">
-          <div class="mockup-header">
-            <span class="dot red"></span>
-            <span class="dot yellow"></span>
-            <span class="dot green"></span>
-          </div>
-          <div class="mockup-content">
-            <div class="appointment-card blue">
-              <div class="card-time">09:00 - 10:30</div>
+      <!-- Showcase de imágenes animado -->
+      <div class="hero-visual" aria-label="Vista previa del producto">
+        <div class="showcase-container">
+          <div class="showcase-frame">
+            <div class="showcase-header">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+              <span class="showcase-title">Agendify - Panel</span>
             </div>
-            <div class="appointment-card purple">
-              <div class="card-time">11:00 - 12:00</div>
+
+            <div class="showcase-content">
+              @for (screen of showcaseImages; track screen.type; let i = $index) {
+                <div
+                  [class]="'showcase-screen screen-' + screen.type"
+                  [class.active]="currentImageIndex() === i"
+                  [class.prev]="currentImageIndex() === (i + 1) % showcaseImages.length"
+                >
+                  <!-- Pantalla de Calendario -->
+                  @if (screen.type === 'calendar') {
+                    <div class="animated-calendar">
+                      <div class="calendar-header">
+                        <div class="month-selector">
+                          <i-lucide [img]="CalendarIcon" [size]="18" class="header-icon"></i-lucide>
+                          <span class="month-name">Enero 2026</span>
+                        </div>
+                      </div>
+                      <div class="calendar-grid">
+                        @for (day of ['L','M','X','J','V','S','D']; track day) {
+                          <div class="day-name">{{ day }}</div>
+                        }
+                        @for (day of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]; track day) {
+                          <div class="calendar-day" [class.has-appointments]="day % 4 === 0" [class.today]="day === 15">
+                            <span class="day-number">{{ day }}</span>
+                            @if (day % 4 === 0) {
+                              <div class="appointments-dot"></div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+
+                  <!-- Pantalla Diaria con Métricas -->
+                  @if (screen.type === 'daily') {
+                    <div class="animated-daily">
+                      <div class="daily-header">
+                        <div class="daily-title">
+                          <i-lucide [img]="CalendarIcon" [size]="18" class="header-icon"></i-lucide>
+                          <span>Miércoles, 15 Enero</span>
+                        </div>
+                        <div class="metrics-row">
+                          <div class="metric-card">
+                            <i-lucide [img]="UsersIcon" [size]="16" class="metric-icon"></i-lucide>
+                            <div class="metric-info">
+                              <span class="metric-value">12</span>
+                              <span class="metric-label">Turnos</span>
+                            </div>
+                          </div>
+                          <div class="metric-card">
+                            <i-lucide [img]="TrendingUpIcon" [size]="16" class="metric-icon"></i-lucide>
+                            <div class="metric-info">
+                              <span class="metric-value">85%</span>
+                              <span class="metric-label">Ocupación</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="appointments-list">
+                        @for (apt of [
+                          {time: '09:00', service: 'Corte de cabello', client: 'Juan Pérez'},
+                          {time: '10:00', service: 'Barba', client: 'María García'},
+                          {time: '11:00', service: 'Corte + Barba', client: 'Carlos López'},
+                          {time: '12:00', service: 'Tratamiento', client: 'Ana Martínez'}
+                        ]; track apt.time; let idx = $index) {
+                          <div class="appointment-item" [style.animation-delay]="(idx * 0.08) + 's'">
+                            <div class="apt-time">
+                              <i-lucide [img]="ClockIcon" [size]="14"></i-lucide>
+                              <span>{{ apt.time }}</span>
+                            </div>
+                            <div class="apt-details">
+                              <div class="apt-service">{{ apt.service }}</div>
+                              <div class="apt-client">{{ apt.client }}</div>
+                            </div>
+                            <i-lucide [img]="CheckCircleIcon" [size]="16" class="apt-check"></i-lucide>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+
+                  <!-- Pantalla de Servicios -->
+                  @if (screen.type === 'services') {
+                    <div class="animated-services">
+                      <div class="services-header">
+                        <div class="services-title">
+                          <i-lucide [img]="ScissorsIcon" [size]="18" class="header-icon"></i-lucide>
+                          <span>Servicios</span>
+                        </div>
+                      </div>
+                      <div class="services-list">
+                        @for (service of [
+                          {name: 'Corte de cabello', duration: '30 min', price: '$350'},
+                          {name: 'Barba', duration: '20 min', price: '$200'},
+                          {name: 'Corte + Barba', duration: '45 min', price: '$500'},
+                          {name: 'Tratamiento capilar', duration: '60 min', price: '$800'}
+                        ]; track service.name; let idx = $index) {
+                          <div class="service-card" [style.animation-delay]="(idx * 0.08) + 's'">
+                            <div class="service-icon-box">
+                              <i-lucide [img]="ScissorsIcon" [size]="18"></i-lucide>
+                            </div>
+                            <div class="service-info">
+                              <div class="service-name">{{ service.name }}</div>
+                              <div class="service-meta">
+                                <span class="meta-item">
+                                  <i-lucide [img]="ClockIcon" [size]="12"></i-lucide>
+                                  {{ service.duration }}
+                                </span>
+                                <span class="meta-item">
+                                  <i-lucide [img]="DollarSignIcon" [size]="12"></i-lucide>
+                                  {{ service.price }}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+
+                  <!-- Pantalla de Horarios -->
+                  @if (screen.type === 'schedule') {
+                    <div class="animated-schedule">
+                      <div class="schedule-header">
+                        <div class="schedule-title">
+                          <i-lucide [img]="ClockIcon" [size]="18" class="header-icon"></i-lucide>
+                          <span>Horarios</span>
+                        </div>
+                      </div>
+                      <div class="schedule-grid">
+                        @for (day of ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']; track day; let idx = $index) {
+                          <div class="schedule-row" [style.animation-delay]="(idx * 0.08) + 's'">
+                            <div class="schedule-day">{{ day }}</div>
+                            <div class="schedule-slots">
+                              <div class="time-slot">
+                                <i-lucide [img]="ClockIcon" [size]="12"></i-lucide>
+                                <span>9:00 - 13:00</span>
+                              </div>
+                              <div class="time-slot">
+                                <i-lucide [img]="ClockIcon" [size]="12"></i-lucide>
+                                <span>15:00 - 19:00</span>
+                              </div>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
             </div>
-            <div class="appointment-card green">
-              <div class="card-time">14:00 - 15:30</div>
-            </div>
-            <button class="add-button">
-              <i class="pi pi-plus"></i>
+
+            <!-- Controles -->
+            <button class="showcase-nav prev" (click)="prevImage()" aria-label="Imagen anterior">
+              <i class="pi pi-chevron-left"></i>
+            </button>
+            <button class="showcase-nav next" (click)="nextImage()" aria-label="Imagen siguiente">
+              <i class="pi pi-chevron-right"></i>
             </button>
           </div>
+
+          <!-- Indicadores -->
+          <div class="showcase-indicators">
+            @for (screen of showcaseImages; track screen.type; let i = $index) {
+              <button
+                class="indicator"
+                [class.active]="currentImageIndex() === i"
+                (click)="goToImage(i)"
+                [attr.aria-label]="'Ir a imagen ' + (i + 1)"
+              ></button>
+            }
+          </div>
+
+          <!-- Caption -->
+          <p class="showcase-caption">{{ showcaseImages[currentImageIndex()].alt }}</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Features Section -->
-  <section class="features">
+  <!-- Product / Value props -->
+  <section id="producto" class="features" aria-label="Producto">
     <div class="features-container">
-      <h2 class="section-title">Todo lo que necesitás para crecer</h2>
+      <h2 class="section-title">Una única fuente de verdad para tu operación diaria</h2>
       <p class="section-subtitle">
-        Herramientas potentes y simples para la gestión diaria de tu negocio, sin complicaciones técnicas.
+        Evitá solapamientos, optimizá la capacidad del negocio y tomá decisiones con información clara.
       </p>
 
       <div class="features-grid">
         <div class="feature-card">
-          <div class="feature-icon calendar">
-            <i class="pi pi-calendar"></i>
-          </div>
-          <h3 class="feature-title">Control Total</h3>
+          <div class="feature-icon calendar"><i class="pi pi-calendar"></i></div>
+          <h3 class="feature-title">Agenda inteligente</h3>
           <p class="feature-description">
-            Gestioná tus horarios y disponibilidad en tiempo real. Evitá superposiciones y huecos innecesarios.
+            Vista mensual para el panorama general y <strong>detalle diario</strong> con tablero de métricas en tiempo real.
           </p>
+          <ul class="feature-list">
+            <li>Métricas: turnos, tiempo programado vs. libre</li>
+            <li>Orden y trazabilidad por cliente/servicio</li>
+          </ul>
         </div>
 
         <div class="feature-card">
-          <div class="feature-icon chart">
-            <i class="pi pi-chart-line"></i>
-          </div>
-          <h3 class="feature-title">Entendé tu Negocio</h3>
+          <div class="feature-icon users"><i class="pi pi-users"></i></div>
+          <h3 class="feature-title">Staff y disponibilidad granular</h3>
           <p class="feature-description">
-            Estadísticas simples para saber cuánto crecés mes a mes. Identificá tus mejores servicios.
+            Configurá horarios semanales con rangos complejos, cortes (breaks) y días activos/inactivos.
           </p>
+          <ul class="feature-list">
+            <li>Sincroniza capacidad real del negocio</li>
+            <li>Ideal para equipos y sucursales</li>
+          </ul>
         </div>
 
         <div class="feature-card">
-          <div class="feature-icon users">
-            <i class="pi pi-users"></i>
-          </div>
-          <h3 class="feature-title">Mini CRM Integrado</h3>
+          <div class="feature-icon chart"><i class="pi pi-chart-line"></i></div>
+          <h3 class="feature-title">Servicios, precios y clientes</h3>
           <p class="feature-description">
-            Historial de clientes y notas personalizadas al instante. Recordá siempre lo que les gusta.
+            Definí servicios con duración y precio, y mantené un registro de clientes con historial.
           </p>
+          <ul class="feature-list">
+            <li>Duraciones automáticas en agenda</li>
+            <li>Datos listos para análisis</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="trust-row" aria-label="Señales de confianza">
+        <div class="trust-item">
+          <div class="trust-title">Pensado para crecer</div>
+          <div class="trust-sub">De 1 persona a equipos</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-title">Multi-tenant</div>
+          <div class="trust-sub">Aislamiento por negocio</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-title">En la nube</div>
+          <div class="trust-sub">Accedé desde cualquier dispositivo</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Industries Section -->
-  <section class="industries">
-    <div class="industries-container">
-      <h2 class="section-title">Para todo tipo de rubro</h2>
-      <p class="section-subtitle">
-        Diseñado para adaptarse a tus necesidades. Desde peluquerías hasta consultorios médicos, Agendify se moldea a tu forma de trabajo.
-      </p>
+  <!-- How it works -->
+  <section id="como-funciona" class="how" aria-label="Cómo funciona">
+    <div class="how-container">
+      <h2 class="section-title">Empezá en 3 pasos</h2>
+      <p class="section-subtitle">Configuración simple, impacto inmediato en tu operación.</p>
 
-      <div class="industries-tags">
-        <span class="industry-tag">Peluquerías</span>
-        <span class="industry-tag">Barberías</span>
-        <span class="industry-tag">Consultorios</span>
-        <span class="industry-tag">Centros de Estética</span>
-        <span class="industry-tag">Psicólogos</span>
-        <span class="industry-tag">Personal Trainers</span>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-body">
+            <h3>Creá tu negocio</h3>
+            <p>Tu espacio queda aislado como un tenant, con usuarios y datos propios.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-body">
+            <h3>Definí staff y servicios</h3>
+            <p>Servicios con duración/precio y disponibilidad semanal con cortes.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-body">
+            <h3>Agendá y medí</h3>
+            <p>Vista del día con métricas y seguimiento de rendimiento.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="how-cta">
+        <button class="btn-primary" (click)="showAuthModal('register')">Probar ahora</button>
+        <a class="link" href="#faq" (click)="scrollToSection($event, 'faq')">Dudas frecuentes</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Security / Multi-tenant -->
+  <section id="seguridad" class="security" aria-label="Seguridad">
+    <div class="security-container">
+      <div class="security-card">
+        <h2 class="security-title">Aislamiento por negocio (multi-tenant)</h2>
+        <p class="security-desc">
+          Cada empresa trabaja en su propio entorno, con datos segregados y reglas de acceso claras.
+          Diseñado para operar con seguridad y escalar sin fricciones.
+        </p>
+        <div class="security-grid">
+          <div class="security-item">
+            <i class="pi pi-lock"></i>
+            <div>
+              <div class="security-item-title">Datos segregados</div>
+              <div class="security-item-desc">Tu información no se mezcla con otros negocios.</div>
+            </div>
+          </div>
+          <div class="security-item">
+            <i class="pi pi-users"></i>
+            <div>
+              <div class="security-item-title">Roles y usuarios</div>
+              <div class="security-item-desc">Accesos por persona y por operación.</div>
+            </div>
+          </div>
+          <div class="security-item">
+            <i class="pi pi-database"></i>
+            <div>
+              <div class="security-item-title">Trazabilidad</div>
+              <div class="security-item-desc">Información consistente para auditoría y métricas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="faq" aria-label="Preguntas frecuentes">
+    <div class="faq-container">
+      <h2 class="section-title">Preguntas frecuentes</h2>
+      <p class="section-subtitle">Respuestas rápidas antes de empezar.</p>
+
+      <div class="faq-grid">
+        <details class="faq-item">
+          <summary>¿Agendify es para un solo rubro?</summary>
+          <p>No. Está pensado para negocios de servicios: barberías, consultorios, estética, fitness y más.</p>
+        </details>
+        <details class="faq-item">
+          <summary>¿Puedo manejar varios empleados?</summary>
+          <p>Sí. Podés crear prestadores y definir disponibilidad por día con rangos y cortes.</p>
+        </details>
+        <details class="faq-item">
+          <summary>¿Cómo funciona lo multi-tenant?</summary>
+          <p>Cada negocio opera en un entorno aislado. Usuarios, clientes, servicios y agenda quedan separados por empresa.</p>
+        </details>
+        <details class="faq-item">
+          <summary>¿Necesito instalar algo?</summary>
+          <p>No. Es una plataforma en la nube. Ingresá desde tu navegador.</p>
+        </details>
       </div>
     </div>
   </section>
 
   <!-- CTA Section -->
-  <section class="cta">
+  <section class="cta" aria-label="Empezar">
     <div class="cta-container">
-      <h2 class="cta-title">Comenzá hoy mismo</h2>
-      <p class="cta-description">
-        Prueba gratuita de 14 días. Sin compromisos.
-      </p>
-      <button class="btn-cta-large" (click)="showAuthModal('register')">
-        Crear Cuenta Gratis
-      </button>
+      <h2 class="cta-title">Pasate a una agenda moderna</h2>
+      <p class="cta-description">Creá tu cuenta y dejá de depender del cuaderno, Excel o mensajes sueltos.</p>
+      <button class="btn-cta-large" (click)="showAuthModal('register')">Crear cuenta gratis</button>
+      <p class="cta-note">Sin tarjeta. Cancelá cuando quieras.</p>
     </div>
   </section>
 
@@ -137,18 +438,20 @@
     <div class="footer-container">
       <div class="footer-brand">
         <div class="logo">
-          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none">
             <path d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1046 21 21 20.1046 21 19V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V19C3 20.1046 3.89543 21 5 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           <span class="logo-text">Agendify</span>
         </div>
+        <p class="footer-slogan">Plataforma SaaS para la gestión centralizada de turnos y servicios.</p>
       </div>
+
       <div class="footer-links">
         <a href="#" class="footer-link">Términos</a>
         <a href="#" class="footer-link">Privacidad</a>
         <a href="#" class="footer-link">Soporte</a>
       </div>
-      <p class="footer-copyright">&copy; 2024 Agendify Inc. Todos los derechos reservados.</p>
+      <p class="footer-copyright">&copy; 2026 Agendify. Todos los derechos reservados.</p>
     </div>
   </footer>
 
@@ -156,7 +459,7 @@
   @if (showAuthDialog()) {
     <div class="modal-overlay" (click)="closeAuthModal()">
       <div class="modal-content" (click)="$event.stopPropagation()">
-        <button class="modal-close" (click)="closeAuthModal()">
+        <button class="modal-close" (click)="closeAuthModal()" aria-label="Cerrar">
           <i class="pi pi-times"></i>
         </button>
 
@@ -168,7 +471,7 @@
               [class.active]="authMode() === 'login'"
               (click)="authMode.set('login')"
             >
-              Iniciar Sesión
+              Iniciar sesión
             </button>
             <button
               class="modal-tab"
@@ -192,3 +495,4 @@
     </div>
   }
 </div>
+
