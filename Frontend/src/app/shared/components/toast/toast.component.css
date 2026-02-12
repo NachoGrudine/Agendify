@@ -1,5 +1,5 @@
-?/* ============================================
-   TOAST COMPONENT - DISEÑO MEJORADO Y ESPACIOSO
+/* ============================================
+   TOAST COMPONENT - DISEï¿½O MEJORADO Y ESPACIOSO
    ============================================ */
 
 :host ::ng-deep .agendify-toast .p-toast-message {
@@ -101,7 +101,7 @@
   color: #f59e0b;
 }
 
-/* Animación de entrada más suave */
+/* Animaciï¿½n de entrada mï¿½s suave */
 :host ::ng-deep .agendify-toast .p-toast-message.p-toast-message-enter {
   animation: slideInRight 0.3s ease-out;
 }

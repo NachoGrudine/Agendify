@@ -7,13 +7,12 @@ import { ScheduleService } from '../../../services/schedule/schedule.service';
 import { ProviderResponse, UpdateProviderDto } from '../../../models/appointment.model';
 import { DaySchedule, TimeRange, DayOfWeek } from '../../../models/schedule.model';
 import { ErrorHelper } from '../../../helpers/error.helper';
-import { ButtonComponent, CardComponent, InputComponent } from '../../../shared/components';
 import { ConfirmService } from '../../../shared/services/confirm.service';
 
 @Component({
   selector: 'app-manage-provider',
   standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule, ButtonComponent, CardComponent, InputComponent],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './manage-provider.component.html',
   styleUrls: ['./manage-provider.component.css']
 })
