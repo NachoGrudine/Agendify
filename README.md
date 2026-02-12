@@ -1,83 +1,85 @@
-# 📅 Agendify
+# Agendify
 
-**Slogan:** Plataforma SaaS para la Gestión Centralizada de Turnos y Servicios.
-
----
-
-## 📋 Tabla de Contenidos
-
-- [¿Qué es Agendify?](#-qué-es-agendify)
-- [Problemática que Resuelve](#-problemática-que-resuelve)
-- [Funcionalidades Clave](#-funcionalidades-clave)
-- [Imágenes de la Aplicación](#-imagenes-de-la-aplicación)
-- [Arquitectura y Stack Tecnológico](#-arquitectura-y-stack-tecnológico)
-- [Requisitos Previos](#-requisitos-previos)
-- [Instalación y Ejecución](#-instalación-y-ejecución)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Características Técnicas](#-características-técnicas)
-- [Testing](#-testing)
-- [Documentación API](#-documentación-api)
+**Plataforma SaaS para la Gestión Centralizada de Turnos y Servicios**
 
 ---
 
-## 🎯 ¿Qué es Agendify?
+## Tabla de Contenidos
+
+- [¿Qué es Agendify?](#qué-es-agendify)
+- [Problemática que Resuelve](#problemática-que-resuelve)
+- [Funcionalidades Clave](#funcionalidades-clave)
+- [Capturas de Pantalla](#capturas-de-pantalla)
+- [Arquitectura y Stack Tecnológico](#arquitectura-y-stack-tecnológico)
+- [Requisitos Previos](#requisitos-previos)
+- [Instalación y Ejecución](#instalación-y-ejecución)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Características Técnicas](#características-técnicas)
+- [Testing](#testing)
+- [Documentación API](#documentación-api)
+
+---
+
+## ¿Qué es Agendify?
 
 **Agendify** es una aplicación **SaaS (Software as a Service) Multi-tenant** diseñada para digitalizar y optimizar la operatividad de pequeños y medianos negocios de servicios (como barberías, consultorios, centros de estética, peluquerías, clínicas, etc.). 
 
 Su misión es **eliminar el caos de las agendas en papel y las hojas de cálculo**, ofreciendo una solución **centralizada, trazable y profesional** para administrar el flujo de trabajo diario desde un único punto de control.
 
-**"Canvas" Philosophy:** Total flexibilidad. Creá turnos rápidos sin estructura rígida, como si estuvieras escribiendo en una hoja de papel, pero con toda la potencia de un sistema inteligente.
+**Filosofía "Canvas":** Total flexibilidad. Creá turnos rápidos sin estructura rígida, como si estuvieras escribiendo en una hoja de papel, pero con toda la potencia de un sistema inteligente.
 
 ---
 
-## 🔍 Problemática que Resuelve
+## Problemática que Resuelve
 
 Los prestadores de servicios suelen enfrentar problemas críticos de desorganización:
-- ❌ **Solapamiento de turnos** y conflictos de horarios
-- ❌ **Falta de métricas** sobre rendimiento y productividad
-- ❌ **Dificultad para gestionar** los horarios de múltiples empleados
-- ❌ **Pérdida de información** de clientes y servicios
-- ❌ **Ausencia de trazabilidad** en las operaciones diarias
+
+**Problemas comunes:**
+- Solapamiento de turnos y conflictos de horarios
+- Falta de métricas sobre rendimiento y productividad
+- Dificultad para gestionar los horarios de múltiples empleados
+- Pérdida de información de clientes y servicios
+- Ausencia de trazabilidad en las operaciones diarias
 
 **Agendify resuelve esto** proporcionando una **"fuente única de verdad"** donde conviven:
-- ✅ La **disponibilidad del staff** (empleados/prestadores)
-- ✅ El **catálogo completo de servicios** con duraciones y precios
-- ✅ La **base de datos de clientes** con historial
-- ✅ **Métricas en tiempo real** del negocio
+- La disponibilidad del staff (empleados/prestadores)
+- El catálogo completo de servicios con duraciones y precios
+- La base de datos de clientes con historial
+- Métricas en tiempo real del negocio
 
 ---
 
-## ⚡ Funcionalidades Clave
+## Funcionalidades Clave
 
-### 📅 **Agenda Inteligente & Métricas Diarias**
+### Agenda Inteligente & Métricas Diarias
 Ofrece una **visualización mensual** para el panorama general y una **vista de Detalle Diario** avanzada. Esta última no solo lista los turnos, sino que funciona como un **tablero de control**, mostrando:
 - Cantidad de turnos del día
 - Tiempo programado vs. tiempo libre
 - Comparativas de rendimiento
 - Filtros por horarios y búsqueda en tiempo real
 
-### ⚙️ **Gestión Granular de Disponibilidad**
+### Gestión Granular de Disponibilidad
 Permite a cada prestador configurar su **Disponibilidad Semanal** con precisión quirúrgica:
 - Rangos horarios complejos por día
 - Soporte para "cortes" (breaks) para almuerzos o descansos
 - Activación/desactivación de días completos
 - Impacto directo en la capacidad de agenda del negocio
 
-### ✂️ **Administración de Servicios y Clientes**
+### Administración de Servicios y Clientes
 - **Catálogo de Servicios:** Define servicios con duración estimada y precio, lo cual automatiza el cálculo de bloques de tiempo en la agenda
 - **Gestión de Clientes:** Registro completo con historial de turnos, datos de contacto y notas
 - **Turnos Flexibles:** Permite crear turnos con clientes registrados o walk-ins (clientes ocasionales)
 
-### 🔒 **Arquitectura Multi-Inquilino (Multi-tenant)**
+### Arquitectura Multi-Inquilino (Multi-tenant)
 Construido para **escalar**, el sistema garantiza el **aislamiento total de datos** entre diferentes negocios, permitiendo que múltiples empresas utilicen la plataforma de manera segura e independiente.
 
-### 🛡️ **Validaciones Inteligentes**
+### Validaciones Inteligentes
 - Prevención automática de **solapamientos de turnos**
 - Validación de **conflictos de horarios** de empleados
 - Verificación de **disponibilidad del prestador**
 - Sistema de **errores descriptivos** con Problem Details (RFC 7807)
 
-### 🚀 **Onboarding Automático**
+### Onboarding Automático
 Al registrarte, el sistema automáticamente:
 1. Crea tu negocio
 2. Configura tu primer prestador de servicios
@@ -85,39 +87,46 @@ Al registrarte, el sistema automáticamente:
 
 ---
 
-## 📸 Imagenes de la Aplicación
+## Capturas de Pantalla
 
-### **Calendario Mensual**
+### Calendario Mensual
 Vista general del mes con resumen de turnos por día.
 
 ![Calendario Mensual](./images/Calendar.png)
 
 ---
 
-### **Detalle Diario**
+### Detalle Diario
 Panel de control con métricas en tiempo real, listado de turnos y filtros avanzados.
 
 ![Detalle del Día](./images/day-detail.png)
 
 ---
 
-### **Gestión de Horarios**
-Configuración granular de disponibilidad semanal por empleado con soporte para breaks.
+### Gestión de Empleados
+Administración completa de prestadores de servicios con información detallada y control de disponibilidad.
+
+![Gestión de Empleados](./images/Providers.png)
+
+---
+
+### Configuración de Horarios
+Configuración granular de disponibilidad semanal por empleado con soporte para breaks y horarios personalizados.
 
 ![Horarios de Empleados](./images/Schedules.png)
 
 ---
 
-### **Catálogo de Servicios**
+### Catálogo de Servicios
 Administración de servicios con duración y precios.
 
 ![Catálogo de Servicios](./images/Services.png)
 
 ---
 
-## 🏗️ Arquitectura y Stack Tecnológico
+## Arquitectura y Stack Tecnológico
 
-### **Backend**
+### Backend
 - **Framework:** .NET 10 (C#)
 - **Base de Datos:** SQL Server 2022
 - **ORM:** Entity Framework Core 10.0.1
@@ -141,7 +150,7 @@ Administración de servicios con duración y precios.
 - Snake_case naming en JSON
 - Converters personalizados (DateTime, TimeSpan)
 
-### **Frontend**
+### Frontend
 - **Framework:** Angular 21.1.0
 - **Lenguaje:** TypeScript 5.9.2
 - **UI Framework:** PrimeNG 21.1.1
@@ -160,13 +169,13 @@ Administración de servicios con duración y precios.
 - Helpers para manejo de errores y fechas
 - Pipes personalizados (UTC to Local)
 
-### **Testing**
+### Testing
 - **Framework:** xUnit
 - **Mocking:** Moq
 - **Assertions:** FluentAssertions
 - **Cobertura:** Controladores, Servicios, Repositorios, Validadores
 
-### **DevOps & Infraestructura**
+### DevOps & Infraestructura
 - **Containerización:** Docker
 - **Orquestación:** Docker Compose
 - **Base de Datos:** SQL Server en contenedor
@@ -175,7 +184,7 @@ Administración de servicios con duración y precios.
 
 ---
 
-## 📦 Requisitos Previos
+## Requisitos Previos
 
 Antes de iniciar, asegúrate de tener instalado:
 
@@ -183,16 +192,16 @@ Antes de iniciar, asegúrate de tener instalado:
   - [Descargar Docker](https://www.docker.com/products/docker-desktop/)
 - **Git** (para clonar el repositorio)
   - [Descargar Git](https://git-scm.com/)
-- *Opcional:* **.NET 10 SDK** (solo para desarrollo local sin Docker)
+- **Opcional:** .NET 10 SDK (solo para desarrollo local sin Docker)
   - [Descargar .NET](https://dotnet.microsoft.com/download)
-- *Opcional:* **Node.js 20+** (solo para desarrollo local sin Docker)
+- **Opcional:** Node.js 20+ (solo para desarrollo local sin Docker)
   - [Descargar Node.js](https://nodejs.org/)
 
 ---
 
-## 🚀 Instalación y Ejecución
+## Instalación y Ejecución
 
-### **Paso 1: Clonar el Repositorio**
+### Paso 1: Clonar el Repositorio
 
 ```bash
 git clone <url-del-repositorio>
@@ -213,7 +222,7 @@ cd Agendify
    - `DB_PASSWORD`: Debe ser **idéntica** a `MSSQL_SA_PASSWORD`
    - `JWT_SECRET`: Clave secreta de al menos 64 caracteres (ver comandos de generación en el archivo)
 
-   **💡 Tip:** El archivo `.env.example` está completamente documentado con:
+   **Nota:** El archivo `.env.example` está completamente documentado con:
    - Explicación de cada variable
    - Valores recomendados
    - Comandos para generar claves seguras
@@ -231,7 +240,7 @@ cd Agendify
    # Las demás variables pueden dejarse con los valores por defecto
    ```
 
-### **Paso 3: Levantar la Aplicación con Docker Compose**
+### Paso 3: Levantar la Aplicación con Docker Compose
 
 Desde la raíz del proyecto:
 
@@ -240,15 +249,15 @@ docker-compose up --build
 ```
 
 Este comando hará lo siguiente:
-1. ✅ Levantará **SQL Server** en el puerto 1433
-2. ✅ Construirá y levantará el **Backend API** en el puerto 5000
-3. ✅ Construirá y levantará el **Frontend** en el puerto 4200
+1. Levantará **SQL Server** en el puerto 1433
+2. Construirá y levantará el **Backend API** en el puerto 5000
+3. Construirá y levantará el **Frontend** en el puerto 4200
 
 **Tiempos estimados:**
 - Primera vez (con build): 5-10 minutos
 - Siguientes veces: 1-2 minutos
 
-### **Paso 4: Aplicar Migraciones de Base de Datos**
+### Paso 4: Aplicar Migraciones de Base de Datos
 
 Una vez que los contenedores estén corriendo, aplica las migraciones:
 
@@ -262,7 +271,7 @@ Una vez que los contenedores estén corriendo, aplica las migraciones:
 docker exec -it agendify-api dotnet ef database update
 ```
 
-### **Paso 5: Acceder a la Aplicación**
+### Paso 5: Acceder a la Aplicación
 
 - **Frontend:** http://localhost:4200
 - **Backend API:** http://localhost:5000
@@ -270,7 +279,7 @@ docker exec -it agendify-api dotnet ef database update
 
 ---
 
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 Agendify/
@@ -319,11 +328,11 @@ Agendify/
 
 ---
 
-## 🔧 Características Técnicas
+## Características Técnicas
 
-### **Backend**
+### Backend
 
-#### **Endpoints Principales**
+#### Endpoints Principales
 
 | Módulo | Endpoint | Descripción |
 |--------|----------|-------------|
@@ -337,29 +346,29 @@ Agendify/
 | Services | `GET/POST/PUT/DELETE /api/services` | Catálogo de servicios |
 | Customers | `GET/POST/PUT/DELETE /api/customers` | Gestión de clientes |
 
-#### **Seguridad**
+#### Seguridad
 - JWT Bearer Authentication
 - Claims-based authorization (BusinessId, ProviderId, UserId)
 - Password hashing con algoritmos seguros
 - Validación de tokens con emisor y audiencia
 - HTTPS recomendado en producción
 
-#### **Convenciones**
+#### Convenciones
 - **JSON Naming:** snake_case (ej: `provider_id`, `start_time`)
 - **HTTP Status Codes:** Uso correcto de 200, 201, 204, 400, 404, 409, 500
 - **Problem Details:** RFC 7807 para errores estructurados
 - **DateTime:** Manejo de zonas horarias con converters personalizados
 
-### **Frontend**
+### Frontend
 
-#### **Módulos Principales**
+#### Módulos Principales
 - **Auth Module:** Login, registro, landing page
 - **Agenda Module:** Calendario mensual + detalle diario
 - **Empleados Module:** Gestión de prestadores y horarios
 - **Clientes Module:** ABM de clientes
 - **Servicios Module:** Catálogo de servicios
 
-#### **Características**
+#### Características
 - Autenticación con JWT (almacenamiento seguro)
 - Interceptor para agregar token automáticamente
 - Conversión automática de snake_case ↔ camelCase
@@ -369,11 +378,11 @@ Agendify/
 
 ---
 
-## 🧪 Testing
+## Testing
 
 El proyecto incluye tests unitarios completos para el backend:
 
-### **Ejecutar Tests**
+### Ejecutar Tests
 
 **Con Docker:**
 ```powershell
@@ -386,11 +395,11 @@ cd Backend
 dotnet test
 ```
 
-### **Cobertura de Tests**
-- ✅ Controllers (AppointmentsController, ServicesController, ProvidersController, etc.)
-- ✅ Services (lógica de negocio)
-- ✅ Repositories (acceso a datos)
-- ✅ Validators (FluentValidation)
+### Cobertura de Tests
+- Controllers (AppointmentsController, ServicesController, ProvidersController, etc.)
+- Services (lógica de negocio)
+- Repositories (acceso a datos)
+- Validators (FluentValidation)
 
 **Herramientas:**
 - xUnit (framework)
@@ -399,21 +408,21 @@ dotnet test
 
 ---
 
-## 📚 Documentación API
+## Documentación API
 
-### **Swagger/OpenAPI**
+### Swagger/OpenAPI
 
 Una vez levantado el backend, accede a la documentación interactiva:
 
 **URL:** http://localhost:5000/swagger
 
 Desde Swagger puedes:
-- 📖 Ver todos los endpoints disponibles
-- 🧪 Probar requests directamente
-- 🔐 Autenticarte con JWT
-- 📋 Ver schemas de DTOs
+- Ver todos los endpoints disponibles
+- Probar requests directamente
+- Autenticarte con JWT
+- Ver schemas de DTOs
 
-### **Autenticación en Swagger**
+### Autenticación en Swagger
 
 1. Registrate o inicia sesión usando `/api/auth/register` o `/api/auth/login`
 2. Copia el `access_token` de la respuesta
@@ -423,11 +432,11 @@ Desde Swagger puedes:
 
 ---
 
-## 🛠️ Desarrollo Local (Sin Docker)
+## Desarrollo Local (Sin Docker)
 
 Si prefieres desarrollar sin Docker:
 
-### **Backend**
+### Backend
 
 1. Instala SQL Server localmente
 2. Actualiza `appsettings.Development.json` con tu connection string
@@ -441,7 +450,7 @@ Si prefieres desarrollar sin Docker:
    dotnet run
    ```
 
-### **Frontend**
+### Frontend
 
 1. Instala dependencias:
    ```powershell
@@ -456,4 +465,5 @@ Si prefieres desarrollar sin Docker:
 4. Accede a: http://localhost:4200
 
 ---
-**¡Gracias por usar Agendify! 🚀**
+
+**¡Gracias por usar Agendify!**
