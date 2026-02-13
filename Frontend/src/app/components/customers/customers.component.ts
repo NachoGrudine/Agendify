@@ -9,7 +9,7 @@ import { CustomerResponse, CreateCustomerDto, UpdateCustomerDto } from '../../mo
 import { ConfirmService } from '../../shared/services/confirm.service';
 
 @Component({
-  selector: 'app-clientes',
+  selector: 'app-customers',
   standalone: true,
   imports: [
     CommonModule,
@@ -21,11 +21,11 @@ import { ConfirmService } from '../../shared/services/confirm.service';
     DialogComponent,
     TableComponent
   ],
-  templateUrl: './clientes.component.html',
-  styleUrls: ['./clientes.component.css'],
+  templateUrl: './customers.component.html',
+  styleUrls: ['./customers.component.css'],
   providers: [MessageService]
 })
-export class ClientesComponent implements OnInit {
+export class CustomersComponent implements OnInit {
   private readonly customerService = inject(CustomerService);
   private readonly messageService = inject(MessageService);
   private readonly confirmService = inject(ConfirmService);

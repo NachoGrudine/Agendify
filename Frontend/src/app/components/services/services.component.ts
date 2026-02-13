@@ -11,7 +11,7 @@ import { ServiceCardComponent } from './service-card/service-card.component';
 import { ConfirmService } from '../../shared/services/confirm.service';
 
 @Component({
-  selector: 'app-servicios',
+  selector: 'app-services',
   standalone: true,
   imports: [
     CommonModule,
@@ -22,11 +22,11 @@ import { ConfirmService } from '../../shared/services/confirm.service';
     ToastComponent,
     ServiceCardComponent
   ],
-  templateUrl: './servicios.component.html',
-  styleUrls: ['./servicios.component.css'],
+  templateUrl: './services.component.html',
+  styleUrls: ['./services.component.css'],
   providers: [MessageService]
 })
-export class ServiciosComponent implements OnInit {
+export class ServicesComponent implements OnInit {
   private readonly serviceService = inject(ServiceService);
   private readonly messageService = inject(MessageService);
   private readonly router = inject(Router);

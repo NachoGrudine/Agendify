@@ -26,11 +26,11 @@ export const routes: Routes = [
       },
       {
         path: 'clientes',
-        loadComponent: () => import('./components/clientes/clientes.component').then(m => m.ClientesComponent)
+        loadComponent: () => import('./components/customers/customers.component').then(m => m.CustomersComponent)
       },
       {
         path: 'empleados',
-        loadComponent: () => import('./components/empleados/empleados.component').then(m => m.EmpleadosComponent)
+        loadComponent: () => import('./components/employees/employees.component').then(m => m.EmployeesComponent)
       },
       {
         path: 'horarios',
@@ -38,15 +38,15 @@ export const routes: Routes = [
       },
       {
         path: 'servicios',
-        loadComponent: () => import('./components/servicios/servicios.component').then(m => m.ServiciosComponent)
+        loadComponent: () => import('./components/services/services.component').then(m => m.ServicesComponent)
       },
       {
         path: 'servicios/nuevo',
-        loadComponent: () => import('./components/servicios/service-form/service-form.component').then(m => m.ServiceFormComponent)
+        loadComponent: () => import('./components/services/service-form/service-form.component').then(m => m.ServiceFormComponent)
       },
       {
         path: 'servicios/editar/:id',
-        loadComponent: () => import('./components/servicios/service-form/service-form.component').then(m => m.ServiceFormComponent)
+        loadComponent: () => import('./components/services/service-form/service-form.component').then(m => m.ServiceFormComponent)
       },
       {
         path: '',

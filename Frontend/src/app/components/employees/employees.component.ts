@@ -9,13 +9,13 @@ import { ButtonComponent, LoadingSpinnerComponent, CardComponent, DialogComponen
 import { ManageProviderComponent } from './manage-provider/manage-provider.component';
 
 @Component({
-  selector: 'app-empleados',
+  selector: 'app-employees',
   standalone: true,
   imports: [CommonModule, FormsModule, LucideAngularModule, ButtonComponent, LoadingSpinnerComponent, CardComponent, DialogComponent, InputComponent, ManageProviderComponent],
-  templateUrl: './empleados.component.html',
-  styleUrls: ['./empleados.component.css']
+  templateUrl: './employees.component.html',
+  styleUrls: ['./employees.component.css']
 })
-export class EmpleadosComponent implements OnInit {
+export class EmployeesComponent implements OnInit {
   // Icons
   readonly BriefcaseIcon = Briefcase;
   readonly PlusIcon = Plus;
