@@ -2,7 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { LoginComponent } from '../login/login.component';
 import { RegisterWizardComponent } from '../register-wizard/register-wizard.component';
-import { LucideAngularModule, Calendar, TrendingUp, Scissors, Clock, DollarSign, Users, CheckCircle, LogIn, UserPlus } from 'lucide-angular';
+import { LucideAngularModule, Clock, CheckCircle, LogIn, UserPlus } from 'lucide-angular';
 
 @Component({
   selector: 'app-landing',
@@ -13,25 +13,21 @@ import { LucideAngularModule, Calendar, TrendingUp, Scissors, Clock, DollarSign,
 })
 export class LandingComponent implements OnInit, OnDestroy {
   // Iconos de Lucide
-  readonly CalendarIcon = Calendar;
-  readonly TrendingUpIcon = TrendingUp;
-  readonly ScissorsIcon = Scissors;
   readonly ClockIcon = Clock;
-  readonly DollarSignIcon = DollarSign;
-  readonly UsersIcon = Users;
   readonly CheckCircleIcon = CheckCircle;
   readonly LogInIcon = LogIn;
   readonly UserPlusIcon = UserPlus;
   showAuthDialog = signal<boolean>(false);
   authMode = signal<'login' | 'register'>('login');
 
-  // Showcase de pantallas animadas
+  // Showcase de pantallas reales
   currentImageIndex = signal<number>(0);
   showcaseImages = [
-    { type: 'calendar', alt: 'Vista de calendario mensual' },
-    { type: 'daily', alt: 'Detalle diario con métricas' },
-    { type: 'services', alt: 'Gestión de servicios' },
-    { type: 'schedule', alt: 'Configuración de disponibilidad' }
+    { type: 'image', src: 'assets/Calendar.png', alt: 'Vista de calendario mensual' },
+    { type: 'image', src: 'assets/day-detail.png', alt: 'Detalle diario con métricas' },
+    { type: 'image', src: 'assets/Services.png', alt: 'Gestión de servicios' },
+    { type: 'image', src: 'assets/Schedules.png', alt: 'Configuración de horarios' },
+    { type: 'image', src: 'assets/Providers.png', alt: 'Gestión de proveedores' },
   ];
   private imageInterval: any;
 

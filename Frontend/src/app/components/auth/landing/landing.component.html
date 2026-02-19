@@ -31,7 +31,7 @@
     <div class="hero-container">
       <div class="hero-content">
         <div class="hero-badges">
-          <span class="badge">SaaS multi-tenant</span>
+          <span class="badge">Gestión para negocios</span>
           <span class="badge badge-soft">Turnos · Clientes · Servicios</span>
         </div>
 
@@ -82,152 +82,13 @@
             </div>
 
             <div class="showcase-content">
-              @for (screen of showcaseImages; track screen.type; let i = $index) {
+              @for (screen of showcaseImages; track screen.src; let i = $index) {
                 <div
-                  [class]="'showcase-screen screen-' + screen.type"
+                  class="showcase-screen screen-image"
                   [class.active]="currentImageIndex() === i"
                   [class.prev]="currentImageIndex() === (i + 1) % showcaseImages.length"
                 >
-                  <!-- Pantalla de Calendario -->
-                  @if (screen.type === 'calendar') {
-                    <div class="animated-calendar">
-                      <div class="calendar-header">
-                        <div class="month-selector">
-                          <i-lucide [img]="CalendarIcon" [size]="18" class="header-icon"></i-lucide>
-                          <span class="month-name">Enero 2026</span>
-                        </div>
-                      </div>
-                      <div class="calendar-grid">
-                        @for (day of ['L','M','X','J','V','S','D']; track day) {
-                          <div class="day-name">{{ day }}</div>
-                        }
-                        @for (day of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]; track day) {
-                          <div class="calendar-day" [class.has-appointments]="day % 4 === 0" [class.today]="day === 15">
-                            <span class="day-number">{{ day }}</span>
-                            @if (day % 4 === 0) {
-                              <div class="appointments-dot"></div>
-                            }
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  }
-
-                  <!-- Pantalla Diaria con Métricas -->
-                  @if (screen.type === 'daily') {
-                    <div class="animated-daily">
-                      <div class="daily-header">
-                        <div class="daily-title">
-                          <i-lucide [img]="CalendarIcon" [size]="18" class="header-icon"></i-lucide>
-                          <span>Miércoles, 15 Enero</span>
-                        </div>
-                        <div class="metrics-row">
-                          <div class="metric-card">
-                            <i-lucide [img]="UsersIcon" [size]="16" class="metric-icon"></i-lucide>
-                            <div class="metric-info">
-                              <span class="metric-value">12</span>
-                              <span class="metric-label">Turnos</span>
-                            </div>
-                          </div>
-                          <div class="metric-card">
-                            <i-lucide [img]="TrendingUpIcon" [size]="16" class="metric-icon"></i-lucide>
-                            <div class="metric-info">
-                              <span class="metric-value">85%</span>
-                              <span class="metric-label">Ocupación</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="appointments-list">
-                        @for (apt of [
-                          {time: '09:00', service: 'Corte de cabello', client: 'Juan Pérez'},
-                          {time: '10:00', service: 'Barba', client: 'María García'},
-                          {time: '11:00', service: 'Corte + Barba', client: 'Carlos López'},
-                          {time: '12:00', service: 'Tratamiento', client: 'Ana Martínez'}
-                        ]; track apt.time; let idx = $index) {
-                          <div class="appointment-item" [style.animation-delay]="(idx * 0.08) + 's'">
-                            <div class="apt-time">
-                              <i-lucide [img]="ClockIcon" [size]="14"></i-lucide>
-                              <span>{{ apt.time }}</span>
-                            </div>
-                            <div class="apt-details">
-                              <div class="apt-service">{{ apt.service }}</div>
-                              <div class="apt-client">{{ apt.client }}</div>
-                            </div>
-                            <i-lucide [img]="CheckCircleIcon" [size]="16" class="apt-check"></i-lucide>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  }
-
-                  <!-- Pantalla de Servicios -->
-                  @if (screen.type === 'services') {
-                    <div class="animated-services">
-                      <div class="services-header">
-                        <div class="services-title">
-                          <i-lucide [img]="ScissorsIcon" [size]="18" class="header-icon"></i-lucide>
-                          <span>Servicios</span>
-                        </div>
-                      </div>
-                      <div class="services-list">
-                        @for (service of [
-                          {name: 'Corte de cabello', duration: '30 min', price: '$350'},
-                          {name: 'Barba', duration: '20 min', price: '$200'},
-                          {name: 'Corte + Barba', duration: '45 min', price: '$500'},
-                          {name: 'Tratamiento capilar', duration: '60 min', price: '$800'}
-                        ]; track service.name; let idx = $index) {
-                          <div class="service-card" [style.animation-delay]="(idx * 0.08) + 's'">
-                            <div class="service-icon-box">
-                              <i-lucide [img]="ScissorsIcon" [size]="18"></i-lucide>
-                            </div>
-                            <div class="service-info">
-                              <div class="service-name">{{ service.name }}</div>
-                              <div class="service-meta">
-                                <span class="meta-item">
-                                  <i-lucide [img]="ClockIcon" [size]="12"></i-lucide>
-                                  {{ service.duration }}
-                                </span>
-                                <span class="meta-item">
-                                  <i-lucide [img]="DollarSignIcon" [size]="12"></i-lucide>
-                                  {{ service.price }}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  }
-
-                  <!-- Pantalla de Horarios -->
-                  @if (screen.type === 'schedule') {
-                    <div class="animated-schedule">
-                      <div class="schedule-header">
-                        <div class="schedule-title">
-                          <i-lucide [img]="ClockIcon" [size]="18" class="header-icon"></i-lucide>
-                          <span>Horarios</span>
-                        </div>
-                      </div>
-                      <div class="schedule-grid">
-                        @for (day of ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']; track day; let idx = $index) {
-                          <div class="schedule-row" [style.animation-delay]="(idx * 0.08) + 's'">
-                            <div class="schedule-day">{{ day }}</div>
-                            <div class="schedule-slots">
-                              <div class="time-slot">
-                                <i-lucide [img]="ClockIcon" [size]="12"></i-lucide>
-                                <span>9:00 - 13:00</span>
-                              </div>
-                              <div class="time-slot">
-                                <i-lucide [img]="ClockIcon" [size]="12"></i-lucide>
-                                <span>15:00 - 19:00</span>
-                              </div>
-                            </div>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  }
+                  <img [src]="screen.src" [alt]="screen.alt" class="showcase-real-img" />
                 </div>
               }
             </div>
@@ -243,7 +104,7 @@
 
           <!-- Indicadores -->
           <div class="showcase-indicators">
-            @for (screen of showcaseImages; track screen.type; let i = $index) {
+            @for (screen of showcaseImages; track screen.src; let i = $index) {
               <button
                 class="indicator"
                 [class.active]="currentImageIndex() === i"
