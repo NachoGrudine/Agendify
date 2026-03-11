@@ -218,8 +218,10 @@ cd Agendify
 2. Edita el archivo `.env` y configura las variables requeridas:
 
    **Variables Mínimas Requeridas:**
-   - `MSSQL_SA_PASSWORD`: Contraseña de SQL Server (mín. 8 caracteres, mayúsculas, minúsculas, números y símbolos)
-   - `DB_PASSWORD`: Debe ser **idéntica** a `MSSQL_SA_PASSWORD`
+   - `DB_SERVER`: Host del servidor Azure SQL (ej: `tu-servidor.database.windows.net`)
+   - `DB_NAME`: Nombre de la base de datos en Azure
+   - `DB_USER`: Usuario de Azure SQL
+   - `DB_PASSWORD`: Contraseña del usuario de Azure SQL
    - `JWT_SECRET`: Clave secreta de al menos 64 caracteres (ver comandos de generación en el archivo)
 
    **Nota:** El archivo `.env.example` está completamente documentado con:
@@ -230,9 +232,12 @@ cd Agendify
 
    **Ejemplo de configuración rápida:**
    ```dotenv
-   # SQL Server (cambiar la contraseña)
-   MSSQL_SA_PASSWORD=MiPassword123!
-   DB_PASSWORD=MiPassword123!
+   # Azure SQL Database (completar con tus datos)
+   DB_SERVER=tu-servidor.database.windows.net
+   DB_PORT=1433
+   DB_NAME=tu-base-de-datos
+   DB_USER=tu-usuario
+   DB_PASSWORD=TuPasswordSegura123!
 
    # JWT (generar una clave segura de 64+ caracteres)
    JWT_SECRET=tu-clave-super-secreta-de-al-menos-64-caracteres-aqui-cambiar-esto!
@@ -249,9 +254,8 @@ docker-compose up --build
 ```
 
 Este comando hará lo siguiente:
-1. Levantará **SQL Server** en el puerto 1433
-2. Construirá y levantará el **Backend API** en el puerto 5000
-3. Construirá y levantará el **Frontend** en el puerto 4200
+1. Construirá y levantará el **Backend API** en el puerto 5000 (conectado a Azure SQL)
+2. Construirá y levantará el **Frontend** en el puerto 4200
 
 **Tiempos estimados:**
 - Primera vez (con build): 5-10 minutos

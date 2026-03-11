@@ -43,6 +43,7 @@
 
     <ItemGroup>
       <None Remove="mds\**" />
+      <None Remove="Services\Auth\README_REFRESH_TOKEN_SYSTEM.md" />
     </ItemGroup>
 
 </Project>

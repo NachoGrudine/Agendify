@@ -1,4 +1,4 @@
-﻿﻿﻿using BusinessEntity = Agendify.Models.Entities.Business;
+﻿using BusinessEntity = Agendify.Models.Entities.Business;
 using Agendify.Models.Entities;
 using Agendify.DTOs.Auth;
 using Agendify.Common.Errors;

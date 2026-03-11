@@ -64,38 +64,58 @@
   border: none;
 }
 
-/* Botón EDITAR - Fondo oscuro */
+/* =============================
+   BOTÓN EDITAR - NUEVO ESTILO
+   ============================= */
 .card-actions .edit-btn {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  background: #e0e7ff;
+  color: #030132;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.card-actions .edit-btn i-lucide,
+.card-actions .edit-btn svg {
+  color: #030132 !important;
+  stroke: #030132 !important;
 }
 
 .card-actions .edit-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: scale(1.05);
+  background: #030132;
+  color: #ffffff;
+  transform: scale(1.08);
 }
 
-:host ::ng-deep .card-actions .edit-btn i-lucide,
-:host ::ng-deep .card-actions .edit-btn svg {
+.card-actions .edit-btn:hover i-lucide,
+.card-actions .edit-btn:hover svg {
   color: #ffffff !important;
   stroke: #ffffff !important;
 }
 
-/* Botón ELIMINAR - Fondo oscuro */
+/* =============================
+   BOTÓN ELIMINAR - NUEVO ESTILO
+   ============================= */
 .card-actions .delete-btn {
-  background: rgba(220, 38, 38, 0.15);
-  color: #fca5a5;
+  background: #fee2e2;
+  color: #dc2626;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.card-actions .delete-btn i-lucide,
+.card-actions .delete-btn svg {
+  color: #dc2626 !important;
+  stroke: #dc2626 !important;
 }
 
 .card-actions .delete-btn:hover {
-  background: rgba(220, 38, 38, 0.3);
-  transform: scale(1.05);
+  background: #dc2626;
+  color: #ffffff;
+  transform: scale(1.08);
 }
 
-:host ::ng-deep .card-actions .delete-btn i-lucide,
-:host ::ng-deep .card-actions .delete-btn svg {
-  color: #fca5a5 !important;
-  stroke: #fca5a5 !important;
+.card-actions .delete-btn:hover i-lucide,
+.card-actions .delete-btn:hover svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
 }
 
 /* ============================================
