@@ -1,6 +1,6 @@
 ﻿export const environment = {
   production: true,
-  apiUrl: 'http://localhost:5000/api'
+  apiUrl: 'https://agendify-back-nacho-a2ftg6ceeqahfmez.brazilsouth-01.azurewebsites.net/api'
 };
 
 
