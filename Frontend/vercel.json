@@ -1,5 +1,5 @@
 ﻿{
-  "installCommand": "npm install",
-  "buildCommand": "ng build --configuration production",
-  "outputDirectory": "dist/frontend/browser"
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
